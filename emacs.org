@@ -198,8 +198,9 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
   (use-package lsp-mode
     :straight t
     :ensure t
-    :commands (lsp lsp-deferred)
-    :hook (lsp-mode . efs/lsp-mode-setup)
+    :commands lsp
+    :hook
+    (lsp-mode . efs/lsp-mode-setup)
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
@@ -253,6 +254,120 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (setq-default flycheck-disabled-checkers '(python-pylint))
     )
 #+END_SRC
+** LaTeX
+*** Install texlab
+#+BEGIN_SRC shell
+  cargo install --git https://github.com/latex-lsp/texlab.git
+#+END_SRC
+*** Install lsp-latex
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package
+   '(lsp-latex :type git :host github :repo "ROCKTAKEY/lsp-latex"))
+#+END_SRC
+*** Configuration
+#+BEGIN_SRC emacs-lisp
+  (require 'lsp-latex)
+  (setq lsp-latex-texlab-executable "~/.cargo/bin/texlab"
+	lsp-latex-forward-search-after t
+	lsp-latex-forward-search-executable "emacsclient"
+	tex-command "pdflatex --synctex=1"
+	lsp-latex-forward-search-args
+	'("--eval"
+	  "(lsp-latex-forward-search-with-pdf-tools \"%f\" \"%p\" \"%l\")"))
+
+  (with-eval-after-load "tex-mode"
+    (add-hook 'latex-mode-hook 'lsp))
+
+  ;; For bibtex
+  (with-eval-after-load "bibtex"
+    (add-hook 'bibtex-mode-hook 'lsp))
+#+END_SRC
+* Latex
+** Auctex 
+   #+BEGIN_SRC emacs-lisp
+     (use-package tex
+       :ensure auctex
+       :mode ("\\.tex\\'" . latex-mode)
+       :config
+       (setq TeX-source-correlate-mode t
+	     TeX-source-correlate-method 'synctex
+	     TeX-auto-save t
+	     TeX-parse-self t
+	     reftex-plug-into-AUCTeX t)
+       (add-hook 'TeX-after-compilation-finished-functions
+		 #'TeX-revert-document-buffer)
+       (add-hook 'LaTeX-mode-hook
+		 (lambda ()
+		   (reftex-mode t)
+		   (flyspell-mode t)))
+       (global-set-key (kbd "C-c C-g") 'pdf-sync-forward-search)
+       (if (display-graphic-p)
+	   ;; we use pdf-tools in graphical interface only
+	   (progn
+	     (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+		   TeX-source-correlate-start-server t)
+	     )
+	 (progn
+	   ;; Use Skim as viewer, enable source <-> PDF sync
+	   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+	   (setq TeX-view-program-list
+		 '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))
+		 )
+	   (setq TeX-source-correlate-start-server t)
+	   )
+	 )
+       )
+   #+END_SRC
+** Company Auctex
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package company-auctex
+       :ensure t
+       :init (company-auctex-init))
+   #+END_SRC
+* Ivy
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :straight t
+    :ensure t
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t
+	  enable-recursive-minibuffers t))
+#+END_SRC
+* auto-completion with company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :straight t
+    :ensure t
+    :init
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (setq company-dabbrev-downcase 0)
+    (setq company-idle-delay 0.1)
+    (setq company-minimum-prefix-length 1)
+    (setq company-tooltip-align-annotations t)
+    )
+#+END_SRC
+* pdf-tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :straight t
+    :ensure t
+    :if (display-graphic-p)
+    :config
+    (if (file-exists-p "~/.emacs.d/epdfinfo")
+	(progn
+	  (message "epdfinfo file exists")
+	  (setq pdf-info-epdfinfo-program "~/.emacs.d/epdfinfo")) ;;This is in case server building is to be done manually
+      (message "epdfinfo file does not exist. Building it now.")
+      (pdf-tools-install :no-query)) 
+    (setq-default pdf-view-display-size 'fit-page)
+    (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
+    (setq pdf-annot-activate-created-annotations t)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
+    (setq pdf-sync-minor-mode t))
+#+END_SRC
 * Dired
 #+BEGIN_SRC emacs-lisp
   ;; dired-x
@@ -304,4 +419,13 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
   (setq version-control t)
   (setq vc-make-backup-files t)
   (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+END_SRC
+* Other customizations
+** Change 'yes-or-no-p' to 'y-or-no-p'
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+* Custom commands
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.config/emacs/custom-commands.el")
 #+END_SRC
