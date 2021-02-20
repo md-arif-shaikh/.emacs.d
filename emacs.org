@@ -1,0 +1,307 @@
+#+TITLE: Emacs config file
+#+AUTHOR: Md Arif Shaikh
+#+email: arifshaikh.astro@gmail.com
+#+Date: Sat Feb 20 07:15:57 PM IST 2021
+
+* straight
+Link to [[https://github.com/raxod502/straight.el#features][straight]].
+#+BEGIN_SRC emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	     'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+END_SRC
+* use-package
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package 'use-package)
+#+END_SRC
+* Tramp
+** Connect Remote Machines
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.config/emacs/remote-machines.el")
+  (defun arif/connect-remote-dir (remote-machine-name)
+    "Connect to REMOTE-MACHINE-NAME."
+    (interactive "sRemote Machine Name: ")
+    (setq remote-user-name (cdr (assoc remote-machine-name remote-user-names)))
+    (set-buffer (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name)))
+    )
+
+  (defun arif/connect-remote-term (remote-machine-name)
+    "Connect to terminal in on REMOTE-MACHINE-NAME."
+    (interactive "sRemote Machine Name: ")
+    (setq remote-shell-types '(("comet" . "/bin/bash")
+			      ("dodo" . "/bin/zsh")))
+    (setq remote-shell-type (cdr (assoc remote-machine-name remote-shell-types)))
+    (let ((default-directory (format "/sshx:%s:" remote-machine-name)))
+      (shell remote-shell-type)))
+
+  (global-set-key (kbd "C-c s d") #'arif/connect-remote-dir)
+  (global-set-key (kbd "C-c s t") #'arif/connect-remote-term)
+#+END_SRC
+* UI customization 
+** Themes
+*** Gruvbox for terminal
+#+BEGIN_SRC  emacs-lisp
+  (use-package gruvbox-theme
+    :straight t
+    :if (not (display-graphic-p))
+    :ensure t
+    :init
+    (load-theme 'gruvbox-dark-soft t))
+#+END_SRC
+   
+*** Atom dark one for graphical
+#+BEGIN_SRC emacs-lisp
+  (use-package atom-one-dark-theme
+    :straight t
+    :if (display-graphic-p)
+    :ensure t
+    :init
+    (load-theme 'atom-one-dark t)
+    )
+#+END_SRC
+** doom-modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :straight t
+    :ensure t
+    :init (doom-modeline-mode 1)
+    :config
+    ;; Configure doom-modeline variables
+    (setq find-file-visit-truename t)
+    (setq doom-modeline-bar-width 3)
+    (setq doom-modeline-height 10)
+    (setq doom-modeline-buffer-file-name-style 'file-name)
+    (setq doom-modeline-lsp t)
+    (setq doom-modeline-minor-modes nil)
+    (setq doom-modeline-github t)
+    (setq doom-modeline-github-interval (* 30 60))
+    (setq doom-modeline-major-mode-icon t)
+    (setq doom-modeline-icon (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin))))
+    (setq doom-modeline-env-version t)
+    (if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
+	(setq doom-modeline-minor-modes nil)
+      (setq doom-modeline-minor-modes t))
+    ;;(setq doom-modeline-mu4e t)
+    )
+#+END_SRC
+** Start full screen
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'default-frame-alist '(fullscreen . fullboth))
+#+END_SRC
+** hide start-up message 
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+** remove scroll bar and toolbar, fringe
+#+BEGIN_SRC emacs-lisp
+  (if (display-graphic-p)
+      (progn
+	(tool-bar-mode -1)
+	(scroll-bar-mode -1)
+	(menu-bar-mode -1)
+	(set-fringe-mode 0)))
+  (if (daemonp)
+      (setq default-frame-alist (menu-bar-mode -1)))
+#+END_SRC
+* Autopair
+#+BEGIN_SRC emacs-lisp
+  (use-package autopair
+    :straight t
+    :ensure t)
+  (autopair-global-mode)
+#+END_SRC
+* convert-timezone
+#+BEGIN_SRC emacs-lisp
+  (defun convert-time ()
+	"Convert TIME from FROM-TIME-ZONE to TO-TIME-ZONE."
+	(interactive)
+	(setq time-zones 
+	      '(("ET" . -500)
+		("PT" . -800)
+		("CT" . -600)
+		("EET" . 200)
+		("CET" . 100)
+		("IST" . 530)))
+	(setq days '("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"))
+	(setq from-zone (upcase (read-string "From which timezone (use abbreviation, e.g., ET for Eeastern Time): ")))
+	(setq to-zone (upcase (read-string "To which timezone (use abbreviation, e.g., IST for Indian Standard Time): ")))
+	(setq raw-time (read-string "Time to be converted (HH:MM PM/pm(optional) DAY(optional)): "))
+	(if (equal from-zone "PST")
+	    (setq from-zone "PT"))
+	(setq time (parse-time-string raw-time))
+	(let ((from-sec (nth 0 time))
+	      (from-min (nth 1 time))
+	      (from-hour (nth 2 time))
+	      (from-day (nth 6 time))
+	      )
+	  (if (string-match-p (regexp-quote "PM") (upcase raw-time))
+	      (setq  from-hour (+ 12 from-hour)))
+	  (setq time-shift (- (cdr (assoc to-zone time-zones)) (cdr (assoc from-zone time-zones))))
+	  (setq hour-shift (/ time-shift 100))
+	  (setq min-shift (% time-shift 100))
+	  (setq to-min (+ from-min min-shift))
+	  (setq to-hour (+ from-hour hour-shift))
+	  (setq to-day-name "")
+	  (if (>= to-min 60)
+	      (progn
+		(setq to-min (- to-min 60))
+		(setq to-hour (1+ to-hour))))
+	  (if (>= to-hour 24)
+	      (progn
+		(setq to-hour (- to-hour 24))
+		(if (not (equal from-day nil))
+		    (setq to-day-name (nth (1+ from-day) days))
+		  (setq to-day-name "+ 1 day"))))
+	  (if (< to-hour 0)
+	      (progn
+		(setq to-hour (+ 24 to-hour))
+		(if (not (equal from-day nil))
+		    (setq to-day-name (nth (1- from-day) days))
+		  (setq to-day-name "- 1 day"))))
+	  (if (< to-hour 12)
+	      (setq A-or-P "A"))
+	  (if (>= to-hour 12)
+	      (progn
+		(setq to-hour (- to-hour 12))
+		(setq A-or-P "P")))
+	  (message (format "%s %s = %.2d:%.2d %sM %s %s" (upcase raw-time) from-zone to-hour to-min A-or-P to-day-name to-zone))
+	  )
+	)
+#+END_SRC
+* Pyenv
+#+BEGIN_SRC emacs-lisp
+  (use-package pyvenv
+    :straight t
+    :ensure t
+    :init
+    (if (eq system-type 'darwin)
+	(setenv "WORKON_HOME" "/Users/arif/miniconda3/envs/")
+      (setenv "WORKON_HOME" "/home/arif/anaconda3/envs/"))
+    (pyvenv-mode 1)
+    (pyvenv-tracking-mode 1))
+#+END_SRC
+* LSP 
+#+BEGIN_SRC emacs-lisp
+  (defun efs/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode))
+
+  (use-package lsp-mode
+    :straight t
+    :ensure t
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . efs/lsp-mode-setup)
+    :init
+    (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+    :config
+    (setq lsp-prefer-capf t)
+    (setq lsp-enable-completion-at-point t) 
+    ;; (setq lsp-pyls-plugins-pylint-enabled t)
+    ;; (setq lsp-pyls-plugins-flake8-enabled t)
+    ;; (lsp-enable-which-key-integration t)
+    )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-ui
+    :straight t
+    :ensure t)
+#+END_SRC
+** Python
+#+BEGIN_SRC shell :tangle no
+  pip install --user "python-language-server[all]"
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package python-mode
+    :straight t
+    :ensure t
+    :hook
+    (python-mode . lsp-deferred)
+    (python-mode . linum-mode)
+    ;; :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    ;; (python-shell-interpreter "python3")
+    ;; (dap-python-executable "python3")
+    ;; (dap-python-debugger 'debugpy)
+    ;;:config
+    ;; (require 'dap-python)
+    )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-indent-guides
+    :straight t
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+    (setq highlight-indent-guides-method 'character))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :straight t
+    :ensure t
+    :config
+    (global-flycheck-mode)
+    (setq flycheck-indication-mode 'left-margin)
+    (setq-default flycheck-disabled-checkers '(python-pylint))
+    )
+#+END_SRC
+* Dired
+#+BEGIN_SRC emacs-lisp
+  ;; dired-x
+  (require 'dired-x)
+  (add-hook 'dired-load-hook
+	    (lambda ()
+	      (load "dired-x")
+	      ;; Set dired-x global variables here.  For example:
+	      ;; (setq dired-guess-shell-gnutar "gtar")
+	      ;; (setq dired-x-hands-off-my-keys nil)
+	      ))
+  (add-hook 'dired-mode-hook
+	    (lambda ()
+	      ;; Set dired-x buffer-local variables here.  For example:
+	      (dired-omit-mode 1)
+	      (dired-hide-details-mode 1)
+	      (setq dired-omit-files
+		    (concat dired-omit-files "\\|^\\..+$"))
+	      ))
+#+END_SRC
+* magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :straight t
+    :ensure t
+    :bind ("C-x g" . magit-status))
+#+END_SRC
+* yasnippets
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :straight t
+    :ensure t
+    :init
+    (add-hook 'after-init-hook 'yas-global-mode)
+    :config
+    (global-set-key (kbd "C-c y y") 'yas-expand))
+
+  (defun my-org-latex-yas ()
+  ;;  "Activate org and LaTeX yas expansion in org-mode buffers."
+    (yas-minor-mode)
+    (yas-activate-extra-mode 'latex-mode))
+
+  (add-hook 'org-mode-hook #'my-org-latex-yas)
+#+END_SRC
+* backup files
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  (setq delete-old-versions -1)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+END_SRC

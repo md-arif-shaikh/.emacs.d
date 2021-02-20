@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: italic
+# key: tit
+# --
+{\itshape $1} $0
