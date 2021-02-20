@@ -189,6 +189,60 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (pyvenv-mode 1)
     (pyvenv-tracking-mode 1))
 #+END_SRC
+* pdf-tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :straight t
+    :ensure t
+    :if (display-graphic-p)
+    :config
+    (if (file-exists-p "~/.emacs.d/epdfinfo")
+	(progn
+	  (message "epdfinfo file exists")
+	  (setq pdf-info-epdfinfo-program "~/.emacs.d/epdfinfo")) ;;This is in case server building is to be done manually
+      (message "epdfinfo file does not exist. Building it now.")
+      (pdf-tools-install :no-query)) 
+    (setq-default pdf-view-display-size 'fit-page)
+    (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
+    (setq pdf-annot-activate-created-annotations t)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward))
+#+END_SRC
+* Auctex 
+#+BEGIN_SRC emacs-lisp
+  (use-package tex
+    :ensure auctex
+    :mode ("\\.tex\\'" . latex-mode)
+    :config
+    (setq TeX-source-correlate-mode t
+	  TeX-source-correlate-method 'synctex
+	  TeX-auto-save t
+	  TeX-parse-self t
+	  reftex-plug-into-AUCTeX t)
+    (add-hook 'TeX-after-compilation-finished-functions
+	      #'TeX-revert-document-buffer)
+    (add-hook 'LaTeX-mode-hook
+	      (lambda ()
+		(reftex-mode t)
+		(flyspell-mode t)))
+    (global-set-key (kbd "C-c C-g") 'pdf-sync-forward-search)
+    (if (display-graphic-p)
+	;; we use pdf-tools in graphical interface only
+	(progn
+	  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+		TeX-source-correlate-start-server t)
+	  )
+      (progn
+	;; Use Skim as viewer, enable source <-> PDF sync
+	(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+	(setq TeX-view-program-list
+	      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))
+	      )
+	(setq TeX-source-correlate-start-server t)
+	)
+      )
+    )
+#+END_SRC
 * LSP 
 #+BEGIN_SRC emacs-lisp
   (defun efs/lsp-mode-setup ()
@@ -282,48 +336,6 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
   (with-eval-after-load "bibtex"
     (add-hook 'bibtex-mode-hook 'lsp))
 #+END_SRC
-* Latex
-** Auctex 
-   #+BEGIN_SRC emacs-lisp
-     (use-package tex
-       :ensure auctex
-       :mode ("\\.tex\\'" . latex-mode)
-       :config
-       (setq TeX-source-correlate-mode t
-	     TeX-source-correlate-method 'synctex
-	     TeX-auto-save t
-	     TeX-parse-self t
-	     reftex-plug-into-AUCTeX t)
-       (add-hook 'TeX-after-compilation-finished-functions
-		 #'TeX-revert-document-buffer)
-       (add-hook 'LaTeX-mode-hook
-		 (lambda ()
-		   (reftex-mode t)
-		   (flyspell-mode t)))
-       (global-set-key (kbd "C-c C-g") 'pdf-sync-forward-search)
-       (if (display-graphic-p)
-	   ;; we use pdf-tools in graphical interface only
-	   (progn
-	     (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-		   TeX-source-correlate-start-server t)
-	     )
-	 (progn
-	   ;; Use Skim as viewer, enable source <-> PDF sync
-	   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-	   (setq TeX-view-program-list
-		 '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))
-		 )
-	   (setq TeX-source-correlate-start-server t)
-	   )
-	 )
-       )
-   #+END_SRC
-** Company Auctex
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package company-auctex
-       :ensure t
-       :init (company-auctex-init))
-   #+END_SRC
 * Ivy
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
@@ -347,26 +359,6 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (setq company-minimum-prefix-length 1)
     (setq company-tooltip-align-annotations t)
     )
-#+END_SRC
-* pdf-tools
-#+BEGIN_SRC emacs-lisp
-  (use-package pdf-tools
-    :straight t
-    :ensure t
-    :if (display-graphic-p)
-    :config
-    (if (file-exists-p "~/.emacs.d/epdfinfo")
-	(progn
-	  (message "epdfinfo file exists")
-	  (setq pdf-info-epdfinfo-program "~/.emacs.d/epdfinfo")) ;;This is in case server building is to be done manually
-      (message "epdfinfo file does not exist. Building it now.")
-      (pdf-tools-install :no-query)) 
-    (setq-default pdf-view-display-size 'fit-page)
-    (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
-    (setq pdf-annot-activate-created-annotations t)
-    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-    (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
-    (setq pdf-sync-minor-mode t))
 #+END_SRC
 * Dired
 #+BEGIN_SRC emacs-lisp
