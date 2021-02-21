@@ -196,12 +196,7 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     :ensure t
     :if (display-graphic-p)
     :config
-    (if (file-exists-p "~/.emacs.d/epdfinfo")
-	(progn
-	  (message "epdfinfo file exists")
-	  (setq pdf-info-epdfinfo-program "~/.emacs.d/epdfinfo")) ;;This is in case server building is to be done manually
-      (message "epdfinfo file does not exist. Building it now.")
-      (pdf-tools-install :no-query)) 
+    (pdf-tools-install :no-query)
     (setq-default pdf-view-display-size 'fit-page)
     (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
     (setq pdf-annot-activate-created-annotations t)
@@ -209,7 +204,7 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward))
 #+END_SRC
 * Auctex 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package tex
     :ensure auctex
     :mode ("\\.tex\\'" . latex-mode)
@@ -225,7 +220,6 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
 	      (lambda ()
 		(reftex-mode t)
 		(flyspell-mode t)))
-    (global-set-key (kbd "C-c C-g") 'pdf-sync-forward-search)
     (if (display-graphic-p)
 	;; we use pdf-tools in graphical interface only
 	(progn
@@ -321,6 +315,9 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
 *** Configuration
 #+BEGIN_SRC emacs-lisp
   (require 'lsp-latex)
+  (if (and (fboundp 'server-running-p) 
+	   (not (server-running-p)))
+      (server-start))
   (setq lsp-latex-texlab-executable "~/.cargo/bin/texlab"
 	lsp-latex-forward-search-after t
 	lsp-latex-forward-search-executable "emacsclient"
@@ -330,7 +327,10 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
 	  "(lsp-latex-forward-search-with-pdf-tools \"%f\" \"%p\" \"%l\")"))
 
   (with-eval-after-load "tex-mode"
-    (add-hook 'latex-mode-hook 'lsp))
+    (add-hook 'latex-mode-hook 'lsp)
+    (add-hook 'tex-mode-hook 'lsp)
+    (define-key latex-mode-map (kbd "C-c C-c") 'lsp-latex-build)
+    (define-key latex-mode-map (kbd "C-c C-v") 'lsp-latex-forward-search))
 
   ;; For bibtex
   (with-eval-after-load "bibtex"
@@ -338,13 +338,34 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
 #+END_SRC
 * Ivy
 #+BEGIN_SRC emacs-lisp
-  (use-package ivy
+  (use-package counsel
     :straight t
     :ensure t
     :config
     (ivy-mode 1)
+    (counsel-mode 1)
     (setq ivy-use-virtual-buffers t
-	  enable-recursive-minibuffers t))
+	  enable-recursive-minibuffers t)
+    ;; enable this if you want `swiper' to use it
+    ;; (setq search-default-mode #'char-fold-to-regexp)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    )
 #+END_SRC
 * auto-completion with company
 #+BEGIN_SRC emacs-lisp
@@ -403,6 +424,12 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (yas-activate-extra-mode 'latex-mode))
 
   (add-hook 'org-mode-hook #'my-org-latex-yas)
+#+END_SRC
+* Rainbow delimeters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :straight t
+    :ensure t)
 #+END_SRC
 * backup files
 #+BEGIN_SRC emacs-lisp
