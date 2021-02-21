@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: enumerate
-# key: enum
+# key: een
 # --
 \begin{enumerate}
 \item $0

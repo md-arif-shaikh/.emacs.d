@@ -1,8 +1,7 @@
 #+TITLE: Emacs config file
 #+AUTHOR: Md Arif Shaikh
-#+email: arifshaikh.astro@gmail.com
+#+Email: arifshaikh.astro@gmail.com
 #+Date: Sat Feb 20 07:15:57 PM IST 2021
-
 * straight
 Link to [[https://github.com/raxod502/straight.el#features][straight]].
 #+BEGIN_SRC emacs-lisp
@@ -204,7 +203,7 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward))
 #+END_SRC
 * Auctex 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (use-package tex
     :ensure auctex
     :mode ("\\.tex\\'" . latex-mode)
@@ -320,7 +319,7 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
       (server-start))
   (setq lsp-latex-texlab-executable "~/.cargo/bin/texlab"
 	lsp-latex-forward-search-after t
-	lsp-latex-forward-search-executable "emacsclient"
+	lsp-latex-forward-search-executable "/usr/bin/emacsclient"
 	tex-command "pdflatex --synctex=1"
 	lsp-latex-forward-search-args
 	'("--eval"
@@ -424,7 +423,68 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (yas-activate-extra-mode 'latex-mode))
 
   (add-hook 'org-mode-hook #'my-org-latex-yas)
+
+  (defun replace-in-string (what with in)
+    (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+  (defun arif/latex-greek-symbols (english-symbol)
+    (interactive)
+    (defvar arif/greek-symbols)
+    (setq arif/greek-symbols '(("a" . "\\alpha")
+			       ("b" . "\\beta")
+			       ("c" . "\\chi")
+			       ("d" . "\\delta")
+			       ("D" . "\\Delta")
+			       ("e" . "\\epsilon")
+			       ("f" . "\\phi")
+			       ("F" . "\\Phi")
+			       ("g" . "\\gamma")
+			       ("G" . "\\Gamma")
+			       ("i" . "\\iota")
+			       ("k" . "\\kappa")
+			       ("l" . "\\Lambda")
+			       ("m" . "\\mu")
+			       ("n" . "\\nu")
+			       ("o" . "\\omega")
+			       ("O" . "\\Omega")
+			       ("p" . "\\pi")
+			       ("r" . "\\rho")
+			       ("s" . "\\sigma")
+			       ("t" . "\\tau")
+			       ("x" . "\\xi")
+			       ("ve" . "\\varepsilon")
+			       ("vp" . "\\varphi"))
+	  )
+    (cdr (assoc english-symbol arif/greek-symbols))
+    )
 #+END_SRC
+** TeX
+*** Environments
+Keys for environments starts with ~e~ and then the first two alphabets of the environment name.
+|-------------+-----|
+| Environment | Key |
+|-------------+-----|
+| Equation    | eeq |
+|-------------+-----|
+| Enumerate   | een |
+|-------------+-----|
+| Itemize     | eit |
+|-------------+-----|
+| Align       | eal |
+|-------------+-----|
+*** Text 
+Keys for texts starts with ~@~ and then first alphabet of the desired face/shape
+| Text      | Key |
+|-----------+-----|
+| Bold      | @b  |
+|-----------+-----|
+| Italic    | @i  |
+|-----------+-----|
+| Underline | @u  |
+|-----------+-----|
+*** Greek symbols
+Keys for greek symbols works a little bit differently. First we hit ~@ + TAB~ then enter equivalent english alphabet.
+For example ~@ + TAB + a~ will give ~\alpha~.
 * Rainbow delimeters
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
