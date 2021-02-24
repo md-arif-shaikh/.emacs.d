@@ -67,6 +67,28 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (load-theme 'atom-one-dark t)
     )
 #+END_SRC
+** All the icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+    :straight t
+    :ensure t
+    :if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
+    )
+  (use-package all-the-icons-dired
+    :straight t
+    :ensure t
+    :if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
+    :hook
+    (dired-mode . all-the-icons-dired-mode))
+#+END_SRC
+  Don't forget to install fonts using 
+  ~M-x all-the-icons-install-fonts~
+#+BEGIN_SRC emacs-lisp
+  (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
+      (progn
+	(set-language-environment "UTF-8")
+	(set-default-coding-systems 'utf-8)))
+#+END_SRC
 ** doom-modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
@@ -263,25 +285,31 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     :straight t
     :ensure t)
 #+END_SRC
+** setup gc-cons-threshld
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold 100000000
+	read-process-output-max (* 1024 1024)
+	treemacs-space-between-root-nodes nil
+	company-idle-delay 0.0
+	company-minimum-prefix-length 1
+	lsp-idle-delay 0.1)  ;; clangd is fast
+#+END_SRC
 ** Python
 #+BEGIN_SRC shell :tangle no
   pip install --user "python-language-server[all]"
 #+END_SRC
+https://emacs-lsp.github.io/lsp-python-ms/
 #+BEGIN_SRC emacs-lisp
-  (use-package python-mode
-    :straight t
+  (use-package lsp-python-ms
     :ensure t
-    :hook
-    (python-mode . lsp-deferred)
-    (python-mode . linum-mode)
-    ;; :custom
-    ;; NOTE: Set these if Python 3 is called "python3" on your system!
-    ;; (python-shell-interpreter "python3")
-    ;; (dap-python-executable "python3")
-    ;; (dap-python-debugger 'debugpy)
-    ;;:config
-    ;; (require 'dap-python)
-    )
+    :straight t
+    :init
+    (setq
+     lsp-python-ms-auto-install-server t
+     lsp-python-ms-executable (executable-find "python-language-server"))
+    :hook (python-mode . (lambda ()
+			   (require 'lsp-python-ms)
+			   (lsp-deferred))))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
@@ -335,36 +363,19 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
   (with-eval-after-load "bibtex"
     (add-hook 'bibtex-mode-hook 'lsp))
 #+END_SRC
-* Ivy
+* Jupyter
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel
+  (use-package jupyter
     :straight t
-    :ensure t
-    :config
-    (ivy-mode 1)
-    (counsel-mode 1)
-    (setq ivy-use-virtual-buffers t
-	  enable-recursive-minibuffers t)
-    ;; enable this if you want `swiper' to use it
-    ;; (setq search-default-mode #'char-fold-to-regexp)
-    (global-set-key "\C-s" 'swiper)
-    (global-set-key (kbd "C-c C-r") 'ivy-resume)
-    (global-set-key (kbd "<f6>") 'ivy-resume)
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-    (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-    (global-set-key (kbd "<f1> l") 'counsel-find-library)
-    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-    (global-set-key (kbd "C-c g") 'counsel-git)
-    (global-set-key (kbd "C-c j") 'counsel-git-grep)
-    (global-set-key (kbd "C-c k") 'counsel-ag)
-    (global-set-key (kbd "C-x l") 'counsel-locate)
-    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-    )
+    :ensure t)
+#+END_SRC
+* selectrum
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package 'selectrum)
+  (selectrum-mode +1)
+  (straight-use-package 'selectrum-prescient)
+  (selectrum-prescient-mode +1)
+  (prescient-persist-mode +1)
 #+END_SRC
 * auto-completion with company
 #+BEGIN_SRC emacs-lisp
