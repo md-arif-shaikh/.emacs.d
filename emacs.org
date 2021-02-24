@@ -210,20 +210,6 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     (pyvenv-mode 1)
     (pyvenv-tracking-mode 1))
 #+END_SRC
-* pdf-tools
-#+BEGIN_SRC emacs-lisp
-  (use-package pdf-tools
-    :straight t
-    :ensure t
-    :if (display-graphic-p)
-    :config
-    (pdf-tools-install :no-query)
-    (setq-default pdf-view-display-size 'fit-page)
-    (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
-    (setq pdf-annot-activate-created-annotations t)
-    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-    (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward))
-#+END_SRC
 * Auctex 
 #+BEGIN_SRC emacs-lisp
   (use-package tex
@@ -232,30 +218,23 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
     :config
     (setq TeX-source-correlate-mode t
 	  TeX-source-correlate-method 'synctex
+	  TeX-source-correlate-start-server t
 	  TeX-auto-save t
 	  TeX-parse-self t
-	  reftex-plug-into-AUCTeX t)
+	  reftex-plug-into-AUCTeX t
+	  TeX-view-program-list
+	  '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")
+	    ("Evince" "evince --page-index=%(outpage) %o"))
+	  )
+    (if (string-equal system-type "darwin")
+	(setq TeX-view-program-selection '((output-pdf "Skim")))
+      (setq TeX-view-program-selection '((output-pdf "Evince"))))
     (add-hook 'TeX-after-compilation-finished-functions
 	      #'TeX-revert-document-buffer)
     (add-hook 'LaTeX-mode-hook
 	      (lambda ()
 		(reftex-mode t)
 		(flyspell-mode t)))
-    (if (display-graphic-p)
-	;; we use pdf-tools in graphical interface only
-	(progn
-	  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-		TeX-source-correlate-start-server t)
-	  )
-      (progn
-	;; Use Skim as viewer, enable source <-> PDF sync
-	(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-	(setq TeX-view-program-list
-	      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))
-	      )
-	(setq TeX-source-correlate-start-server t)
-	)
-      )
     )
 #+END_SRC
 * LSP 
@@ -342,16 +321,11 @@ https://emacs-lsp.github.io/lsp-python-ms/
 *** Configuration
 #+BEGIN_SRC emacs-lisp
   (require 'lsp-latex)
-  (if (and (fboundp 'server-running-p) 
-	   (not (server-running-p)))
-      (server-start))
   (setq lsp-latex-texlab-executable "~/.cargo/bin/texlab"
 	lsp-latex-forward-search-after t
-	lsp-latex-forward-search-executable "/usr/bin/emacsclient"
-	tex-command "pdflatex --synctex=1"
-	lsp-latex-forward-search-args
-	'("--eval"
-	  "(lsp-latex-forward-search-with-pdf-tools \"%f\" \"%p\" \"%l\")"))
+	lsp-latex-forward-search-executable "evince"
+	lsp-latex-forward-search-args '("-i" "%l" "%p")
+	tex-command "pdflatex --synctex=1")
 
   (with-eval-after-load "tex-mode"
     (add-hook 'latex-mode-hook 'lsp)
