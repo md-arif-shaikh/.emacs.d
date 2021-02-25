@@ -4,7 +4,12 @@
 #+Date: Thu Feb 25 08:11:11 PM IST 2021
 
 * straight
-Link to [[https://github.com/raxod502/straight.el#features][straight]].
+[[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
+list the package archives. It is taken care of automatically. You can
+use ~use-package~ by adding ~:straight t~ to tell emacs to download
+and install packages using ~straight~. Have look at the project page
+on github fot more info.
+
 #+BEGIN_SRC emacs-lisp
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -24,6 +29,10 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
   (straight-use-package 'use-package)
 #+END_SRC
 * load-file if found
+Emacs stops loading init file if it does not find a file which is
+supposed to be loaded. To continue the loading emacs without fail we
+can first check if the files exists or not and load only if they
+exist.
 #+BEGIN_SRC emacs-lisp
   (defun arif/load-file (file-name)
     (if (file-exists-p file-name)
@@ -31,6 +40,12 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
       (message (format "%s file not found" file-name))))
 #+END_SRC
 * Tramp
+I use tramp to access my remote machines files and directories. I use
+them to directory edit files and look at some figures. One can also
+use remote shell using tramp. To make the process smooth I list my
+pairs of machine name and the host name in a local file which is
+loaded at the start and then I use a custom function to invoke tramp
+which asks for the machine name.
 ** Connect Remote Machines
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.config/emacs/remote-machines.el")
@@ -152,6 +167,9 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
   (autopair-global-mode)
 #+END_SRC
 * convert-timezone
+Often I need to quickly convert times between different time-zones due
+to meetings schedules at different part of world. I call my customized
+simple time converter function to convert the time zone to my local one.
 #+BEGIN_SRC emacs-lisp
   (defun convert-time ()
 	"Convert TIME from FROM-TIME-ZONE to TO-TIME-ZONE."
@@ -210,6 +228,8 @@ Link to [[https://github.com/raxod502/straight.el#features][straight]].
 	)
 #+END_SRC
 * Pyenv
+I use different conda environments for different projects. This makes
+easy to change the conda environments.
 #+BEGIN_SRC emacs-lisp
   (use-package pyvenv
     :straight t
