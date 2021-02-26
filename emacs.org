@@ -396,10 +396,11 @@ disable company mode in remote shell
       (company-mode -1)))
   (add-hook 'shell-mode-hook #'arif/shell-mode-setup)
 #+END_SRC
-** Set ENV
-#+BEGIN_SRC emacs-lisp
-  (setenv "BASH_ENV" (expand-file-name "~/.bashrc"))
-#+END_SRC
+** Sourcing shell profile
+I use zsh/bash shells on my remote machines. Tramp by default does not
+source the profile files ~.zshrc~ or ~.bashrc~ on the remote
+machine. After login on the remote shell I execute ~/bin/zsh~ or
+~/bin/bash~ to source the ~.zshrc/.bashrc~ files. 
 * Selectrum
 #+BEGIN_SRC emacs-lisp
   (straight-use-package 'selectrum)
