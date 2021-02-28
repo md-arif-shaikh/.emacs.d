@@ -3,6 +3,45 @@
 #+Email: arifshaikh.astro@gmail.com
 #+Date: Thu Feb 25 08:11:11 PM IST 2021
 
+* Table of Contents                                                     :TOC:
+- [[#straight][straight]]
+- [[#use-package][use-package]]
+- [[#load-file-if-found][load-file if found]]
+- [[#tramp][Tramp]]
+  - [[#connect-remote-machines][Connect Remote Machines]]
+- [[#ui-customization][UI customization]]
+  - [[#themes][Themes]]
+  - [[#all-the-icons][All the icons]]
+  - [[#doom-modeline][doom-modeline]]
+  - [[#start-full-screen][Start full screen]]
+  - [[#hide-start-up-message][hide start-up message]]
+  - [[#remove-scroll-bar-and-toolbar-fringe][remove scroll bar and toolbar, fringe]]
+- [[#autopair][Autopair]]
+- [[#convert-timezone][convert-timezone]]
+- [[#pyenv][Pyenv]]
+- [[#auctex][Auctex]]
+- [[#lsp][LSP]]
+  - [[#setup-gc-cons-threshld][setup gc-cons-threshld]]
+  - [[#python][Python]]
+  - [[#latex][LaTeX]]
+- [[#jupyter][Jupyter]]
+- [[#company-autocompletion][Company autocompletion]]
+- [[#shell-mode][Shell mode]]
+  - [[#disable-company][Disable company]]
+  - [[#sourcing-shell-profile][Sourcing shell profile]]
+- [[#selectrum][Selectrum]]
+- [[#dired][Dired]]
+- [[#magit][magit]]
+- [[#yasnippets][yasnippets]]
+  - [[#tex][TeX]]
+- [[#rainbow-delimeters][Rainbow delimeters]]
+- [[#backup-files][backup files]]
+- [[#other-customizations][Other customizations]]
+  - [[#change-yes-or-no-p-to-y-or-no-p][Change 'yes-or-no-p' to 'y-or-no-p']]
+- [[#custom-commands][Custom commands]]
+- [[#wolfram-mode][Wolfram mode]]
+- [[#org-toc][Org-toc]]
+
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
 list the package archives. It is taken care of automatically. You can
@@ -477,6 +516,7 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
 			       ("o" . "\\omega")
 			       ("O" . "\\Omega")
 			       ("p" . "\\pi")
+			       ("P" . "\\Pi")
 			       ("r" . "\\rho")
 			       ("s" . "\\sigma")
 			       ("t" . "\\tau")
@@ -536,4 +576,22 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 * Custom commands
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.config/emacs/custom-commands.el")
+#+END_SRC
+* Wolfram mode
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package 'wolfram-mode)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (arif/load-file "~/.config/emacs/ob-mathematica.el")
+  (org-babel-do-load-languages 'org-babel-load-languages
+			       (append org-babel-load-languages
+				       '((mathematica . t))
+				       ))
+#+END_SRC
+* Org-toc
+#+BEGIN_SRC emacs-lisp
+  (straight-use-package 'toc-org)
+  (if (require 'toc-org nil t)
+      (add-hook 'org-mode-hook 'toc-org-mode)
+    (warn "toc-org not found"))
 #+END_SRC
