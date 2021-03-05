@@ -40,7 +40,15 @@
   - [[#change-yes-or-no-p-to-y-or-no-p][Change 'yes-or-no-p' to 'y-or-no-p']]
 - [[#custom-commands][Custom commands]]
 - [[#wolfram-mode][Wolfram mode]]
-- [[#org-toc][Org-toc]]
+- [[#org-mode][org-mode]]
+  - [[#hide-emphasis-markup][Hide emphasis markup]]
+  - [[#org-bullets][org-bullets]]
+  - [[#setting-visual-line-mode][setting visual line mode]]
+  - [[#increase-latex-font-scale][Increase latex font scale]]
+  - [[#org-toc][org-toc]]
+  - [[#org-tree-slide][org-tree-slide]]
+  - [[#perfect-margin][perfect margin]]
+- [[#default-fonts][Default fonts]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -118,7 +126,6 @@ which asks for the machine name.
     :init
     (load-theme 'gruvbox-dark-soft t))
 #+END_SRC
-   
 *** Atom dark one for graphical
 #+BEGIN_SRC emacs-lisp
   (use-package atom-one-dark-theme
@@ -510,7 +517,8 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
 			       ("G" . "\\Gamma")
 			       ("i" . "\\iota")
 			       ("k" . "\\kappa")
-			       ("l" . "\\Lambda")
+			       ("l" . "\\lambda")
+			       ("L" . "\\Lambda")
 			       ("m" . "\\mu")
 			       ("n" . "\\nu")
 			       ("o" . "\\omega")
@@ -588,10 +596,53 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 				       '((mathematica . t))
 				       ))
 #+END_SRC
-* Org-toc
+* org-mode
+** Hide emphasis markup
+#+BEGIN_SRC emacs-lisp
+  (setq org-hide-emphasis-markers t)
+#+END_SRC
+** org-bullets
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :straight t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+END_SRC
+** setting visual line mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'visual-line-mode)
+#+END_SRC
+** Increase latex font scale
+#+BEGIN_SRC emacs-lisp
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+#+END_SRC
+** org-toc
 #+BEGIN_SRC emacs-lisp
   (straight-use-package 'toc-org)
   (if (require 'toc-org nil t)
       (add-hook 'org-mode-hook 'toc-org-mode)
     (warn "toc-org not found"))
+#+END_SRC
+** org-tree-slide
+#+BEGIN_SRC emacs-lisp
+  (use-package org-tree-slide
+    :straight t
+    :ensure t
+    :custom
+    (org-image-actual-width nil))
+#+END_SRC
+** perfect margin
+#+BEGIN_SRC emacs-lisp
+  (use-package perfect-margin
+    :straight t
+    :ensure t)
+#+END_SRC
+* Default fonts
+#+BEGIN_SRC emacs-lisp
+  ;; Set default font
+  (set-face-attribute 'default nil
+		      :family "Fira Code Retina"
+		      :height 120
+		      :weight 'normal
+		      :width 'normal)
 #+END_SRC
