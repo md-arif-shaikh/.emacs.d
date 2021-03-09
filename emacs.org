@@ -214,7 +214,7 @@ which asks for the machine name.
 #+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
-to meetings schedules at different parts of world. I call my customized
+to meetings schedules at different parts of the world. I call my customized
 simple time converter function to convert the time to my local one.
 #+BEGIN_SRC emacs-lisp
   (defun arif/convert-time (from-zone to-zone time-to-convert)
@@ -248,8 +248,8 @@ simple time converter function to convert the time to my local one.
 		 (to-hour (+ from-hour hour-shift))
 		 (to-day-name ""))
 	    (when (>= to-min 60)
-	      (progn (setq to-min (- to-min 60))
-		     (setq to-hour (1+ to-hour))))
+	      (setq to-min (- to-min 60))
+	      (setq to-hour (1+ to-hour)))
 	    (cond ((>= to-hour 24) (progn
 				     (setq to-hour (- to-hour 24))
 				     (if (not (equal from-day nil))
