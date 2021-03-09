@@ -42,13 +42,13 @@
 - [[#wolfram-mode][Wolfram mode]]
 - [[#org-mode][org-mode]]
   - [[#hide-emphasis-markup][Hide emphasis markup]]
+  - [[#change-bullets-in-list][Change bullets in list]]
   - [[#org-bullets][org-bullets]]
   - [[#setting-visual-line-mode][setting visual line mode]]
   - [[#increase-latex-font-scale][Increase latex font scale]]
   - [[#org-toc][org-toc]]
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
-- [[#default-fonts][Default fonts]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -214,64 +214,62 @@ which asks for the machine name.
 #+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
-to meetings schedules at different part of world. I call my customized
-simple time converter function to convert the time zone to my local one.
+to meetings schedules at different parts of world. I call my customized
+simple time converter function to convert the time to my local one.
 #+BEGIN_SRC emacs-lisp
-  (defun convert-time ()
-	"Convert TIME from FROM-TIME-ZONE to TO-TIME-ZONE."
-	(interactive)
-	(setq time-zones 
-	      '(("ET" . -500)
-		("PT" . -800)
-		("CT" . -600)
-		("EET" . 200)
-		("CET" . 100)
-		("IST" . 530)))
-	(setq days '("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"))
-	(setq from-zone (upcase (read-string "From which timezone (use abbreviation, e.g., ET for Eeastern Time): ")))
-	(setq to-zone (upcase (read-string "To which timezone (use abbreviation, e.g., IST for Indian Standard Time): ")))
-	(setq raw-time (read-string "Time to be converted (HH:MM PM/pm(optional) DAY(optional)): "))
-	(if (equal from-zone "PST")
-	    (setq from-zone "PT"))
-	(setq time (parse-time-string raw-time))
-	(let ((from-sec (nth 0 time))
-	      (from-min (nth 1 time))
-	      (from-hour (nth 2 time))
-	      (from-day (nth 6 time))
-	      )
-	  (if (string-match-p (regexp-quote "PM") (upcase raw-time))
-	      (setq  from-hour (+ 12 from-hour)))
-	  (setq time-shift (- (cdr (assoc to-zone time-zones)) (cdr (assoc from-zone time-zones))))
-	  (setq hour-shift (/ time-shift 100))
-	  (setq min-shift (% time-shift 100))
-	  (setq to-min (+ from-min min-shift))
-	  (setq to-hour (+ from-hour hour-shift))
-	  (setq to-day-name "")
-	  (if (>= to-min 60)
-	      (progn
-		(setq to-min (- to-min 60))
-		(setq to-hour (1+ to-hour))))
-	  (if (>= to-hour 24)
-	      (progn
-		(setq to-hour (- to-hour 24))
-		(if (not (equal from-day nil))
-		    (setq to-day-name (nth (1+ from-day) days))
-		  (setq to-day-name "+ 1 day"))))
-	  (if (< to-hour 0)
-	      (progn
-		(setq to-hour (+ 24 to-hour))
-		(if (not (equal from-day nil))
-		    (setq to-day-name (nth (1- from-day) days))
-		  (setq to-day-name "- 1 day"))))
-	  (if (< to-hour 12)
-	      (setq A-or-P "A"))
-	  (if (>= to-hour 12)
-	      (progn
-		(setq to-hour (- to-hour 12))
-		(setq A-or-P "P")))
-	  (message (format "%s %s = %.2d:%.2d %sM %s %s" (upcase raw-time) from-zone to-hour to-min A-or-P to-day-name to-zone))
-	  )
-	)
+  (defun arif/convert-time (from-zone to-zone time-to-convert)
+	"Convert TIME from FROM-ZONE to TO-ZONE."
+	(interactive "sFrom which timezone (use abbreviation, e.g., EST for Eeastern Standard Time): 
+  sTo which timezone (use abbreviation, e.g., IST for Indian Standard Time): 
+  sTime to be converted (HH:MM PM/pm(optional) DAY(optional)): ")
+	(let* ((time-zones '(("EST" . "-0500")
+			     ("CST" . "-0600")
+			     ("EET" . "+0200")
+			     ("CET" . "+0100")
+			     ("IST" . "+0530")
+			     ("KOLKATA" . "+0530")
+			     ("JST" . "+0900")
+			     ("TOKYO" . "+0900")))
+	       (days '("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"))
+	       (time (parse-time-string time-to-convert))
+	       (from-zone-u (upcase from-zone))
+	       (to-zone-u (upcase to-zone))
+	       (from-sec (nth 0 time))
+	       (from-min (nth 1 time))
+	       (from-hour (nth 2 time))
+	       (from-day (nth 6 time)))
+	  (when (string-match-p (regexp-quote "PM") (upcase time-to-convert))
+	    (setq  from-hour (+ 12 from-hour)))
+	  (let* ((time-shift (- (nth 8 (parse-time-string (cdr (assoc to-zone-u time-zones))))
+				(nth 8 (parse-time-string (cdr (assoc from-zone-u time-zones))))))
+		 (hour-shift (/ time-shift (* 60 60)))
+		 (min-shift (/ (% time-shift (* 60 60)) 60))
+		 (to-min (+ from-min min-shift))
+		 (to-hour (+ from-hour hour-shift))
+		 (to-day-name ""))
+	    (when (>= to-min 60)
+	      (progn (setq to-min (- to-min 60))
+		     (setq to-hour (1+ to-hour))))
+	    (cond ((>= to-hour 24) (progn
+				     (setq to-hour (- to-hour 24))
+				     (if (not (equal from-day nil))
+					 (setq to-day-name (nth (1+ from-day) days))
+				       (setq to-day-name "+ 1 day"))))		
+		  ((< to-hour 0) (progn
+				   (setq to-hour (+ 24 to-hour))
+				   (if (not (equal from-day nil))
+				       (setq to-day-name (nth (1- from-day) days))
+				     (setq to-day-name "- 1 day"))))
+		  ((and (> to-hour 0) (< to-hour 24)) (if (not (equal from-day nil))
+							  (setq to-day-name (nth from-day days))
+							(setq to-day-name ""))))
+	    (cond ((= to-hour 0) (setq A-or-P "Midnight"))
+		  ((< to-hour 12) (setq A-or-P "AM"))
+		  ((= to-hour 12) (setq A-or-P "Noon"))
+		  ((> to-hour 12) (progn
+				     (setq to-hour (- to-hour 12))
+				     (setq A-or-P "PM"))))
+	    (message (format "%s %s = %.2d:%.2d %s %s %s" (upcase time-to-convert) from-zone-u to-hour to-min (upcase A-or-P) (upcase to-day-name) to-zone-u)))))
 #+END_SRC
 * Pyenv
 I use different conda environments for different projects. This makes
@@ -601,6 +599,12 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-emphasis-markers t)
 #+END_SRC
+** Change bullets in list
+   #+BEGIN_SRC emacs-lisp
+     (font-lock-add-keywords 'org-mode
+			     '(("^ *\\([-]\\) "
+				(0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+   #+END_SRC
 ** org-bullets
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
@@ -636,13 +640,4 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (use-package perfect-margin
     :straight t
     :ensure t)
-#+END_SRC
-* Default fonts
-#+BEGIN_SRC emacs-lisp
-  ;; Set default font
-  (set-face-attribute 'default nil
-		      :family "Fira Code Retina"
-		      :height 120
-		      :weight 'normal
-		      :width 'normal)
 #+END_SRC
