@@ -22,8 +22,11 @@
 - [[#auctex][Auctex]]
 - [[#lsp][LSP]]
   - [[#setup-gc-cons-threshld][setup gc-cons-threshld]]
-  - [[#python][Python]]
-  - [[#latex][LaTeX]]
+- [[#python][Python]]
+  - [[#python-with-lsp][Python with LSP]]
+  - [[#python-with-elpy][Python with elpy]]
+- [[#latex-with-lsp][LaTeX with LSP]]
+- [[#julia][Julia]]
 - [[#jupyter][Jupyter]]
 - [[#company-autocompletion][Company autocompletion]]
 - [[#shell-mode][Shell mode]]
@@ -224,6 +227,7 @@ simple time converter function to convert the time to my local one.
   sTime to be converted (HH:MM PM/pm(optional) DAY(optional)): ")
 	(let* ((time-zones '(("EST" . "-0500")
 			     ("CST" . "-0600")
+			     ("CDT" . "-0500")
 			     ("EET" . "+0200")
 			     ("CET" . "+0100")
 			     ("IST" . "+0530")
@@ -345,13 +349,14 @@ easy to change the conda environments.
 	company-minimum-prefix-length 1
 	lsp-idle-delay 0.1)  ;; clangd is fast
 #+END_SRC
-** Python
+* Python
+** Python with LSP
 #+BEGIN_SRC shell :tangle no
   pip install --user "python-language-server[all]"
 #+END_SRC
 https://emacs-lsp.github.io/lsp-python-ms/
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-python-ms
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package lsp-python-ms 
     :ensure t
     :straight t
     :init
@@ -362,6 +367,26 @@ https://emacs-lsp.github.io/lsp-python-ms/
 			   (require 'lsp-python-ms)
 			   (lsp-deferred))))
 #+END_SRC
+** Python with elpy
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :straight t
+    :ensure t
+    :defer t
+    :init
+    (advice-add 'python-mode :before 'elpy-enable)
+    (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
+    :config
+    (flymake-mode)
+    (remove-hook 'elpy-modules 'elpy-module-flymake)
+    :hook (python-mode . linum-mode)
+    )
+  (defun my/python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+
+  (add-hook 'python-mode-hook 'my/python-mode-hook)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
     :straight t
@@ -380,7 +405,7 @@ https://emacs-lsp.github.io/lsp-python-ms/
     (setq-default flycheck-disabled-checkers '(python-pylint))
     )
 #+END_SRC
-** LaTeX
+* LaTeX with LSP
 *** Install texlab
 #+BEGIN_SRC shell
   cargo install --git https://github.com/latex-lsp/texlab.git
@@ -408,6 +433,12 @@ https://emacs-lsp.github.io/lsp-python-ms/
   ;; For bibtex
   (with-eval-after-load "bibtex"
     (add-hook 'bibtex-mode-hook 'lsp))
+#+END_SRC
+* Julia
+#+BEGIN_SRC emacs-lisp
+  (use-package julia-mode
+    :straight t
+    :ensure t)
 #+END_SRC
 * Jupyter
 #+BEGIN_SRC emacs-lisp
