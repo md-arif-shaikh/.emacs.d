@@ -109,11 +109,11 @@ which asks for the machine name.
   (defun arif/connect-remote-term (remote-machine-name)
     "Connect to terminal in on REMOTE-MACHINE-NAME."
     (interactive "sRemote Machine Name: ")
-    (setq remote-shell-types '(("comet" . "/bin/bash")
-			      ("dodo" . "/bin/zsh")))
-    (setq remote-shell-type (cdr (assoc remote-machine-name remote-shell-types)))
-    (let ((default-directory (format "/sshx:%s:" remote-machine-name)))
-      (shell remote-shell-type)))
+    (let* ((remote-shell-types '(("comet" . "/bin/bash")
+				 ("dodo" . "/bin/zsh")))
+	   (default-directory (format "/sshx:%s:" remote-machine-name))
+	   (tramp-encoding-shell (cdr (assoc remote-machine-name remote-shell-types))))
+      (shell)))
 
   (global-set-key (kbd "C-c s d") #'arif/connect-remote-dir)
   (global-set-key (kbd "C-c s t") #'arif/connect-remote-term)
@@ -404,6 +404,11 @@ https://emacs-lsp.github.io/lsp-python-ms/
     (setq flycheck-indication-mode 'left-margin)
     (setq-default flycheck-disabled-checkers '(python-pylint))
     )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package company-jedi
+    :straight t
+    :ensure t)
 #+END_SRC
 * LaTeX with LSP
 *** Install texlab
