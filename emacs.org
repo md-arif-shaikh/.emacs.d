@@ -24,6 +24,7 @@
 - [[#convert-timezone][convert-timezone]]
 - [[#pyenv][Pyenv]]
 - [[#auctex][Auctex]]
+- [[#pdf-tools][pdf-tools]]
 - [[#lsp][LSP]]
   - [[#setup-gc-cons-threshld][setup gc-cons-threshld]]
 - [[#python][Python]]
@@ -115,7 +116,8 @@ which asks for the machine name.
     "Connect to terminal in on REMOTE-MACHINE-NAME."
     (interactive "sRemote Machine Name: ")
     (let* ((remote-shell-types '(("comet" . "/bin/bash")
-				 ("dodo" . "/bin/zsh")))
+				 ("dodo" . "/bin/zsh")
+				 ("cit" . "/bin/bash")))
 	   (default-directory (format "/sshx:%s:" remote-machine-name))
 	   (tramp-encoding-shell (cdr (assoc remote-machine-name remote-shell-types))))
       (shell)))
@@ -341,6 +343,11 @@ easy to change the conda environments.
     :hook
     (LaTeX-mode . linum-mode)
     (LaTeX-mode . rainbow-delimiters-mode))
+#+END_SRC
+* pdf-tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :straight t)
 #+END_SRC
 * LSP 
 #+BEGIN_SRC emacs-lisp :tangle no
