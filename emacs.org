@@ -21,6 +21,7 @@
   - [[#highlight-current-line][Highlight current line]]
   - [[#linum-mode][Linum mode]]
   - [[#autopair][Autopair]]
+  - [[#font-size][Font size]]
 - [[#convert-timezone][convert-timezone]]
 - [[#pyenv][Pyenv]]
 - [[#auctex][Auctex]]
@@ -58,6 +59,7 @@
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
 - [[#vterm][vterm]]
+- [[#auth-source][Auth Source]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -240,6 +242,10 @@ which asks for the machine name.
     :straight t)
   (autopair-global-mode)
 #+END_SRC
+** Font size
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil :family "Fira Code" :height 120)
+#+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
 to meetings schedules at different parts of the world. I call my customized
@@ -308,9 +314,7 @@ easy to change the conda environments.
     :straight t
     :defer
     :config
-    (if (eq system-type 'darwin)
-	(setenv "WORKON_HOME" "/Users/arif/miniconda3/envs/")
-      (setenv "WORKON_HOME" "/home/arif/anaconda3/envs/"))
+    (setenv "WORKON_HOME" "~/miniconda3/envs/")
     (pyvenv-mode 1)
     (pyvenv-tracking-mode 1))
 #+END_SRC
@@ -706,4 +710,9 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+BEGIN_SRC emacs-lisp
   (use-package vterm
     :straight t)
+#+END_SRC
+* Auth Source
+#+BEGIN_SRC emacs-lisp
+  (setq auth-sources
+	'((:source "~/.config/emacs/.authinfo.gpg")))
 #+END_SRC
