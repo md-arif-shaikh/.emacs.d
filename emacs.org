@@ -58,7 +58,6 @@
   - [[#org-toc][org-toc]]
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
-- [[#vterm][vterm]]
 - [[#auth-source][Auth Source]]
 
 * straight
@@ -351,7 +350,21 @@ easy to change the conda environments.
 * pdf-tools
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
-    :straight t)
+    :straight t
+    :if (display-graphic-p)
+    :magic ("%PDF" . pdf-view-mode)
+    :config
+    (pdf-tools-install :no-query) 
+    (setq-default pdf-view-display-size 'fit-page)
+    (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
+    (setq pdf-annot-activate-created-annotations t)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
+    (setq pdf-sync-minor-mode t)
+    ;;(define-key pdf-view-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search)
+    ;;(add-hook 'pdf-view-mode-hook (lambda ()
+    ;;				  (bms/pdf-midnite-amber))) ; automatically turns on midnight-mode for pdfs
+    )
 #+END_SRC
 * LSP 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -704,11 +717,6 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 ** perfect margin
 #+BEGIN_SRC emacs-lisp
   (use-package perfect-margin
-    :straight t)
-#+END_SRC
-* vterm
-#+BEGIN_SRC emacs-lisp
-  (use-package vterm
     :straight t)
 #+END_SRC
 * Auth Source
