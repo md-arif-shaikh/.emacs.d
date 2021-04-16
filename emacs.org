@@ -22,6 +22,8 @@
   - [[#linum-mode][Linum mode]]
   - [[#autopair][Autopair]]
   - [[#font-size][Font size]]
+  - [[#display-time-in-modeline][Display time in modeline]]
+  - [[#battery-status][Battery status]]
 - [[#convert-timezone][convert-timezone]]
 - [[#pyenv][Pyenv]]
 - [[#auctex][Auctex]]
@@ -245,6 +247,22 @@ which asks for the machine name.
 #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'default nil :family "Fira Code" :height 120)
 #+END_SRC
+** Display time in modeline
+   #+BEGIN_SRC emacs-lisp
+     (setq display-time-string-forms
+	   ;;'((calendar-julian-date-string)))
+	   '(day "/" monthname "/" (substring year -2)
+		 " " 24-hours ":" minutes
+		 (if time-zone " (") time-zone (if time-zone ")")
+		 (if mail " Mail" "")
+		 )
+	   )
+     (display-time-mode 1)
+   #+END_SRC
+** Battery status
+   #+BEGIN_SRC emacs-lisp
+     (display-battery-mode 1)
+   #+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
 to meetings schedules at different parts of the world. I call my customized
