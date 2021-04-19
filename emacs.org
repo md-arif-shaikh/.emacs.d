@@ -130,7 +130,7 @@ which asks for the machine name.
 #+END_SRC
 * UI customization 
 ** Themes
-*** Gruvbox for terminal
+*** Gruvbox
 #+BEGIN_SRC  emacs-lisp
   (use-package gruvbox-theme
       :straight t
@@ -385,7 +385,7 @@ easy to change the conda environments.
     )
 #+END_SRC
 * LSP 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
     (defun efs/lsp-mode-setup ()
       (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
       (lsp-headerline-breadcrumb-mode))
@@ -402,7 +402,7 @@ easy to change the conda environments.
 	    lsp-prefer-capf t) 
       )
 #+END_SRC
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (use-package lsp-ui
     :straight t)
 #+END_SRC
@@ -421,19 +421,21 @@ easy to change the conda environments.
   pip install --user "python-language-server[all]"
 #+END_SRC
 https://emacs-lsp.github.io/lsp-python-ms/
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (use-package lsp-python-ms 
     :straight t
     :init
     (setq
      lsp-python-ms-auto-install-server t
      lsp-python-ms-executable (executable-find "python-language-server"))
-    :hook (python-mode . (lambda ()
+    :hook
+    (python-mode . (lambda ()
 			   (require 'lsp-python-ms)
-			   (lsp-deferred))))
+			   (lsp-deferred)))
+    (python-mode . linum-mode))
 #+END_SRC
 ** Python with elpy
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package elpy
     :straight t
     :defer t
