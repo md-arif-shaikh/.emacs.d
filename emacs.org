@@ -32,6 +32,7 @@
   - [[#setup-gc-cons-threshld][setup gc-cons-threshld]]
 - [[#python][Python]]
   - [[#python-with-lsp][Python with LSP]]
+  - [[#lsp-python-with-tramp][LSP python with tramp]]
   - [[#python-with-elpy][Python with elpy]]
 - [[#latex-with-lsp][LaTeX with LSP]]
 - [[#julia][Julia]]
@@ -44,6 +45,7 @@
 - [[#ivy-counsel][Ivy Counsel]]
 - [[#which-key][Which key]]
 - [[#dired][Dired]]
+  - [[#sort-directories-first][Sort directories first]]
 - [[#magit][magit]]
 - [[#yasnippets][yasnippets]]
   - [[#tex][TeX]]
@@ -61,6 +63,9 @@
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
 - [[#auth-source][Auth Source]]
+- [[#ob-python][ob-python]]
+- [[#org-babel][Org babel]]
+- [[#set-unicode][set unicode]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -112,8 +117,8 @@ which asks for the machine name.
     "Connect to REMOTE-MACHINE-NAME."
     (interactive "sRemote Machine Name: ")
     (let ((remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
-      (set-buffer (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name))))
-    )
+      (set-buffer (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name)))
+      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
   (defun arif/connect-remote-shell (remote-machine-name)
     "Connect to terminal in on REMOTE-MACHINE-NAME."
@@ -127,9 +132,34 @@ which asks for the machine name.
 
   (global-set-key (kbd "C-c r d") #'arif/connect-remote-dir)
   (global-set-key (kbd "C-c r s") #'arif/connect-remote-shell)
+
 #+END_SRC
 * UI customization 
 ** Themes
+*** doom-themes
+    #+BEGIN_SRC emacs-lisp
+      (use-package doom-themes
+	:straight t
+	:if (display-graphic-p)
+	:config
+	;; Global settings (defaults)
+	(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+	(load-theme 'doom-one t)
+
+	;; Enable flashing mode-line on errors
+	(doom-themes-visual-bell-config)
+
+	;; Enable custom neotree theme (all-the-icons must be installed!)
+	(doom-themes-neotree-config)
+	;; or for treemacs users
+	(setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+	(setq doom-themes-treemacs-enable-variable-pitch nil)
+	(doom-themes-treemacs-config)
+
+	;; Corrects (and improves) org-mode's native fontification.
+	(doom-themes-org-config))
+    #+END_SRC
 *** Gruvbox
 #+BEGIN_SRC  emacs-lisp
   (use-package gruvbox-theme
@@ -139,7 +169,7 @@ which asks for the machine name.
       (load-theme 'gruvbox-dark-soft t))
 #+END_SRC
 *** Atom dark one for graphical
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package atom-one-dark-theme
     :straight t
     :if (display-graphic-p)
@@ -434,6 +464,14 @@ https://emacs-lsp.github.io/lsp-python-ms/
 			   (lsp-deferred)))
     (python-mode . linum-mode))
 #+END_SRC
+** LSP python with tramp
+   #+BEGIN_SRC emacs-lisp
+     (lsp-register-client
+      (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
+		       :major-modes '(python-mode)
+		       :remote? t
+		       :server-id 'pyls-remote))
+   #+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package elpy
@@ -590,6 +628,21 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
   (add-hook 'dired-mode-hook #'dired-omit-mode)
   (add-hook 'dired-mode-hook #'dired-hide-details-mode))
 #+END_SRC
+** Sort directories first
+   #+BEGIN_SRC emacs-lisp
+     (defun mydired-sort ()
+       "Sort dired listings with directories first."
+       (save-excursion
+	 (let (buffer-read-only)
+	   (forward-line 2) ;; beyond dir. header 
+	   (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	 (set-buffer-modified-p nil)))
+
+     (defadvice dired-readin
+	 (after dired-after-updating-hook first () activate)
+       "Sort dired listings with directories first before adding marks."
+       (mydired-sort))
+   #+END_SRC
 * magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -744,3 +797,31 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (setq auth-sources
 	'((:source "~/.config/emacs/.authinfo.gpg")))
 #+END_SRC
+
+* ob-python
+  #+BEGIN_SRC emacs-lisp
+    (use-package ob-ipython
+      :straight t
+      :defer t)
+  #+END_SRC
+* Org babel
+  #+BEGIN_SRC emacs-lisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (ipython . t)
+       (jupyter . t)))
+  #+END_SRC
+
+* set unicode
+  #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;
+    ;;; set up unicode
+    (prefer-coding-system       'utf-8)
+    (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+    (set-terminal-coding-system 'utf-8-unix)
+    (set-keyboard-coding-system 'utf-8)
+    (setq-default buffer-file-coding-system 'utf-8)                      
+    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  #+END_SRC
+  
