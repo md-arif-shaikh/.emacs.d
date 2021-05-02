@@ -93,10 +93,10 @@
 			  (1+ year))
 			 (t year)))
 	 (weekstring (if (= day-of-week 1)
-			 (format " (সপ্তাহ %02s)" (day-num-to-bn iso-week))
+			 (format " (সপ্তাহ %02s)" (number-to-bn iso-week))
 		       "")))
     (format "%-6s %s %s %s %s"
-	    (day-name-to-bn dayname) (day-num-to-bn day) (month-name-to-bn monthname) (year-num-to-bn year) weekstring)))
+	    (day-name-to-bn dayname) (number-to-bn day) (month-name-to-bn monthname) (number-to-bn year) weekstring)))
 
 (setq org-agenda-format-date #'arif/org-agenda-format-date-aligned)
 
