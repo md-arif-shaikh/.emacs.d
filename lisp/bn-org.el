@@ -54,9 +54,10 @@
 
 ;; display the scheduled time in bengali
 (defun make-org-time-bn (time-string)
-  (let* ((hr (string-to-number (substring time-string 0 2)))
-	 (mn (string-to-number (substring time-string -3 nil)))
-	 (bn-mn "০০")
+  (let* ((hr (string-to-number (nth 0 (split-string time-string ":"))))
+	 (mn (string-to-number (nth 1 (split-string time-string ":"))))
+	 (bn-hr)
+	 (bn-mn)
 	 (part-of-day "সকাল"))
     (cond ((and (> hr 12) (< hr 17))
 	   (setq part-of-day "বিকেল")
@@ -68,10 +69,15 @@
 	   (setq part-of-day "রাত্রি ")
 	   (setq hr (- hr 12)))
 	  ((= hr 12) (setq part-of-day "দুপুর")))
-    (unless (= mn 0)
+    (if (< mn 10)
+	(setq bn-mn (string-join (list "০" (number-to-bn mn))))
       (setq bn-mn (number-to-bn mn))
       )
-    (format "%s %s%s%s " part-of-day (number-to-bn hr) ":" bn-mn)))
+    (if (< hr 10)
+	(setq bn-hr (string-join (list "০" (number-to-bn hr))))
+      (setq bn-hr (number-to-bn hr))
+      )
+    (format "%s %s%s%s " part-of-day bn-hr ":" bn-mn)))
 
 (defun arif/org-agenda-format-date-aligned (date)
   "Format a DATE string for display in the daily/weekly agenda.
@@ -105,19 +111,15 @@
 (setq org-agenda-deadline-leaders
       '("শেষ তারিখ:  " "%2d দিনের মধ্যে: "  "%2d দিন আগে: "))
 (setq org-agenda-current-time-string
-      " ------------------------------- এখন সময় --------------------------------------")
+      " ---------------- এখন সময় --------------------")
 
 (defun arif/org-agenda-prefix-format ()
   (let ((scheduled (org-get-scheduled-time (point)))
 	(deadline (org-get-deadline-time (point))))
     (if (or scheduled deadline)
-	(if scheduled
-	    (make-org-time-bn (format-time-string "%H%M%" scheduled))
-	  (if deadline
-	      (make-org-time-bn (format-time-string "%H%M%" deadline))
-	    ""))
-      (make-org-time-bn (format-time-string "%H%M"))
-      )))
+	(cond (scheduled (make-org-time-bn (format-time-string "%H:%M" scheduled)))
+	      (deadline (make-org-time-bn (format-time-string "%H:%M" deadline))))
+      (make-org-time-bn (format-time-string "%H:%M")))))
 
 (setq org-agenda-prefix-format   "%(arif/org-agenda-prefix-format)%2s")
 (setq org-agenda-overriding-header "আজকের কর্মসূচী:\n-------------")
