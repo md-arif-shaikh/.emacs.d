@@ -109,7 +109,7 @@
 (setq org-agenda-scheduled-leaders
       '("পূর্ব নির্ধারিত:  " "%2dx নির্ধারিত: "))
 (setq org-agenda-deadline-leaders
-      '("শেষ তারিখ:  " "%2d দিনের মধ্যে: "  "%2d দিন আগে: "))
+      '("শেষ তারিখ:   " "%2d দিনের মধ্যে: "  "%2d দিন আগে: "))
 (setq org-agenda-current-time-string
       " ---------------- এখন সময় --------------------")
 

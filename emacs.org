@@ -56,6 +56,7 @@
 - [[#custom-commands][Custom commands]]
 - [[#org-mode][org-mode]]
   - [[#org-agenda][org agenda]]
+  - [[#org-appointment][org appointment]]
   - [[#hide-emphasis-markup][Hide emphasis markup]]
   - [[#change-bullets-in-list][Change bullets in list]]
   - [[#org-bullets][org-bullets]]
@@ -231,7 +232,7 @@ which asks for the machine name.
 #+END_SRC
 ** Start full screen
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(fullscreen . fullboth))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
 ** hide start-up message 
 #+BEGIN_SRC emacs-lisp
@@ -745,6 +746,34 @@ For example ~@ + TAB + a~ will give ~\alpha~.
     )
 
   #+END_SRC
+** org appointment
+   #+BEGIN_SRC emacs-lisp
+     (require 'appt)
+     (setq appt-time-msg-list nil)    ;; clear existing appt list
+     (setq appt-display-interval '10) ;; warn every 10 minutes from t - appt-message-warning-time
+     (setq
+      appt-message-warning-time '30  ;; send first warning 10 minutes before appointment
+      appt-display-mode-line nil     ;; don't show in the modeline
+      appt-display-format 'window)   ;; pass warnings to the designated window function
+     (appt-activate 1)                ;; activate appointment notification
+     (display-time)                   ;; activate time display
+
+     (org-agenda-to-appt)             ;; generate the appt list from org agenda files on emacs launch
+     (run-at-time "24:01" 3600 'org-agenda-to-appt)           ;; update appt list hourly
+     (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt) ;; update appt list on agenda view
+
+     ;; set up the call to terminal-notifier
+     (defvar my-notifier-path 
+       "/usr/bin/notify-send")  ;; path to libnotify binary notify-send
+     (defun my-appt-send-notification (msg)
+       (shell-command (concat my-notifier-path " -t" " 0 " " -i" " ~/.emacs.d/icons/emacs.png "  msg))) ;; see notify-send help to understand the options
+
+     ;; designate the window function for my-appt-send-notification
+     (defun my-appt-display (min-to-app new-time msg)
+       (my-appt-send-notification 
+	(format "'Appointment in %s minutes\n %s'" min-to-app msg)))
+     (setq appt-disp-window-function (function my-appt-display))
+   #+END_SRC
 ** Hide emphasis markup
 #+BEGIN_SRC emacs-lisp
   (setq org-hide-emphasis-markers t)
