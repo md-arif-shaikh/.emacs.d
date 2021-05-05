@@ -22,6 +22,7 @@
   - [[#linum-mode][Linum mode]]
   - [[#autopair][Autopair]]
   - [[#font-size][Font size]]
+  - [[#bengali-font][Bengali font]]
   - [[#display-time-in-modeline][Display time in modeline]]
   - [[#battery-status][Battery status]]
 - [[#convert-timezone][convert-timezone]]
@@ -69,6 +70,7 @@
 - [[#ob-python][ob-python]]
 - [[#org-babel][Org babel]]
 - [[#set-unicode][set unicode]]
+- [[#download-from-url][download from url]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -278,8 +280,19 @@ which asks for the machine name.
 #+END_SRC
 ** Font size
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :family "Fira Code" :height 120)
+  (set-face-attribute 'default nil :family "Fira Code" :height 120)
 #+END_SRC
+** Bengali font
+   #+BEGIN_SRC emacs-lisp
+     ;; (set-face-font 'default "fontset-default")
+     ;; (set-fontset-font "fontset-default" 'bengali "Kalpurush")
+
+     (set-language-environment "Bengali")
+     (add-hook 'set-language-environment-hook
+	       (lambda nil
+		 (when (equal current-language-environment "Bengali")
+		   (setq default-input-method "bengali-itrans"))))
+   #+END_SRC
 ** Display time in modeline
    #+BEGIN_SRC emacs-lisp
      (setq display-time-string-forms
@@ -467,7 +480,9 @@ https://emacs-lsp.github.io/lsp-python-ms/
       :straight t
       :defer t
       :config
-      (setq racket-program "/usr/racket/bin/racket"))
+      (setq racket-program "/usr/racket/bin/racket")
+      :hook
+      (racket-mode . linum-mode))
   #+END_SRC
 * LaTeX with LSP
 *** Install texlab
@@ -849,7 +864,8 @@ For example ~@ + TAB + a~ will give ~\alpha~.
     (set-keyboard-coding-system 'utf-8)
     (setq-default buffer-file-coding-system 'utf-8)                      
     (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  #+END_SRC  
+* download from url
+  #+BEGIN_SRC emacs-lisp
+    (arif/load-file "~/.emacs.d/lisp/download-url.el")
   #+END_SRC
-    
-  
-  
