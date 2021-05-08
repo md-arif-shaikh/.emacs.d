@@ -71,6 +71,7 @@
 - [[#org-babel][Org babel]]
 - [[#set-unicode][set unicode]]
 - [[#download-from-url][download from url]]
+- [[#search-arxiv][Search arxiv]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -869,3 +870,8 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   #+BEGIN_SRC emacs-lisp
     (arif/load-file "~/.emacs.d/lisp/download-url.el")
   #+END_SRC
+
+* Search arxiv
+#+BEGIN_SRC emacs-lisp
+  (arif/load-file "~/.emacs.d/lisp/arxiv-search.el")
+#+END_SRC

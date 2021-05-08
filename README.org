@@ -1,1 +1,17 @@
-Customized emacs config files. Read [[./emacs.org][emacs.org]].
+Customized emacs config files. Read [[./emacs.org][emacs.org]] for configuration using
+available packages. Following are some lisp functions I use to enhace
+my emacs experience further.
+
+* Convert time between time zones
+* Display org-agenda in Bangla
+* Download papers from arxiv and other websites
+* Search for arxiv papers
+  - There exist a package called [[https://github.com/fizban007/arxiv-mode][arxiv-mode]] which seems to cover a lot
+    of the needs. I have not personally used it. Instead I use my own
+    simple function to search arxiv. It searches the results and
+    writes them in a org file so that I can go through them and use
+    all org-mode goodies.
+  - Currently it supports search by author name or using a date range
+    mimicking the advance search option of arxiv.
+  - Link to function [[./lisp/arxiv-search.el][arxiv-search.el]].
+  - Screencast [[./icons/arxiv-by-author.gif]]
