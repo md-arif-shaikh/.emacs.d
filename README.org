@@ -15,3 +15,4 @@ my emacs experience further.
     mimicking the advance search option of arxiv.
   - Link to function [[./lisp/arxiv-search.el][arxiv-search.el]].
   - Screencast [[./icons/arxiv-by-author.gif][search by author]]
+  - Screencast [[./icons/arxiv-by-dates.gif][search by dates]]
