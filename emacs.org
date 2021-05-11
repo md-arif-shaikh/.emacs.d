@@ -43,6 +43,7 @@
 - [[#shell-mode][Shell mode]]
   - [[#disable-company][Disable company]]
   - [[#sourcing-shell-profile][Sourcing shell profile]]
+  - [[#default-shell][Default shell]]
 - [[#selectrum][Selectrum]]
 - [[#ivy-counsel][Ivy Counsel]]
 - [[#which-key][Which key]]
@@ -72,6 +73,7 @@
 - [[#set-unicode][set unicode]]
 - [[#download-from-url][download from url]]
 - [[#search-arxiv][Search arxiv]]
+- [[#fix-terminal-display][fix terminal display]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -235,7 +237,7 @@ which asks for the machine name.
 #+END_SRC
 ** Start full screen
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 #+END_SRC
 ** hide start-up message 
 #+BEGIN_SRC emacs-lisp
@@ -272,6 +274,7 @@ which asks for the machine name.
 ** Linum mode
 #+BEGIN_SRC emacs-lisp
   (setq linum-format "%4d \u2502 ")
+  ;;(setq display-line-numbers 'relative)
 #+END_SRC
 ** Autopair
 #+BEGIN_SRC emacs-lisp
@@ -414,6 +417,7 @@ easy to change the conda environments.
 #+BEGIN_SRC shell :tangle no
   pip install --user "python-language-server[all]"
 #+END_SRC
+*** with lsp-python-ms
 https://emacs-lsp.github.io/lsp-python-ms/
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-python-ms 
@@ -428,7 +432,17 @@ https://emacs-lsp.github.io/lsp-python-ms/
 			   (lsp-deferred)))
     (python-mode . linum-mode))
 #+END_SRC
+*** with py-right
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-pyright
+    :straight t
+    :hook (python-mode . (lambda ()
+			    (require 'lsp-pyright)
+			    (lsp))))  ; or lsp-deferred
+#+END_SRC
 ** LSP python with tramp
+   Along with the following configuration, the path to the ~python-language-server~ executable
+   must be set in the ~.profile~ in the remote machine.
    #+BEGIN_SRC emacs-lisp
      (lsp-register-client
       (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
@@ -556,7 +570,11 @@ disable company mode in remote shell
 I use zsh/bash shells on my remote machines. Tramp by default does not
 source the profile files ~.zshrc~ or ~.bashrc~ on the remote
 machine. After login on the remote shell I execute ~/bin/zsh~ or
-~/bin/bash~ to source the ~.zshrc/.bashrc~ files. 
+~/bin/bash~ to source the ~.zshrc/.bashrc~ files.
+** Default shell
+#+BEGIN_SRC emacs-lisp
+  (setq-default explicit-shell-file-name "/bin/zsh")
+#+END_SRC
 * Selectrum
 #+BEGIN_SRC emacs-lisp :tangle no
   (straight-use-package 'selectrum)
@@ -874,4 +892,16 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 * Search arxiv
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.emacs.d/lisp/arxiv-search.el")
+#+END_SRC
+
+* fix terminal display
+I have been struggling with displaying the symbols used in the
+~oh-my-zsh~ theme in the terminal buffer inside emacs invoked through
+~M-X term~ even after setting the unicode system. The following adivice
+to the ~term~ function solved the issue. See more in the discussion
+https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mode 
+#+BEGIN_SRC emacs-lisp
+  (defadvice term (after advise-term-coding-system)
+    (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+  (ad-activate 'term)
 #+END_SRC
