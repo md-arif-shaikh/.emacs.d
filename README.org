@@ -1,7 +1,14 @@
-Customized emacs config files. Read [[./emacs.org][emacs.org]] for configuration using
-available packages. Following are some lisp functions I use to enhace
-my emacs experience further.
+#+TITLE: Emacs Configuration
+#+AUTHOR: Md Arif Shaikh
+* Table of contents :toc:
+- [[#configuration-file][Configuration File]]
+- [[#convert-time-between-time-zones][Convert time between time zones]]
+- [[#display-org-agenda-in-bangla][Display org-agenda in Bangla]]
+- [[#download-papers-from-arxiv-and-other-websites][Download papers from arxiv and other websites]]
+- [[#search-for-arxiv-papers][Search for arxiv papers]]
 
+* Configuration File
+Read [[./emacs.org][emacs.org]] for configuration using available packages.
 * Convert time between time zones
 * Display org-agenda in Bangla
 * Download papers from arxiv and other websites
@@ -14,5 +21,7 @@ my emacs experience further.
   - Currently it supports search by author name or using a date range
     mimicking the advance search option of arxiv.
   - Link to function [[./lisp/arxiv-search.el][arxiv-search.el]].
-  - Screencast [[./icons/arxiv-by-author.gif][search by author]]
-  - Screencast [[./icons/arxiv-by-dates.gif][search by dates]]
+  - Search by author
+     [[./icons/arxiv-by-author.gif]]
+  - Search by dates
+     [[./icons/arxiv-by-dates.gif]]

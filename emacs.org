@@ -572,7 +572,7 @@ source the profile files ~.zshrc~ or ~.bashrc~ on the remote
 machine. After login on the remote shell I execute ~/bin/zsh~ or
 ~/bin/bash~ to source the ~.zshrc/.bashrc~ files.
 ** Default shell
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq-default explicit-shell-file-name "/bin/zsh")
 #+END_SRC
 * Selectrum
@@ -787,7 +787,7 @@ For example ~@ + TAB + a~ will give ~\alpha~.
      (setq appt-display-interval '10) ;; warn every 10 minutes from t - appt-message-warning-time
      (setq
       appt-message-warning-time '30  ;; send first warning 10 minutes before appointment
-      appt-display-mode-line nil     ;; don't show in the modeline
+      appt-display-mode-line t     ;; don't show in the modeline
       appt-display-format 'window)   ;; pass warnings to the designated window function
      (appt-activate 1)                ;; activate appointment notification
      (display-time)                   ;; activate time display

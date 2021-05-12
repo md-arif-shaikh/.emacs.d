@@ -323,8 +323,6 @@
     (company-mode -1)))
 (add-hook 'shell-mode-hook #'arif/shell-mode-setup)
 
-(setq-default explicit-shell-file-name "/bin/zsh")
-
 (use-package counsel
   :straight t
   :config
@@ -477,7 +475,7 @@
 (setq appt-display-interval '10) ;; warn every 10 minutes from t - appt-message-warning-time
 (setq
  appt-message-warning-time '30  ;; send first warning 10 minutes before appointment
- appt-display-mode-line nil     ;; don't show in the modeline
+ appt-display-mode-line t     ;; don't show in the modeline
  appt-display-format 'window)   ;; pass warnings to the designated window function
 (appt-activate 1)                ;; activate appointment notification
 (display-time)                   ;; activate time display
