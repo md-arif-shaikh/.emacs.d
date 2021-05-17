@@ -74,6 +74,8 @@
 - [[#download-from-url][download from url]]
 - [[#search-arxiv][Search arxiv]]
 - [[#fix-terminal-display][fix terminal display]]
+- [[#markdown-toc][Markdown toc]]
+- [[#scribble-mode][Scribble mode]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -369,7 +371,7 @@ easy to change the conda environments.
     :if (display-graphic-p)
     :magic ("%PDF" . pdf-view-mode)
     :config
-    (pdf-tools-install :no-query) 
+    (pdf-tools-install)
     (setq-default pdf-view-display-size 'fit-page)
     (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
     (setq pdf-annot-activate-created-annotations t)
@@ -904,4 +906,18 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
   (defadvice term (after advise-term-coding-system)
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
   (ad-activate 'term)
+#+END_SRC
+
+* Markdown toc
+  #+BEGIN_SRC emacs-lisp
+    (use-package markdown-toc
+      :straight t)
+  #+END_SRC
+
+* Scribble mode
+#+BEGIN_SRC emacs-lisp
+  (use-package scribble-mode
+    :straight t
+    :defer t
+    :hook (scribble-mode . linum-mode))
 #+END_SRC

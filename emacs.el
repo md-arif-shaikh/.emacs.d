@@ -207,7 +207,7 @@
   :if (display-graphic-p)
   :magic ("%PDF" . pdf-view-mode)
   :config
-  (pdf-tools-install :no-query) 
+  (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page)
   (setq pdf-view-use-scaling t) ;; To increase the sharpness in retina display
   (setq pdf-annot-activate-created-annotations t)
@@ -553,3 +553,11 @@
 (defadvice term (after advise-term-coding-system)
   (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (ad-activate 'term)
+
+(use-package markdown-toc
+  :straight t)
+
+(use-package scribble-mode
+  :straight t
+  :defer t
+  :hook (scribble-mode . linum-mode))
