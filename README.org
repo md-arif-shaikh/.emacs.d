@@ -1,6 +1,7 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Md Arif Shaikh
 * Table of contents :toc:
+- [[#build-emacs-from-source-for-solus-os--ubuntu-os][Build emacs from source for solus os / ubuntu os]]
 - [[#configuration-file][Configuration File]]
 - [[#convert-time-between-time-zones][Convert time between time zones]]
 - [[#display-org-agenda-in-bangla][Display org-agenda in Bangla]]
@@ -8,7 +9,14 @@
 - [[#search-for-arxiv-papers][Search for arxiv papers]]
 
 * Build emacs from source for solus os / ubuntu os
-  Look at the shell script [[./buld_emacs.sh][here]]
+  For many reasons one may prefer to build emacs from source. It might
+  be that the most recent version is not available on your distro or
+  you may want to compile emacs with support for specific
+  libraries. For example ~lsp-mode~ users would like to have support for
+  the ~libjansson~ library. In such case you can clone the emacs repo
+  and the build it with support for the desired libraries. The
+  original [[https://gist.github.com/kiennq/0f3e65098725b1f9708da8c92972e705][script]] was for ubuntu based systems, I have added support
+  for [[solus os][https://getsol.us/home/]]. Look at the shell script [[./build_emacs.sh][here]].
 * Configuration File
 Read [[./emacs.org][emacs.org]] for configuration using available packages.
 * Convert time between time zones
