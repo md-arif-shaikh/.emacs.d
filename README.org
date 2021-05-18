@@ -7,6 +7,8 @@
 - [[#download-papers-from-arxiv-and-other-websites][Download papers from arxiv and other websites]]
 - [[#search-for-arxiv-papers][Search for arxiv papers]]
 
+* Build emacs from source for solus os / ubuntu os
+  Look at the shell script [[./buld_emacs.sh][here]]
 * Configuration File
 Read [[./emacs.org][emacs.org]] for configuration using available packages.
 * Convert time between time zones
