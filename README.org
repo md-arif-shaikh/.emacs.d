@@ -14,9 +14,8 @@
   you may want to compile emacs with support for specific
   libraries. For example ~lsp-mode~ users would like to have support for
   the ~libjansson~ library. In such case you can clone the emacs repo
-  and the build it with support for the desired libraries. The
-  original [[https://gist.github.com/kiennq/0f3e65098725b1f9708da8c92972e705][script]] was for ubuntu based systems, I have added support
-  for [[solus os][https://getsol.us/home/]]. Look at the shell script [[./build_emacs.sh][here]].
+  and then build it with support for the desired libraries. This script
+  can be used for [[https://ubuntu.com/][Ubuntu]]  and [[https://getsol.us/home/][Solus]]. Get the shell script [[./build_emacs.sh][here]].
 * Configuration File
 Read [[./emacs.org][emacs.org]] for configuration using available packages.
 * Convert time between time zones
