@@ -5,6 +5,7 @@
 - [[#configuration-file][Configuration File]]
 - [[#convert-time-between-time-zones][Convert time between time zones]]
 - [[#display-org-agenda-in-bangla][Display org-agenda in Bangla]]
+- [[#display-messages-in-bangla][Display messages in Bangla]]
 - [[#download-papers-from-arxiv-and-other-websites][Download papers from arxiv and other websites]]
 - [[#search-for-arxiv-papers][Search for arxiv papers]]
 
@@ -20,6 +21,9 @@
 Read [[./emacs.org][emacs.org]] for configuration using available packages.
 * Convert time between time zones
 * Display org-agenda in Bangla
+* Display messages in Bangla
+  These are just overriding existing functions with messages replaced
+  by suitable Bangla strings. Link to [[./lisp/emacs-bn.el][emacs-bn]].
 * Download papers from arxiv and other websites
 * Search for arxiv papers
   - There exists a package called [[https://github.com/fizban007/arxiv-mode][arxiv-mode]] which seems to cover a lot
