@@ -76,6 +76,7 @@
 - [[#scribble-mode][Scribble mode]]
 - [[#display-time-in-modeline-in-bangla][Display time in modeline in Bangla]]
 - [[#battery-status-in-bangla][Battery status in Bangla]]
+- [[#display-messages-in-bangla][Display messages in Bangla]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -577,6 +578,7 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
     (ivy-mode)
     (setq ivy-use-virtual-buffers t
 	  ivy-count-format "(%d/%d) ")
+    (setq ivy-extra-directories nil)
     (global-set-key (kbd "M-x") 'counsel-M-x)
     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
     (global-set-key (kbd "C-x b") 'ivy-switch-buffer))
@@ -993,3 +995,8 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 
      (advice-add 'doom-modeline-update-battery-status :override #'doom-modeline-update-battery-status-bangla)
    #+END_SRC
+
+* Display messages in Bangla
+  #+BEGIN_SRC emacs-lisp
+    (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
+  #+END_SRC

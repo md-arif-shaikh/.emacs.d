@@ -317,6 +317,7 @@
   (ivy-mode)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "(%d/%d) ")
+  (setq ivy-extra-directories nil)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-x b") 'ivy-switch-buffer))
@@ -633,3 +634,5 @@ If ABBREV is non-nil, abbreviates some text."
 		  (propertize text 'face face 'help-echo help-echo))))))
 
 (advice-add 'doom-modeline-update-battery-status :override #'doom-modeline-update-battery-status-bangla)
+
+(arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
