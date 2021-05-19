@@ -484,6 +484,26 @@
    (format "'Appointment in %s minutes\n %s'" min-to-app msg)))
 (setq appt-disp-window-function (function my-appt-display))
 
+(defun appt-mode-line-bangla (min-to-app &optional abbrev)
+  "Return an appointment string suitable for use in the mode-line.
+MIN-TO-APP is a list of minutes, as strings.
+If ABBREV is non-nil, abbreviates some text."
+  ;; All this silliness is just to make the formatting slightly nicer.
+  (let* ((multiple (> (length min-to-app) 1))
+	 (imin (if (or (not multiple)
+		       (not (delete (car min-to-app) min-to-app)))
+		   (car min-to-app))))
+    (format "%s%s %s"
+	    (if abbrev "এপয়েন্টমেন্ট" "এপয়েন্টমেন্ট")
+	    (if multiple "স" "")
+	    (if (equal imin "0") "এখন"
+	      (format "%s %s"
+		      (or (number-to-bn (string-to-number imin)) (mapconcat #'identity (mapcar #'number-to-bn (mapcar #'string-to-number min-to-app)) ","))
+		      (if abbrev "মিনিটে"
+			(format "মিনিটে" (if (equal imin "1") "" ""))))))))
+
+(advice-add 'appt-mode-line :override #'appt-mode-line-bangla)
+
 (setq org-hide-emphasis-markers t)
 
 (font-lock-add-keywords 'org-mode
@@ -565,9 +585,7 @@
       )
 (display-time-mode 1)
 
-(require 'battery)
 (display-battery-mode 1)
-
 (defun doom-modeline-update-battery-status-bangla ()
   "Update battery status."
   (setq doom-modeline--battery-status
