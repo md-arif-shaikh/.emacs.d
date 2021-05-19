@@ -152,18 +152,6 @@
 	    (when (equal current-language-environment "Bengali")
 	      (setq default-input-method "bengali-itrans"))))
 
-(setq display-time-string-forms
-      ;;'((calendar-julian-date-string)))
-      '(day "/" monthname "/" (substring year -2)
-	    " " 24-hours ":" minutes
-	    (if time-zone " (") time-zone (if time-zone ")")
-	    (if mail " Mail" "")
-	    )
-      )
-(display-time-mode 1)
-
-(display-battery-mode 1)
-
 (arif/load-file "~/.emacs.d/lisp/time-zone.el")
 
 (use-package pyvenv
@@ -561,3 +549,69 @@
   :straight t
   :defer t
   :hook (scribble-mode . linum-mode))
+
+(defun add-preceding-zero (number-string)
+  (if (= (length number-string) 1)
+      (string-join (list "০" number-string))
+    number-string))
+
+(setq display-time-string-forms
+      ;;'((calendar-julian-date-string)))
+      '((add-preceding-zero (number-to-bn (string-to-number day))) "/" (month-name-to-bn monthname) "/" (add-preceding-zero (number-to-bn (string-to-number (substring year -2))))
+	    " " (number-to-bn (string-to-number 24-hours)) ":" (add-preceding-zero (number-to-bn (string-to-number minutes)))
+	    (if time-zone " (") time-zone (if time-zone ")")
+	    (if mail " Mail" "")
+	    )
+      )
+(display-time-mode 1)
+
+(require 'battery)
+(display-battery-mode 1)
+
+(defun doom-modeline-update-battery-status-bangla ()
+  "Update battery status."
+  (setq doom-modeline--battery-status
+	(when (bound-and-true-p display-battery-mode)
+	  (let* ((data (and battery-status-function
+			    (functionp battery-status-function)
+			    (funcall battery-status-function)))
+		 (charging? (string-equal "AC" (cdr (assoc ?L data))))
+		 (percentage (car (read-from-string (or (cdr (assq ?p data)) "ERR"))))
+		 (valid-percentage? (and (numberp percentage)
+					 (>= percentage 0)
+					 (<= percentage battery-mode-line-limit)))
+		 (face (if valid-percentage?
+			   (cond (charging? 'doom-modeline-battery-charging)
+				 ((< percentage battery-load-critical) 'doom-modeline-battery-critical)
+				 ((< percentage 25) 'doom-modeline-battery-warning)
+				 ((< percentage 95) 'doom-modeline-battery-normal)
+				 (t 'doom-modeline-battery-full))
+			 'doom-modeline-battery-error))
+		 (icon (if valid-percentage?
+			   (cond (charging?
+				  (doom-modeline-icon 'alltheicon "battery-charging" "🔋" "+"
+						      :face face :height 1.4 :v-adjust -0.1))
+				 ((> percentage 95)
+				  (doom-modeline-icon 'faicon "battery-full" "🔋" "-"
+						      :face face :v-adjust -0.0575))
+				 ((> percentage 70)
+				  (doom-modeline-icon 'faicon "battery-three-quarters" "🔋" "-"
+						      :face face :v-adjust -0.0575))
+				 ((> percentage 40)
+				  (doom-modeline-icon 'faicon "battery-half" "🔋" "-"
+						      :face face :v-adjust -0.0575))
+				 ((> percentage battery-load-critical)
+				  (doom-modeline-icon 'faicon "battery-quarter" "🔋" "-"
+						      :face face :v-adjust -0.0575))
+				 (t (doom-modeline-icon 'faicon "battery-empty" "🔋" "!"
+							:face face :v-adjust -0.0575)))
+			 (doom-modeline-icon 'faicon "battery-empty" "⚠" "N/A"
+					     :face face :v-adjust -0.0575)))
+		 (text (if valid-percentage? (format "%s%%%%" (substring (number-to-bn percentage) 0 2)) ""))
+		 (help-echo (if (and battery-echo-area-format data valid-percentage?)
+				(battery-format battery-echo-area-format data)
+			      "Battery status not available")))
+	    (cons (propertize icon 'help-echo help-echo)
+		  (propertize text 'face face 'help-echo help-echo))))))
+
+(advice-add 'doom-modeline-update-battery-status :override #'doom-modeline-update-battery-status-bangla)
