@@ -108,6 +108,7 @@
       (setq doom-modeline-minor-modes nil)
     (setq doom-modeline-minor-modes t))
   ;;(setq doom-modeline-mu4e t)
+  (setq doom-modeline-buffer-encoding nil)
   )
 
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
@@ -143,8 +144,8 @@
 
 (set-face-attribute 'default nil :family "Fira Code" :height 120)
 
-;; (set-face-font 'default "fontset-default")
-;; (set-fontset-font "fontset-default" 'bengali "Kalpurush")
+;;(set-face-font 'default "fontset-default")
+(set-fontset-font "fontset-default" 'bengali "Kalpurush")
 
 (set-language-environment "Bengali")
 (add-hook 'set-language-environment-hook
@@ -584,6 +585,7 @@ If ABBREV is non-nil, abbreviates some text."
 	    (if mail " Mail" "")
 	    )
       )
+
 (display-time-mode 1)
 
 (display-battery-mode 1)

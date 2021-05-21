@@ -251,10 +251,112 @@ Before and after saving the buffer, this function runs
           (not called-interactively)
           (files--message "(সংরক্ষণ করার মত কোন পরিবর্তন হয়নি)")))))
 
+(defun ivy-switch-buffer-bn ()
+  "Switch to another buffer."
+  (interactive)
+  (ivy-read "বাফার পরিবর্তন: " #'internal-complete-buffer
+            :keymap ivy-switch-buffer-map
+            :preselect (buffer-name (other-buffer (current-buffer)))
+            :action #'ivy--switch-buffer-action
+            :matcher #'ivy--switch-buffer-matcher
+            :caller 'ivy-switch-buffer))
+
+(defun doom-modeline-update-flycheck-text-bn (&optional status)
+  "Update flycheck text via STATUS."
+  (setq doom-modeline--flycheck-text
+        (when-let
+            ((text
+              (pcase status
+                ('finished  (when flycheck-current-errors
+                              (let-alist (doom-modeline--flycheck-count-errors)
+                                (if doom-modeline-checker-simple-format
+                                    (doom-modeline-checker-text
+                                     (number-to-bn (+ .error .warning .info))
+                                     (cond ((> .error 0) 'doom-modeline-urgent)
+                                           ((> .warning 0) 'doom-modeline-warning)
+                                           (t 'doom-modeline-info)))
+                                  (format "%s/%s/%s"
+                                          (doom-modeline-checker-text (number-to-bn .error)
+                                                                      'doom-modeline-urgent)
+                                          (doom-modeline-checker-text (number-to-bn .warning)
+                                                                      'doom-modeline-warning)
+                                          (doom-modeline-checker-text (number-to-bn .info)
+                                                                      'doom-modeline-info))))))
+                ('running     nil)
+                ('no-checker  nil)
+                ('errored     (doom-modeline-checker-text "ভুল" 'doom-modeline-urgent))
+                ('interrupted (doom-modeline-checker-text "বাধাপ্রাপ্ত" 'doom-modeline-debug))
+                ('suspicious  (doom-modeline-checker-text "সন্দেহজনক" 'doom-modeline-urgent))
+                (_ nil))))
+          (propertize
+           text
+           'help-echo (pcase status
+                        ('finished
+                         (concat
+                          (when flycheck-current-errors
+                            (let-alist (doom-modeline--flycheck-count-errors)
+                              (format "ভুল: %s, সতর্কতা: %s, তথ্য: %s\n" (number-to-bn .error) (number-to-bn .warning) (number-to-bn .info))))
+                          "মাউস-১: সব ভুলগুলি দেখাও
+মাউস-২: পরবর্তী ভুল"
+                          (if (featurep 'mwheel)
+                              "\nwheel-up/wheel-down: প্রাক/পরবর্তী ভুল")))
+                        ('running "চলমান...")
+                        ('no-checker "কোন চেকার নেই")
+                        ('errored "ভুল")
+                        ('interrupted "বাধাপ্রাপ্ত")
+                        ('suspicious "সন্দেহজনক"))
+           'mouse-face 'mode-line-highlight
+           'local-map (let ((map (make-sparse-keymap)))
+                        (define-key map [mode-line mouse-1]
+                          #'flycheck-list-errors)
+                        (define-key map [mode-line mouse-3]
+                          #'flycheck-next-error)
+                        (when (featurep 'mwheel)
+                          (define-key map (vector 'mode-line
+                                                  mouse-wheel-down-event)
+                            (lambda (event)
+                              (interactive "e")
+                              (with-selected-window (posn-window (event-start event))
+                                (flycheck-previous-error 1))))
+                          (define-key map (vector 'mode-line
+                                                  mouse-wheel-up-event)
+                            (lambda (event)
+                              (interactive "e")
+                              (with-selected-window (posn-window (event-start event))
+                                (flycheck-next-error 1))))
+                          map))))))
+
+(use-package cyphejor
+  :straight t
+  :config
+  (setq
+ cyphejor-rules
+ '(:upcase
+   ("bookmark"    "→")
+   ("help" "হেল্প")
+   ("buffer"      "বাফার")
+   ("diff"        "Δ")
+   ("dired"       "ডায়ার্ড")
+   ("emacs"       "ইমাক্স")
+   ("inferior"    "i" :prefix)
+   ("interaction" "ইন্টারেক্শন" :prefix)
+   ("interactive" "ইন্টারেক্টিভ" :prefix)
+   ("lisp"        "লিস্প" :postfix)
+   ("menu"        "▤" :postfix)
+   ("mode"        "")
+   ("package"     "↓")
+   ("python"      "পাইথন")
+   ("shell"       "শেল" :postfix)
+   ("text"        "টেক্স্ট")))
+  (cyphejor-mode 1))
+
 (advice-add 'find-file-other-window :override #'find-file-other-window-bn)
 (advice-add 'find-file :override #'find-file-bn)
 (advice-add 'counsel-find-file :override #'counsel-find-file-bn)
 (advice-add 'save-buffer :override #'save-buffer-bn)
 (advice-add 'basic-save-buffer :override #'basic-save-buffer-bn)
+(advice-add 'ivy-switch-buffer :override #'ivy-switch-buffer-bn)
+(advice-add 'doom-modeline-update-flycheck-text :override #'doom-modeline-update-flycheck-text-bn)
+
 (provide 'emacs-bn)
 ;;; emacs-bn.el ends here

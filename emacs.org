@@ -236,6 +236,7 @@ which asks for the machine name.
 	(setq doom-modeline-minor-modes nil)
       (setq doom-modeline-minor-modes t))
     ;;(setq doom-modeline-mu4e t)
+    (setq doom-modeline-buffer-encoding nil)
     )
 #+END_SRC
 ** Start full screen
@@ -291,8 +292,8 @@ which asks for the machine name.
 #+END_SRC
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
-     ;; (set-face-font 'default "fontset-default")
-     ;; (set-fontset-font "fontset-default" 'bengali "Kalpurush")
+     ;;(set-face-font 'default "fontset-default")
+     (set-fontset-font "fontset-default" 'bengali "Kalpurush")
 
      (set-language-environment "Bengali")
      (add-hook 'set-language-environment-hook
@@ -942,6 +943,7 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 		 (if mail " Mail" "")
 		 )
 	   )
+
      (display-time-mode 1)
    #+END_SRC
 * Battery status in Bangla
