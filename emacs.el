@@ -145,7 +145,7 @@
 (set-face-attribute 'default nil :family "Fira Code" :height 120)
 
 ;;(set-face-font 'default "fontset-default")
-(set-fontset-font "fontset-default" 'bengali "Kalpurush")
+(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
 
 (set-language-environment "Bengali")
 (add-hook 'set-language-environment-hook

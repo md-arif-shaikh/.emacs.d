@@ -293,7 +293,7 @@ which asks for the machine name.
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
      ;;(set-face-font 'default "fontset-default")
-     (set-fontset-font "fontset-default" 'bengali "Kalpurush")
+     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
 
      (set-language-environment "Bengali")
      (add-hook 'set-language-environment-hook

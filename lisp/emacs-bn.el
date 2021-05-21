@@ -334,6 +334,8 @@ Before and after saving the buffer, this function runs
  '(:upcase
    ("bookmark"    "→")
    ("help" "হেল্প")
+   ("org" "অর্গ")
+   ("agenda" "এজেন্ডা")
    ("buffer"      "বাফার")
    ("diff"        "Δ")
    ("dired"       "ডায়ার্ড")
