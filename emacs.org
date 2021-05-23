@@ -65,6 +65,7 @@
   - [[#org-toc][org-toc]]
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
+  - [[#bgt][BGT]]
 - [[#auth-source][Auth Source]]
 - [[#ob-python][ob-python]]
 - [[#org-babel][Org babel]]
@@ -561,7 +562,7 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
 ~/bin/bash~ to source the ~.zshrc/.bashrc~ files.
 ** Default shell
 #+BEGIN_SRC emacs-lisp :tangle no
-  (setq-default explicit-shell-file-name "/bin/zsh")
+  (setq-default explicit-shell-file-name "/usr/bin/fish")
 #+END_SRC
 * Selectrum
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -579,7 +580,7 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
     (ivy-mode)
     (setq ivy-use-virtual-buffers t
 	  ivy-count-format "(%d/%d) ")
-    (setq ivy-extra-directories nil)
+    ;;(setq ivy-extra-directories nil)
     (global-set-key (kbd "M-x") 'counsel-M-x)
     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
     (global-set-key (kbd "C-x b") 'ivy-switch-buffer))
@@ -862,6 +863,10 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (use-package perfect-margin
     :straight t)
 #+END_SRC
+** BGT
+   #+BEGIN_SRC emacs-lisp
+     (arif/load-file "~/.emacs.d/lisp/bgt.el")
+   #+END_SRC
 * Auth Source
 #+BEGIN_SRC emacs-lisp
   (setq auth-sources
