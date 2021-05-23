@@ -638,3 +638,6 @@ If ABBREV is non-nil, abbreviates some text."
 (advice-add 'doom-modeline-update-battery-status :override #'doom-modeline-update-battery-status-bangla)
 
 (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
+
+(use-package ts
+  :straight t)

@@ -336,6 +336,8 @@ Before and after saving the buffer, this function runs
    ("help" "হেল্প")
    ("org" "অর্গ")
    ("agenda" "এজেন্ডা")
+   ("magit" "ম্যাগিট")
+   ("status" "স্ট্যাটাস")
    ("buffer"      "বাফার")
    ("diff"        "Δ")
    ("dired"       "ডায়ার্ড")

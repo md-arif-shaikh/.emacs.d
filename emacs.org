@@ -1002,3 +1002,9 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
   #+BEGIN_SRC emacs-lisp
     (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
   #+END_SRC
+
+* ts
+#+BEGIN_SRC emacs-lisp
+(use-package ts
+  :straight t)
+#+END_SRC
