@@ -456,8 +456,8 @@
 	  ()
 	  "......" "----------------"))
   (setq display-time-format "%H:%M")
-;;  (setq org-agenda-todo-keyword-format "%-1s")
-  (arif/load-file "~/.emacs.d/lisp/bn-org.el")
+  ;;(setq org-agenda-todo-keyword-format "%-1s")
+  ;;(arif/load-file "~/.emacs.d/lisp/bn-org.el")
 )
 
 (require 'appt)
@@ -485,26 +485,6 @@
   (my-appt-send-notification 
    (format "'Appointment in %s minutes\n %s'" min-to-app msg)))
 (setq appt-disp-window-function (function my-appt-display))
-
-(defun appt-mode-line-bangla (min-to-app &optional abbrev)
-  "Return an appointment string suitable for use in the mode-line.
-MIN-TO-APP is a list of minutes, as strings.
-If ABBREV is non-nil, abbreviates some text."
-  ;; All this silliness is just to make the formatting slightly nicer.
-  (let* ((multiple (> (length min-to-app) 1))
-	 (imin (if (or (not multiple)
-		       (not (delete (car min-to-app) min-to-app)))
-		   (car min-to-app))))
-    (format "%s%s %s"
-	    (if abbrev "এপয়েন্টমেন্ট" "এপয়েন্টমেন্ট")
-	    (if multiple "স" "")
-	    (if (equal imin "0") "এখন"
-	      (format "%s %s"
-		      (or (number-to-bn (string-to-number imin)) (mapconcat #'identity (mapcar #'number-to-bn (mapcar #'string-to-number min-to-app)) ","))
-		      (if abbrev "মিনিটে"
-			(format "মিনিটে" (if (equal imin "1") "" ""))))))))
-
-(advice-add 'appt-mode-line :override #'appt-mode-line-bangla)
 
 (setq org-hide-emphasis-markers t)
 
@@ -574,69 +554,29 @@ If ABBREV is non-nil, abbreviates some text."
   :defer t
   :hook (scribble-mode . linum-mode))
 
-(defun add-preceding-zero (number-string)
-  (if (= (length number-string) 1)
-      (string-join (list "০" number-string))
-    number-string))
-
-(setq display-time-string-forms
-      ;;'((calendar-julian-date-string)))
-      '((add-preceding-zero (number-to-bn (string-to-number day))) "/" (month-name-to-bn monthname) "/" (add-preceding-zero (number-to-bn (string-to-number (substring year -2))))
-	    " " (number-to-bn (string-to-number 24-hours)) ":" (add-preceding-zero (number-to-bn (string-to-number minutes)))
-	    (if time-zone " (") time-zone (if time-zone ")")
-	    (if mail " Mail" "")
-	    )
-      )
-
-(display-time-mode 1)
-
-(display-battery-mode 1)
-(defun doom-modeline-update-battery-status-bangla ()
-  "Update battery status."
-  (setq doom-modeline--battery-status
-	(when (bound-and-true-p display-battery-mode)
-	  (let* ((data (and battery-status-function
-			    (functionp battery-status-function)
-			    (funcall battery-status-function)))
-		 (charging? (string-equal "AC" (cdr (assoc ?L data))))
-		 (percentage (car (read-from-string (or (cdr (assq ?p data)) "ERR"))))
-		 (valid-percentage? (and (numberp percentage)
-					 (>= percentage 0)
-					 (<= percentage battery-mode-line-limit)))
-		 (face (if valid-percentage?
-			   (cond (charging? 'doom-modeline-battery-charging)
-				 ((< percentage battery-load-critical) 'doom-modeline-battery-critical)
-				 ((< percentage 25) 'doom-modeline-battery-warning)
-				 ((< percentage 95) 'doom-modeline-battery-normal)
-				 (t 'doom-modeline-battery-full))
-			 'doom-modeline-battery-error))
-		 (icon (if valid-percentage?
-			   (cond (charging?
-				  (doom-modeline-icon 'alltheicon "battery-charging" "🔋" "+"
-						      :face face :height 1.4 :v-adjust -0.1))
-				 ((> percentage 95)
-				  (doom-modeline-icon 'faicon "battery-full" "🔋" "-"
-						      :face face :v-adjust -0.0575))
-				 ((> percentage 70)
-				  (doom-modeline-icon 'faicon "battery-three-quarters" "🔋" "-"
-						      :face face :v-adjust -0.0575))
-				 ((> percentage 40)
-				  (doom-modeline-icon 'faicon "battery-half" "🔋" "-"
-						      :face face :v-adjust -0.0575))
-				 ((> percentage battery-load-critical)
-				  (doom-modeline-icon 'faicon "battery-quarter" "🔋" "-"
-						      :face face :v-adjust -0.0575))
-				 (t (doom-modeline-icon 'faicon "battery-empty" "🔋" "!"
-							:face face :v-adjust -0.0575)))
-			 (doom-modeline-icon 'faicon "battery-empty" "⚠" "N/A"
-					     :face face :v-adjust -0.0575)))
-		 (text (if valid-percentage? (format "%s%%%%" (substring (number-to-bn percentage) 0 2)) ""))
-		 (help-echo (if (and battery-echo-area-format data valid-percentage?)
-				(battery-format battery-echo-area-format data)
-			      "Battery status not available")))
-	    (cons (propertize icon 'help-echo help-echo)
-		  (propertize text 'face face 'help-echo help-echo))))))
-
-(advice-add 'doom-modeline-update-battery-status :override #'doom-modeline-update-battery-status-bangla)
+(use-package cyphejor
+  :straight t)
+(use-package bn
+  :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+  :config
+  (display-time-mode 1)
+  (display-battery-mode 1)
+  (setq bn-date-separator "-")
+  (setq display-time-string-forms bn-display-time-string-forms)
+  (setq cyphejor-rules bn-cyphejor-rules)
+  (cyphejor-mode 1)
+  ;;(advice-add 'battery-update :override #'bn-battery-update)
+  (advice-add 'doom-modeline-update-battery-status :override #'bn-doom-modeline-update-battery-status)
+  (advice-add 'doom-modeline-update-flycheck-text :override #'bn-doom-modeline-update-flycheck-text)
+  (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
+  ;; for org-agenda
+  (setq org-agenda-prefix-format  "%(bn-org-agenda-prefix-format)%2s")
+  (setq org-agenda-overriding-header bn-org-agenda-overriding-header)
+  (setq org-agenda-format-date #'bn-org-agenda-format-date-aligned)
+  (setq org-todo-keyword-faces bn-org-todo-keyword-faces)
+  (setq org-todo-keywords bn-org-todo-keywords)
+  (setq org-agenda-scheduled-leaders bn-org-agenda-scheduled-leaders)
+  (setq org-agenda-deadline-leaders bn-org-agenda-deadline-leaders)
+  (setq org-agenda-current-time-string bn-org-agenda-current-time-string))
 
 (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
