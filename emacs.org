@@ -77,6 +77,7 @@
 - [[#scribble-mode][Scribble mode]]
 - [[#bn][bn]]
 - [[#display-messages-in-bangla][Display messages in Bangla]]
+- [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -940,3 +941,26 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
   #+BEGIN_SRC emacs-lisp
     (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
   #+END_SRC
+
+* Writing in Bangla using company-wordfreq
+First we install the follow package for auto suggestions of Bangla word.
+#+BEGIN_SRC emacs-lisp
+  (use-package company-wordfreq
+    :straight t)
+#+END_SRC
+We need to the set up the following in the local buffer. This can be done by invoking an interactive function as below.
+#+BEGIN_SRC emacs-lisp
+  (defun remove-guidance ()
+    nil)
+  (defun remove-quail-completion ()
+    (quail-select-current))
+  (defun bn-company-wordfreq ()
+    (interactive)
+    (advice-add 'quail-show-guidance :override #'remove-guidance)
+    (advice-add 'quail-completion :override #'remove-quail-completion)
+    (setq ispell-local-dictionary "bengali_439")
+    (setq-local company-backends '(company-wordfreq))
+    (setq-local company-transformers nil))
+#+END_SRC
+
+

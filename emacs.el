@@ -580,3 +580,18 @@
   (setq org-agenda-current-time-string bn-org-agenda-current-time-string))
 
 (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
+
+(use-package company-wordfreq
+  :straight t)
+
+(defun remove-guidance ()
+  nil)
+(defun remove-quail-completion ()
+  (quail-select-current))
+(defun bn-company-wordfreq ()
+  (interactive)
+  (advice-add 'quail-show-guidance :override #'remove-guidance)
+  (advice-add 'quail-completion :override #'remove-quail-completion)
+  (setq ispell-local-dictionary "bengali_439")
+  (setq-local company-backends '(company-wordfreq))
+  (setq-local company-transformers nil))
