@@ -75,7 +75,7 @@
 - [[#fix-terminal-display][fix terminal display]]
 - [[#markdown-toc][Markdown toc]]
 - [[#scribble-mode][Scribble mode]]
-- [[#bn][bn]]
+- [[#emacs-bn][emacs-bn]]
 - [[#display-messages-in-bangla][Display messages in Bangla]]
 - [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
 
@@ -233,9 +233,10 @@ which asks for the machine name.
     (setq doom-modeline-major-mode-icon t)
     (setq doom-modeline-icon (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin))))
     (setq doom-modeline-env-version t)
-    (if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
-	(setq doom-modeline-minor-modes nil)
-      (setq doom-modeline-minor-modes t))
+    ;;(if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
+    ;;    (setq doom-modeline-minor-modes nil)
+    ;;  (setq doom-modeline-minor-modes t))
+    (setq doom-modeline-minor-modes t)
     ;;(setq doom-modeline-mu4e t)
     (setq doom-modeline-buffer-encoding nil)
     )
@@ -295,12 +296,7 @@ which asks for the machine name.
    #+BEGIN_SRC emacs-lisp
      ;;(set-face-font 'default "fontset-default")
      (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
-
-     (set-language-environment "Bengali")
-     (add-hook 'set-language-environment-hook
-	       (lambda nil
-		 (when (equal current-language-environment "Bengali")
-		   (setq default-input-method "bengali-itrans"))))
+     (setq default-input-method "bengali-itrans")
    #+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
@@ -909,36 +905,15 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
     :defer t
     :hook (scribble-mode . linum-mode))
 #+END_SRC
-* bn
+* emacs-bn
   #+BEGIN_SRC emacs-lisp
-    (use-package cyphejor
-      :straight t)
     (use-package bn
-      :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+      :straight (bn :type git :host github :repo "md-arif-shaikh/emacs-bn")
       :config
-      (display-time-mode 1)
-      (display-battery-mode 1)
-      (setq bn-date-separator "-")
-      (setq display-time-string-forms bn-display-time-string-forms)
-      (setq cyphejor-rules bn-cyphejor-rules)
-      (cyphejor-mode 1)
-      ;;(advice-add 'battery-update :override #'bn-battery-update)
-      (advice-add 'doom-modeline-update-battery-status :override #'bn-doom-modeline-update-battery-status)
-      (advice-add 'doom-modeline-update-flycheck-text :override #'bn-doom-modeline-update-flycheck-text)
-      (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
-      ;; for org-agenda
-      (setq org-agenda-prefix-format  "%(bn-org-agenda-prefix-format)%2s")
-      (setq org-agenda-overriding-header bn-org-agenda-overriding-header)
-      (setq org-agenda-format-date #'bn-org-agenda-format-date-aligned)
-      (setq org-todo-keyword-faces bn-org-todo-keyword-faces)
-      (setq org-todo-keywords bn-org-todo-keywords)
-      (setq org-agenda-scheduled-leaders bn-org-agenda-scheduled-leaders)
-      (setq org-agenda-deadline-leaders bn-org-agenda-deadline-leaders)
-      (setq org-agenda-current-time-string bn-org-agenda-current-time-string))
+      (bn-extra-mode 1))
   #+END_SRC
-
 * Display messages in Bangla
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp :tangle no
     (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
   #+END_SRC
 
@@ -950,17 +925,15 @@ First we install the follow package for auto suggestions of Bangla word.
 #+END_SRC
 We need to the set up the following in the local buffer. This can be done by invoking an interactive function as below.
 #+BEGIN_SRC emacs-lisp
-  (defun remove-guidance ()
+  (defun remove-quail-show-guidance ()
     nil)
   (defun remove-quail-completion ()
     (quail-select-current))
   (defun bn-company-wordfreq ()
     (interactive)
-    (advice-add 'quail-show-guidance :override #'remove-guidance)
+    (advice-add 'quail-show-guidance :override #'remove-quail-show-guidance)
     (advice-add 'quail-completion :override #'remove-quail-completion)
     (setq ispell-local-dictionary "bengali_439")
     (setq-local company-backends '(company-wordfreq))
     (setq-local company-transformers nil))
 #+END_SRC
-
-

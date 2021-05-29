@@ -104,9 +104,10 @@
   (setq doom-modeline-major-mode-icon t)
   (setq doom-modeline-icon (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin))))
   (setq doom-modeline-env-version t)
-  (if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
-      (setq doom-modeline-minor-modes nil)
-    (setq doom-modeline-minor-modes t))
+  ;;(if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
+  ;;    (setq doom-modeline-minor-modes nil)
+  ;;  (setq doom-modeline-minor-modes t))
+  (setq doom-modeline-minor-modes t)
   ;;(setq doom-modeline-mu4e t)
   (setq doom-modeline-buffer-encoding nil)
   )
@@ -146,12 +147,7 @@
 
 ;;(set-face-font 'default "fontset-default")
 (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
-
-(set-language-environment "Bengali")
-(add-hook 'set-language-environment-hook
-	  (lambda nil
-	    (when (equal current-language-environment "Bengali")
-	      (setq default-input-method "bengali-itrans"))))
+(setq default-input-method "bengali-itrans")
 
 (arif/load-file "~/.emacs.d/lisp/time-zone.el")
 
@@ -554,43 +550,21 @@
   :defer t
   :hook (scribble-mode . linum-mode))
 
-(use-package cyphejor
-  :straight t)
 (use-package bn
-  :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+  :straight (bn :type git :host github :repo "md-arif-shaikh/emacs-bn")
   :config
-  (display-time-mode 1)
-  (display-battery-mode 1)
-  (setq bn-date-separator "-")
-  (setq display-time-string-forms bn-display-time-string-forms)
-  (setq cyphejor-rules bn-cyphejor-rules)
-  (cyphejor-mode 1)
-  ;;(advice-add 'battery-update :override #'bn-battery-update)
-  (advice-add 'doom-modeline-update-battery-status :override #'bn-doom-modeline-update-battery-status)
-  (advice-add 'doom-modeline-update-flycheck-text :override #'bn-doom-modeline-update-flycheck-text)
-  (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
-  ;; for org-agenda
-  (setq org-agenda-prefix-format  "%(bn-org-agenda-prefix-format)%2s")
-  (setq org-agenda-overriding-header bn-org-agenda-overriding-header)
-  (setq org-agenda-format-date #'bn-org-agenda-format-date-aligned)
-  (setq org-todo-keyword-faces bn-org-todo-keyword-faces)
-  (setq org-todo-keywords bn-org-todo-keywords)
-  (setq org-agenda-scheduled-leaders bn-org-agenda-scheduled-leaders)
-  (setq org-agenda-deadline-leaders bn-org-agenda-deadline-leaders)
-  (setq org-agenda-current-time-string bn-org-agenda-current-time-string))
-
-(arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
+  (bn-extra-mode 1))
 
 (use-package company-wordfreq
   :straight t)
 
-(defun remove-guidance ()
+(defun remove-quail-show-guidance ()
   nil)
 (defun remove-quail-completion ()
   (quail-select-current))
 (defun bn-company-wordfreq ()
   (interactive)
-  (advice-add 'quail-show-guidance :override #'remove-guidance)
+  (advice-add 'quail-show-guidance :override #'remove-quail-show-guidance)
   (advice-add 'quail-completion :override #'remove-quail-completion)
   (setq ispell-local-dictionary "bengali_439")
   (setq-local company-backends '(company-wordfreq))
