@@ -107,7 +107,7 @@
   ;;(if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
   ;;    (setq doom-modeline-minor-modes nil)
   ;;  (setq doom-modeline-minor-modes t))
-  (setq doom-modeline-minor-modes t)
+  ;; (setq doom-modeline-minor-modes t)
   ;;(setq doom-modeline-mu4e t)
   (setq doom-modeline-buffer-encoding nil)
   )
@@ -553,7 +553,8 @@
 (use-package bn
   :straight (bn :type git :host github :repo "md-arif-shaikh/emacs-bn")
   :config
-  (bn-extra-mode 1))
+  (bn-display--doom-modeline)
+  (bn-display--org-agenda))
 
 (use-package company-wordfreq
   :straight t)

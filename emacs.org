@@ -1,3 +1,4 @@
+
 #+TITLE: Emacs config file
 #+AUTHOR: Md Arif Shaikh
 #+Email: arifshaikh.astro@gmail.com
@@ -236,7 +237,7 @@ which asks for the machine name.
     ;;(if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
     ;;    (setq doom-modeline-minor-modes nil)
     ;;  (setq doom-modeline-minor-modes t))
-    (setq doom-modeline-minor-modes t)
+    ;; (setq doom-modeline-minor-modes t)
     ;;(setq doom-modeline-mu4e t)
     (setq doom-modeline-buffer-encoding nil)
     )
@@ -910,7 +911,8 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
     (use-package bn
       :straight (bn :type git :host github :repo "md-arif-shaikh/emacs-bn")
       :config
-      (bn-extra-mode 1))
+      (bn-display--doom-modeline)
+      (bn-display--org-agenda))
   #+END_SRC
 * Display messages in Bangla
   #+BEGIN_SRC emacs-lisp :tangle no
