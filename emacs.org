@@ -77,7 +77,6 @@
 - [[#scribble-mode][Scribble mode]]
 - [[#emacs-bn][emacs-bn]]
 - [[#emacs-bgt][emacs-bgt]]
-- [[#display-messages-in-bangla][Display messages in Bangla]]
 - [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
 
 * straight
@@ -903,11 +902,6 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 	    bgt-csv-file-name "~/Dropbox/org/bgt.csv"
 	    bgt-python-file "~/Dropbox/org/bgt.py"))
   #+END_SRC
-* Display messages in Bangla
-  #+BEGIN_SRC emacs-lisp :tangle no
-    (arif/load-file "~/.emacs.d/lisp/emacs-bn.el")
-  #+END_SRC
-
 * Writing in Bangla using company-wordfreq
 First we install the follow package for auto suggestions of Bangla word.
 #+BEGIN_SRC emacs-lisp
