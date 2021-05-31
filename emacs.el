@@ -41,7 +41,6 @@
 
 (use-package doom-themes
   :straight t
-  :if (display-graphic-p)
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -60,12 +59,6 @@
 
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
-
-(use-package gruvbox-theme
-    :straight t
-    :if (not (display-graphic-p))
-    :init
-    (load-theme 'gruvbox-dark-soft t))
 
 (use-package all-the-icons
   :straight t
@@ -99,8 +92,8 @@
   (setq doom-modeline-buffer-file-name-style 'file-name)
   (setq doom-modeline-lsp t)
   (setq doom-modeline-minor-modes nil)
-  (setq doom-modeline-github t)
-  (setq doom-modeline-github-interval (* 30 60))
+  ;;(setq doom-modeline-github t)
+  ;;(setq doom-modeline-github-interval (* 30 60))
   (setq doom-modeline-major-mode-icon t)
   (setq doom-modeline-icon (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin))))
   (setq doom-modeline-env-version t)
@@ -110,6 +103,7 @@
   ;; (setq doom-modeline-minor-modes t)
   ;;(setq doom-modeline-mu4e t)
   (setq doom-modeline-buffer-encoding nil)
+  (setq lsp-modeline-diagnostics-enable nil)
   )
 
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
@@ -510,8 +504,6 @@
 (use-package perfect-margin
   :straight t)
 
-(arif/load-file "~/.emacs.d/lisp/bgt.el")
-
 (setq auth-sources
       '((:source "~/.config/emacs/.authinfo.gpg")))
 
@@ -555,6 +547,13 @@
   :config
   (bn-display--doom-modeline)
   (bn-display--org-agenda))
+
+(use-package bgt
+  :straight (bgt :type git :host github :repo "md-arif-shaikh/emacs-bgt")
+  :config
+  (setq bgt-file-name "~/Dropbox/org/bgt.org"
+	bgt-csv-file-name "~/Dropbox/org/bgt.csv"
+	bgt-python-file "~/Dropbox/org/bgt.py"))
 
 (use-package company-wordfreq
   :straight t)

@@ -66,7 +66,6 @@
   - [[#org-toc][org-toc]]
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
-  - [[#bgt][BGT]]
 - [[#auth-source][Auth Source]]
 - [[#ob-python][ob-python]]
 - [[#org-babel][Org babel]]
@@ -77,6 +76,7 @@
 - [[#markdown-toc][Markdown toc]]
 - [[#scribble-mode][Scribble mode]]
 - [[#emacs-bn][emacs-bn]]
+- [[#emacs-bgt][emacs-bgt]]
 - [[#display-messages-in-bangla][Display messages in Bangla]]
 - [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
 
@@ -153,7 +153,6 @@ which asks for the machine name.
     #+BEGIN_SRC emacs-lisp
       (use-package doom-themes
 	:straight t
-	:if (display-graphic-p)
 	:config
 	;; Global settings (defaults)
 	(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -173,23 +172,6 @@ which asks for the machine name.
 	;; Corrects (and improves) org-mode's native fontification.
 	(doom-themes-org-config))
     #+END_SRC
-*** Gruvbox
-#+BEGIN_SRC  emacs-lisp
-  (use-package gruvbox-theme
-      :straight t
-      :if (not (display-graphic-p))
-      :init
-      (load-theme 'gruvbox-dark-soft t))
-#+END_SRC
-*** Atom dark one for graphical
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package atom-one-dark-theme
-    :straight t
-    :if (display-graphic-p)
-    :init
-    (load-theme 'atom-one-dark t)
-    )
-#+END_SRC
 ** All the icons
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons
@@ -229,8 +211,8 @@ which asks for the machine name.
     (setq doom-modeline-buffer-file-name-style 'file-name)
     (setq doom-modeline-lsp t)
     (setq doom-modeline-minor-modes nil)
-    (setq doom-modeline-github t)
-    (setq doom-modeline-github-interval (* 30 60))
+    ;;(setq doom-modeline-github t)
+    ;;(setq doom-modeline-github-interval (* 30 60))
     (setq doom-modeline-major-mode-icon t)
     (setq doom-modeline-icon (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin))))
     (setq doom-modeline-env-version t)
@@ -240,6 +222,7 @@ which asks for the machine name.
     ;; (setq doom-modeline-minor-modes t)
     ;;(setq doom-modeline-mu4e t)
     (setq doom-modeline-buffer-encoding nil)
+    (setq lsp-modeline-diagnostics-enable nil)
     )
 #+END_SRC
 ** Start full screen
@@ -838,10 +821,6 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (use-package perfect-margin
     :straight t)
 #+END_SRC
-** BGT
-   #+BEGIN_SRC emacs-lisp
-     (arif/load-file "~/.emacs.d/lisp/bgt.el")
-   #+END_SRC
 * Auth Source
 #+BEGIN_SRC emacs-lisp
   (setq auth-sources
@@ -913,6 +892,16 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       :config
       (bn-display--doom-modeline)
       (bn-display--org-agenda))
+  #+END_SRC
+* emacs-bgt
+  keep records of your BG level
+  #+BEGIN_SRC emacs-lisp
+    (use-package bgt
+      :straight (bgt :type git :host github :repo "md-arif-shaikh/emacs-bgt")
+      :config
+      (setq bgt-file-name "~/Dropbox/org/bgt.org"
+	    bgt-csv-file-name "~/Dropbox/org/bgt.csv"
+	    bgt-python-file "~/Dropbox/org/bgt.py"))
   #+END_SRC
 * Display messages in Bangla
   #+BEGIN_SRC emacs-lisp :tangle no
