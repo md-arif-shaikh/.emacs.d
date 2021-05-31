@@ -3,11 +3,6 @@
 * Table of contents :toc:
 - [[#build-emacs-from-source-for-solus-os--ubuntu-os][Build emacs from source for solus os / ubuntu os]]
 - [[#configuration-file][Configuration File]]
-- [[#convert-time-between-time-zones][Convert time between time zones]]
-- [[#display-org-agenda-in-bangla][Display org-agenda in Bangla]]
-- [[#display-messages-in-bangla][Display messages in Bangla]]
-- [[#download-papers-from-arxiv-and-other-websites][Download papers from arxiv and other websites]]
-- [[#search-for-arxiv-papers][Search for arxiv papers]]
 
 * Build emacs from source for solus os / ubuntu os
   For many reasons one may prefer to build emacs from source. It might
@@ -19,22 +14,3 @@
   can be used for [[https://ubuntu.com/][Ubuntu]]  and [[https://getsol.us/home/][Solus]]. Get the shell script [[./build_emacs.sh][here]].
 * Configuration File
 Read [[./emacs.org][emacs.org]] for configuration using available packages.
-* Convert time between time zones
-* Display org-agenda in Bangla
-* Display messages in Bangla
-  These are just overriding existing functions with messages replaced
-  by suitable Bangla strings. Link to [[./lisp/emacs-bn.el][emacs-bn]].
-* Download papers from arxiv and other websites
-* Search for arxiv papers
-  - There exists a package called [[https://github.com/fizban007/arxiv-mode][arxiv-mode]] which seems to cover a lot
-    of the needs. I have not personally used it. Instead I use my own
-    simple function to search arxiv. It searches the results and
-    writes them in a org file so that I can go through them and use
-    all org-mode goodies.
-  - Currently it supports search by author name or using a date range
-    mimicking the advance search option of arxiv.
-  - Link to function [[./lisp/arxiv-search.el][arxiv-search.el]].
-  - Search by author
-     [[./icons/arxiv-by-author.gif]]
-  - Search by dates
-     [[./icons/arxiv-by-dates.gif]]
