@@ -267,22 +267,10 @@
   :straight t
   :defer)
 
-(use-package racket-mode
-  :straight t
-  :defer t
-  :config
-  (setq racket-program "/usr/racket/bin/racket")
-  :hook
-  (racket-mode . linum-mode))
-
 (use-package julia-mode
   :straight t
   :defer
   :hook (julia-mode . linum-mode))
-
-(use-package jupyter
-  :straight t
-  :defer)
 
 (use-package company
   :straight t
@@ -507,16 +495,6 @@
 (setq auth-sources
       '((:source "~/.config/emacs/.authinfo.gpg")))
 
-(use-package ob-ipython
-  :straight t
-  :defer t)
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (ipython . t)
-   (jupyter . t)))
-
 ;;;;;;;;;;;;;;;;;;;;
 ;;; set up unicode
 (prefer-coding-system       'utf-8)
@@ -536,11 +514,6 @@
 
 (use-package markdown-toc
   :straight t)
-
-(use-package scribble-mode
-  :straight t
-  :defer t
-  :hook (scribble-mode . linum-mode))
 
 (use-package bn
   :straight (bn :type git :host github :repo "md-arif-shaikh/emacs-bn")

@@ -457,16 +457,6 @@ https://emacs-lsp.github.io/lsp-python-ms/
     :straight t
     :defer)
 #+END_SRC
-* Racket
-  #+BEGIN_SRC emacs-lisp
-    (use-package racket-mode
-      :straight t
-      :defer t
-      :config
-      (setq racket-program "/usr/racket/bin/racket")
-      :hook
-      (racket-mode . linum-mode))
-  #+END_SRC
 * LaTeX with LSP
 *** Install texlab
 #+BEGIN_SRC shell
@@ -502,12 +492,6 @@ https://emacs-lsp.github.io/lsp-python-ms/
     :straight t
     :defer
     :hook (julia-mode . linum-mode))
-#+END_SRC
-* Jupyter
-#+BEGIN_SRC emacs-lisp
-  (use-package jupyter
-    :straight t
-    :defer)
 #+END_SRC
 * Company autocompletion
 #+BEGIN_SRC emacs-lisp
@@ -825,20 +809,6 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (setq auth-sources
 	'((:source "~/.config/emacs/.authinfo.gpg")))
 #+END_SRC
-* ob-python
-  #+BEGIN_SRC emacs-lisp
-    (use-package ob-ipython
-      :straight t
-      :defer t)
-  #+END_SRC
-* Org babel
-  #+BEGIN_SRC emacs-lisp
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)
-       (ipython . t)
-       (jupyter . t)))
-  #+END_SRC
 * set unicode
   #+BEGIN_SRC emacs-lisp
     ;;;;;;;;;;;;;;;;;;;;
@@ -877,13 +847,6 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       :straight t)
   #+END_SRC
 
-* Scribble mode
-#+BEGIN_SRC emacs-lisp
-  (use-package scribble-mode
-    :straight t
-    :defer t
-    :hook (scribble-mode . linum-mode))
-#+END_SRC
 * emacs-bn
   #+BEGIN_SRC emacs-lisp
     (use-package bn

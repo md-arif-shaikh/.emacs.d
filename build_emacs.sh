@@ -1,9 +1,9 @@
 if test -d "$HOME/emacs/"; then
     echo "emacs is already cloned in the home directory"
 else
-    git clone --single-branch --branch emacs-27 --depth 1 https://github.com/emacs-mirror/emacs.git
+    git clone --single-branch --branch emacs-27 --depth 1 https://github.com/emacs-mirror/emacs.git "$HOME/emacs"
 fi
-cd emacs/
+cd "$HOME/emacs/"
 
 if test -f "/etc/debian_version"; then
     sudo apt install -y autoconf make gcc texinfo libxpm-dev \
