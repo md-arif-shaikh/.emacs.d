@@ -17,7 +17,7 @@
 	 (search-string)
 	 (search-field)
 	 (search-category)
-	 (last-weeks-dates (loop for n in (number-sequence 0 8)
+	 (last-weeks-dates (cl-loop for n in (number-sequence 0 8)
 				 collect (format-time-string "%Y-%m-%d" (time-subtract (current-time) (days-to-time (* n 7)))))))
     (cond ((equal search-method "author")
 	   (setq author (read-string "Enter author name: "))
