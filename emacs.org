@@ -34,10 +34,8 @@
   - [[#python-with-lsp][Python with LSP]]
   - [[#lsp-python-with-tramp][LSP python with tramp]]
   - [[#python-with-elpy][Python with elpy]]
-- [[#racket][Racket]]
 - [[#latex-with-lsp][LaTeX with LSP]]
 - [[#julia][Julia]]
-- [[#jupyter][Jupyter]]
 - [[#company-autocompletion][Company autocompletion]]
 - [[#shell-mode][Shell mode]]
   - [[#disable-company][Disable company]]
@@ -67,17 +65,20 @@
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
 - [[#auth-source][Auth Source]]
-- [[#ob-python][ob-python]]
-- [[#org-babel][Org babel]]
 - [[#set-unicode][set unicode]]
 - [[#download-from-url][download from url]]
 - [[#search-arxiv][Search arxiv]]
 - [[#fix-terminal-display][fix terminal display]]
 - [[#markdown-toc][Markdown toc]]
-- [[#scribble-mode][Scribble mode]]
 - [[#emacs-bn][emacs-bn]]
 - [[#emacs-bgt][emacs-bgt]]
 - [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
+- [[#mu-for-email-management][mu for email management]]
+  - [[#installing-mu][Installing mu]]
+  - [[#set-mu-and-mu4e-path][set mu and mu4e path]]
+  - [[#create-and-set-necessary-mail-directories][create and set necessary mail directories]]
+  - [[#initialize-the-mail-store][Initialize the mail store]]
+  - [[#download-your-emails-using-mbsync][download your emails using mbsync]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -885,3 +886,43 @@ We need to the set up the following in the local buffer. This can be done by inv
     (setq-local company-backends '(company-wordfreq))
     (setq-local company-transformers nil))
 #+END_SRC
+
+* mu for email management
+** Installing mu
+   The latest release of mu can be installed from [[https://github.com/djcb/mu/releases][here]]. All you need to do is ~./configure~
+ and then ~make~. It might complain about few packages like ~gmime~ and ~xapian~ if it's not already
+ installed. These are available in the software repositories and could be installed easily.
+ For example, on ubuntu, you can use
+ #+BEGIN_SRC bash
+   sudo apt install libxapian-dev
+   sudo apt install libgmime-3.0-dev
+ #+END_SRC
+** set mu and mu4e path
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path "~/Downloads/mu-1.6.1/mu4e")
+     (setq mu4e-mu-binary "~/Downloads/mu-1.6.1/mu/mu")
+     (require 'mu4e)
+   #+END_SRC
+** create and set necessary mail directories
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-maildir       "~/Maildir"   ;; top-level Maildir
+	   ;; note that these folders below must start with /
+	   ;; the paths are relative to maildir root
+	   mu4e-sent-folder   "/Sent"
+	   mu4e-drafts-folder "/Drafts"
+	   mu4e-trash-folder  "/Trash")
+   #+END_SRC
+** Initialize the mail store
+   execute the following command in the terminal to initialize the mail directory with emails
+   #+BEGIN_SRC shell
+     Downloads/mu-1.6.1/mu/mu init --maildir=~/Maildir/
+   #+END_SRC
+** download your emails using mbsync
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-get-mail-command  "mbsync -a")
+     (setq mu4e-update-interval 60)
+     ;; run in the background
+     (setq mu4e-index-update-in-background t)
+     ;; update when new mail arrives the headers
+     (setq mu4e-headers-auto-update t)
+   #+END_SRC

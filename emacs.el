@@ -542,3 +542,21 @@
   (setq ispell-local-dictionary "bengali_439")
   (setq-local company-backends '(company-wordfreq))
   (setq-local company-transformers nil))
+
+(add-to-list 'load-path "~/Downloads/mu-1.6.1/mu4e")
+(setq mu4e-mu-binary "~/Downloads/mu-1.6.1/mu/mu")
+(require 'mu4e)
+
+(setq mu4e-maildir       "~/Maildir"   ;; top-level Maildir
+      ;; note that these folders below must start with /
+      ;; the paths are relative to maildir root
+      mu4e-sent-folder   "/Sent"
+      mu4e-drafts-folder "/Drafts"
+      mu4e-trash-folder  "/Trash")
+
+(setq mu4e-get-mail-command  "mbsync -a")
+(setq mu4e-update-interval 60)
+;; run in the background
+(setq mu4e-index-update-in-background t)
+;; update when new mail arrives the headers
+(setq mu4e-headers-auto-update t)
