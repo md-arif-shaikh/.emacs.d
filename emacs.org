@@ -79,6 +79,7 @@
   - [[#create-and-set-necessary-mail-directories][create and set necessary mail directories]]
   - [[#initialize-the-mail-store][Initialize the mail store]]
   - [[#download-your-emails-using-mbsync][download your emails using mbsync]]
+  - [[#additional-settings][Additional settings]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -126,11 +127,15 @@ which asks for the machine name.
 ** Connect Remote Machines
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.config/emacs/remote-machines.el")
-  (defun arif/connect-remote-dir (remote-machine-name)
+  (defun arif/connect-remote-dir ()
     "Connect to REMOTE-MACHINE-NAME."
-    (interactive "sRemote Machine Name: ")
-    (let ((remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
-      (set-buffer (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name)))
+    (interactive)
+    (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
+	   (remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
+      (set-buffer (if (equal remote-machine-name "dumpty")
+		      (dired (format "/sshx:%s:/home1/%s/" remote-machine-name remote-user-name))
+		    (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name))
+		    ))
       (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
   (defun arif/connect-remote-shell (remote-machine-name)
@@ -145,7 +150,6 @@ which asks for the machine name.
 
   (global-set-key (kbd "C-c r d") #'arif/connect-remote-dir)
   (global-set-key (kbd "C-c r s") #'arif/connect-remote-shell)
-
 #+END_SRC
 * UI customization 
 ** Themes
@@ -274,7 +278,10 @@ which asks for the machine name.
 #+END_SRC
 ** Font size
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :family "Fira Code" :height 120)
+  (set-face-attribute 'default nil
+		      :font "JetBrains Mono"
+		      :weight 'light
+		      :height 120)
 #+END_SRC
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
@@ -418,6 +425,8 @@ https://emacs-lsp.github.io/lsp-python-ms/
 		       :major-modes '(python-mode)
 		       :remote? t
 		       :server-id 'pyls-remote))
+     (require 'tramp)
+     (add-to-list 'tramp-remote-path '"~/miniconda3/bin/")
    #+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -829,7 +838,6 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.emacs.d/lisp/arxiv-search.el")
 #+END_SRC
-
 * fix terminal display
 I have been struggling with displaying the symbols used in the
 ~oh-my-zsh~ theme in the terminal buffer inside emacs invoked through
@@ -925,4 +933,16 @@ We need to the set up the following in the local buffer. This can be done by inv
      (setq mu4e-index-update-in-background t)
      ;; update when new mail arrives the headers
      (setq mu4e-headers-auto-update t)
+   #+END_SRC
+
+** Additional settings
+   #+BEGIN_SRC emacs-lisp
+     (setq mue4e-headers-skip-duplicates  t
+	   mu4e-view-show-images t
+	   mu4e-view-show-addresses t
+	   mu4e-compose-format-flowed nil
+	   mu4e-date-format "%y/%m/%d"
+	   mu4e-headers-date-format "%Y/%m/%d"
+	   mu4e-change-filenames-when-moving t
+	   mu4e-attachments-dir "~/Downloads")
    #+END_SRC
