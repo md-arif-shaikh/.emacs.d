@@ -19,11 +19,15 @@
     (message (format "%s file not found" file-name))))
 
 (arif/load-file "~/.config/emacs/remote-machines.el")
-(defun arif/connect-remote-dir (remote-machine-name)
+(defun arif/connect-remote-dir ()
   "Connect to REMOTE-MACHINE-NAME."
-  (interactive "sRemote Machine Name: ")
-  (let ((remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
-    (set-buffer (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name)))
+  (interactive)
+  (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
+	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
+    (set-buffer (if (equal remote-machine-name "dumpty")
+		    (dired (format "/sshx:%s:/home1/%s/" remote-machine-name remote-user-name))
+		  (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name))
+		  ))
     (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
 (defun arif/connect-remote-shell (remote-machine-name)
@@ -137,7 +141,10 @@
   :straight t)
 (autopair-global-mode)
 
-(set-face-attribute 'default nil :family "Fira Code" :height 120)
+(set-face-attribute 'default nil
+		    :font "JetBrains Mono"
+		    :weight 'light
+		    :height 120)
 
 ;;(set-face-font 'default "fontset-default")
 (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
@@ -247,6 +254,8 @@
 		  :major-modes '(python-mode)
 		  :remote? t
 		  :server-id 'pyls-remote))
+(require 'tramp)
+(add-to-list 'tramp-remote-path '"~/miniconda3/bin/")
 
 (use-package highlight-indent-guides
   :straight t
@@ -560,3 +569,12 @@
 (setq mu4e-index-update-in-background t)
 ;; update when new mail arrives the headers
 (setq mu4e-headers-auto-update t)
+
+(setq mue4e-headers-skip-duplicates  t
+      mu4e-view-show-images t
+      mu4e-view-show-addresses t
+      mu4e-compose-format-flowed nil
+      mu4e-date-format "%y/%m/%d"
+      mu4e-headers-date-format "%Y/%m/%d"
+      mu4e-change-filenames-when-moving t
+      mu4e-attachments-dir "~/Downloads")

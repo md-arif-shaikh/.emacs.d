@@ -1,7 +1,8 @@
 if test -d "$HOME/emacs/"; then
     echo "emacs is already cloned in the home directory"
 else
-    git clone --single-branch --branch emacs-27 --depth 1 https://github.com/emacs-mirror/emacs.git "$HOME/emacs"
+    # git clone --single-branch --branch emacs-27 --depth 1 https://github.com/emacs-mirror/emacs.git "$HOME/emacs"
+    git clone git://git.savannah.gnu.org/emacs.git "$HOME/emacs"
 fi
 cd "$HOME/emacs/"
 
