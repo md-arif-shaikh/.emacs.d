@@ -24,7 +24,7 @@
   (interactive)
   (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
 	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
-    (set-buffer (if (equal remote-machine-name "dumpty")
+    (set-buffer (if (member remote-machine-name '("humpty" "dumpty"))
 		    (dired (format "/sshx:%s:/home1/%s/" remote-machine-name remote-user-name))
 		  (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name))
 		  ))
