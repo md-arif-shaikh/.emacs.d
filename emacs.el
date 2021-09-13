@@ -24,20 +24,15 @@
   (interactive)
   (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
 	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
-    (set-buffer (if (member remote-machine-name '("humpty" "dumpty"))
-		    (dired (format "/sshx:%s:/home1/%s/" remote-machine-name remote-user-name))
-		  (dired (format "/sshx:%s:/home/%s/" remote-machine-name remote-user-name))
-		  ))
+    (set-buffer (dired (format "/sshx:%s/" remote-user-name)))
     (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
-(defun arif/connect-remote-shell (remote-machine-name)
-  "Connect to terminal in on REMOTE-MACHINE-NAME."
-  (interactive "sRemote Machine Name: ")
-  (let* ((remote-shell-types '(("comet" . "/bin/bash")
-			       ("dodo" . "/bin/zsh")
-			       ("cit" . "/bin/bash")))
-	 (default-directory (format "/sshx:%s:" remote-machine-name))
-	 (tramp-encoding-shell (cdr (assoc remote-machine-name remote-shell-types))))
+(defun arif/connect-remote-shell ()
+  "Connect to REMOTE-MACHINE-SHELL."
+  (interactive)
+  (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
+	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names)))
+	 (default-directory (format "/sshx:%s/" remote-user-name)))
     (shell)))
 
 (global-set-key (kbd "C-c r d") #'arif/connect-remote-dir)
