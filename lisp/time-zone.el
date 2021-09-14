@@ -22,7 +22,8 @@
 			("JST" . "+0900")
 			("TOKYO" . "+0900")))
 
-(setq arif/times '("9:00 AM"
+(setq arif/times '("Right Now"
+		   "9:00 AM"
 		   "9:30 AM"
 		   "10:00 AM"
 		   "10:30 AM"
@@ -57,9 +58,13 @@
   (interactive)
   (let* ((days '("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"))
 	 (time-to-convert (completing-read "Enter time to convert: " arif/times))
-	 (time (parse-time-string time-to-convert))
-	 (from-zone-u (upcase (completing-read "Enter from zone: " arif/time-zones)))
-	 (to-zone-u (upcase (completing-read "Enter to zone: " arif/time-zones)))
+	 (time (parse-time-string (if (string-equal time-to-convert "Right Now")
+				      (current-time-string)
+				    time-to-convert)))
+	 (from-zone-u (if (string-equal time-to-convert "Right Now")
+			  (nth 1 (current-time-zone))
+			(upcase (completing-read "Enter from zone: " arif/time-zones))))
+	 (to-zone-u (upcase (completing-read (format "Convert %s from %s to: " time-to-convert from-zone-u) arif/time-zones)))
 	 (from-sec (nth 0 time))
 	 (from-min (nth 1 time))
 	 (from-hour (nth 2 time))
@@ -96,4 +101,4 @@
 	    ((> to-hour 12) (progn
 			      (setq to-hour (- to-hour 12))
 			      (setq A-or-P "PM"))))
-      (message (format "%s %s = %.2d:%.2d %s %s %s" (upcase time-to-convert) from-zone-u to-hour to-min (upcase A-or-P) (upcase to-day-name) to-zone-u)))))
+      (message (format "%s %s = %.2d:%.2d %s %s %s" (if (string-equal time-to-convert "Right Now") (current-time-string) (upcase time-to-convert)) from-zone-u to-hour to-min (upcase A-or-P) (upcase to-day-name) to-zone-u)))))
