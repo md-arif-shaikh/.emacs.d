@@ -145,6 +145,8 @@
 (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
 (setq default-input-method "bengali-itrans")
 
+(setq-default cursor-type 'bar)
+
 (arif/load-file "~/.emacs.d/lisp/time-zone.el")
 
 (use-package pyvenv
@@ -226,23 +228,11 @@
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
 
-(use-package lsp-python-ms 
-  :straight t
-  :init
-  (setq
-   lsp-python-ms-auto-install-server t
-   lsp-python-ms-executable (executable-find "python-language-server"))
-  :hook
-  (python-mode . (lambda ()
-			 (require 'lsp-python-ms)
-			 (lsp-deferred)))
-  (python-mode . linum-mode))
-
 (use-package lsp-pyright
   :straight t
   :hook (python-mode . (lambda ()
 			  (require 'lsp-pyright)
-			  (lsp))))  ; or lsp-deferred
+			  (lsp-deferred))))  ; or lsp-deferred
 
 (lsp-register-client
  (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
@@ -270,6 +260,9 @@
 (use-package company-jedi
   :straight t
   :defer)
+
+(use-package jupyter
+  :straight t)
 
 (use-package julia-mode
   :straight t
@@ -496,6 +489,17 @@
 (use-package perfect-margin
   :straight t)
 
+(use-package org-roam
+  :straight t
+  :init (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Dropbox/org/roam/")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert))
+  :config
+  (org-roam-setup))
+
 (setq auth-sources
       '((:source "~/.config/emacs/.authinfo.gpg")))
 
@@ -572,4 +576,19 @@
       mu4e-date-format "%y/%m/%d"
       mu4e-headers-date-format "%Y/%m/%d"
       mu4e-change-filenames-when-moving t
-      mu4e-attachments-dir "~/Downloads")
+      mu4e-index-cleanup t
+      mu4e-index-lazy-check nil
+      mu4e-attachments-dir "~/Downloads"
+      user-mail-address "arifshaikh.astro@gmail.com"
+      user-full-name "Md Arif Shaikh")
+
+(use-package mu4e-alert
+  :straight t
+  :config
+  (mu4e-alert-set-default-style 'libnotify)
+  (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+  (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+  (with-eval-after-load 'mu4e-alert
+    (mu4e-alert-set-default-style 'notifier))   ; For Mac OSX (through terminal-notifier)
+  (setq mu4e-alert-enable-mode-line-display t)
+  (setq mu4e-alert-enable-notifications t))
