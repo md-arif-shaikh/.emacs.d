@@ -32,7 +32,9 @@
   (interactive)
   (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
 	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names)))
+	 (remote-shell-type (cdr (assoc remote-machine-name remote-shell-names)))
 	 (default-directory (format "/sshx:%s/" remote-user-name)))
+    (setq explicit-shell-file-name remote-shell-type)
     (shell)))
 
 (global-set-key (kbd "C-c r d") #'arif/connect-remote-dir)
