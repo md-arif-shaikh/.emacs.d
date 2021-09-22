@@ -1,4 +1,3 @@
-
 #+TITLE: Emacs config file
 #+AUTHOR: Md Arif Shaikh
 #+Email: arifshaikh.astro@gmail.com
@@ -84,6 +83,7 @@
   - [[#download-your-emails-using-mbsync][download your emails using mbsync]]
   - [[#additional-settings][Additional settings]]
   - [[#mu4e-alert][mu4e alert]]
+  - [[#sending-emails][Sending emails]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -969,7 +969,11 @@ We need to the set up the following in the local buffer. This can be done by inv
 	   mu4e-index-lazy-check nil
 	   mu4e-attachments-dir "~/Downloads"
 	   user-mail-address "arifshaikh.astro@gmail.com"
-	   user-full-name "Md Arif Shaikh")
+	   user-full-name "Md Arif Shaikh"
+	   mu4e-compose-signature
+	   (concat
+	    "Md Arif Shaikh\n"
+	    "https://md-arif-shaikh.github.io\n"))
    #+END_SRC
 ** mu4e alert
    #+BEGIN_SRC emacs-lisp
@@ -983,4 +987,13 @@ We need to the set up the following in the local buffer. This can be done by inv
 	 (mu4e-alert-set-default-style 'notifier))   ; For Mac OSX (through terminal-notifier)
        (setq mu4e-alert-enable-mode-line-display t)
        (setq mu4e-alert-enable-notifications t))
+   #+END_SRC
+
+** Sending emails
+   #+BEGIN_SRC emacs-lisp
+     (setq message-send-mail-function 'smtpmail-send-it
+	  smtpmail-stream-type 'starttls
+	  smtpmail-default-smtp-server "smtp.gmail.com"
+	  smtpmail-smtp-server "smtp.gmail.com"
+	  smtpmail-smtp-service 587)
    #+END_SRC

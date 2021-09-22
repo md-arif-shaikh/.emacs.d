@@ -580,7 +580,11 @@
       mu4e-index-lazy-check nil
       mu4e-attachments-dir "~/Downloads"
       user-mail-address "arifshaikh.astro@gmail.com"
-      user-full-name "Md Arif Shaikh")
+      user-full-name "Md Arif Shaikh"
+      mu4e-compose-signature
+      (concat
+       "Md Arif Shaikh\n"
+       "https://md-arif-shaikh.github.io\n"))
 
 (use-package mu4e-alert
   :straight t
@@ -592,3 +596,9 @@
     (mu4e-alert-set-default-style 'notifier))   ; For Mac OSX (through terminal-notifier)
   (setq mu4e-alert-enable-mode-line-display t)
   (setq mu4e-alert-enable-notifications t))
+
+(setq message-send-mail-function 'smtpmail-send-it
+     smtpmail-stream-type 'starttls
+     smtpmail-default-smtp-server "smtp.gmail.com"
+     smtpmail-smtp-server "smtp.gmail.com"
+     smtpmail-smtp-service 587)
