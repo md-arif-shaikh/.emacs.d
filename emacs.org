@@ -920,8 +920,11 @@ We need to the set up the following in the local buffer. This can be done by inv
 
 * mu for email management
 ** Installing mu
-   The latest release of mu can be installed from [[https://github.com/djcb/mu/releases][here]]. All you need to do is ~./configure~
- and then ~make~. It might complain about few packages like ~gmime~ and ~xapian~ if it's not already
+   - The latest release of mu can be downloaded from [[https://github.com/djcb/mu/releases][here]].
+   - Extract the tar.xz file using ~tar -xvf mu-1.6.6.tar.xz~
+   - ~./configure~ inside the extracted directory.
+   - ~make~
+     It might complain about few packages like ~gmime~ and ~xapian~ if it's not already
  installed. These are available in the software repositories and could be installed easily.
  For example, on ubuntu, you can use
  #+BEGIN_SRC bash
@@ -930,8 +933,8 @@ We need to the set up the following in the local buffer. This can be done by inv
  #+END_SRC
 ** set mu and mu4e path
    #+BEGIN_SRC emacs-lisp
-     (add-to-list 'load-path "~/Downloads/mu-1.6.1/mu4e")
-     (setq mu4e-mu-binary "~/Downloads/mu-1.6.1/mu/mu")
+     (add-to-list 'load-path "~/Downloads/mu-1.6.6/mu4e")
+     (setq mu4e-mu-binary "~/Downloads/mu-1.6.6/mu/mu")
      (require 'mu4e)
    #+END_SRC
 ** create and set necessary mail directories
@@ -946,9 +949,17 @@ We need to the set up the following in the local buffer. This can be done by inv
 ** Initialize the mail store
    execute the following command in the terminal to initialize the mail directory with emails
    #+BEGIN_SRC shell
-     Downloads/mu-1.6.1/mu/mu init --maildir=~/Maildir/
+     Downloads/mu-1.6.6/mu/mu init --maildir=~/Maildir/ --my-address arifshaikh.astro@gmail.com
+   #+END_SRC
+   Now index the emails using
+   #+BEGIN_SRC shell
+     Downloads/mu-1.6.6/mu/mu index
    #+END_SRC
 ** download your emails using mbsync
+   Install ~isync~ which provides ~mbsync~ using ~sudo apt install isync.~ ~mbsync~ might complain
+   about ~curl-ca-bundle.crt~. This file can be generated in the following way.
+   - Download certificate in ~.pem~ format using ~curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem~
+   - You can then convert it to ~.crt~ using ~openssl x509 -in cacert.pem -out curl-ca-bundle.crt.~
    #+BEGIN_SRC emacs-lisp
      (setq mu4e-get-mail-command  "mbsync -a")
      (setq mu4e-update-interval 60)
@@ -957,13 +968,12 @@ We need to the set up the following in the local buffer. This can be done by inv
      ;; update when new mail arrives the headers
      (setq mu4e-headers-auto-update t)
    #+END_SRC
-
 ** Additional settings
    #+BEGIN_SRC emacs-lisp
      (setq mue4e-headers-skip-duplicates  t
 	   mu4e-view-show-images t
 	   mu4e-view-show-addresses t
-	   mu4e-compose-format-flowed nil
+	   mu4e-compose-format-flowed t
 	   mu4e-date-format "%y/%m/%d"
 	   mu4e-headers-date-format "%Y/%m/%d"
 	   mu4e-change-filenames-when-moving t
@@ -975,6 +985,7 @@ We need to the set up the following in the local buffer. This can be done by inv
 	   mu4e-compose-signature
 	   (concat
 	    "Md Arif Shaikh\n"
+	    "Postdoctoral Fellow, ICTS-TIFR\n"
 	    "https://md-arif-shaikh.github.io\n"))
    #+END_SRC
 ** mu4e alert
@@ -985,8 +996,6 @@ We need to the set up the following in the local buffer. This can be done by inv
        (mu4e-alert-set-default-style 'libnotify)
        (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
        (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-       (with-eval-after-load 'mu4e-alert
-	 (mu4e-alert-set-default-style 'notifier))   ; For Mac OSX (through terminal-notifier)
        (setq mu4e-alert-enable-mode-line-display t)
        (setq mu4e-alert-enable-notifications t))
    #+END_SRC

@@ -553,8 +553,8 @@
   (setq-local company-backends '(company-wordfreq))
   (setq-local company-transformers nil))
 
-(add-to-list 'load-path "~/Downloads/mu-1.6.1/mu4e")
-(setq mu4e-mu-binary "~/Downloads/mu-1.6.1/mu/mu")
+(add-to-list 'load-path "~/Downloads/mu-1.6.6/mu4e")
+(setq mu4e-mu-binary "~/Downloads/mu-1.6.6/mu/mu")
 (require 'mu4e)
 
 (setq mu4e-maildir       "~/Maildir"   ;; top-level Maildir
@@ -574,7 +574,7 @@
 (setq mue4e-headers-skip-duplicates  t
       mu4e-view-show-images t
       mu4e-view-show-addresses t
-      mu4e-compose-format-flowed nil
+      mu4e-compose-format-flowed t
       mu4e-date-format "%y/%m/%d"
       mu4e-headers-date-format "%Y/%m/%d"
       mu4e-change-filenames-when-moving t
@@ -586,6 +586,7 @@
       mu4e-compose-signature
       (concat
        "Md Arif Shaikh\n"
+       "Postdoctoral Fellow, ICTS-TIFR\n"
        "https://md-arif-shaikh.github.io\n"))
 
 (use-package mu4e-alert
@@ -594,8 +595,6 @@
   (mu4e-alert-set-default-style 'libnotify)
   (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
   (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-  (with-eval-after-load 'mu4e-alert
-    (mu4e-alert-set-default-style 'notifier))   ; For Mac OSX (through terminal-notifier)
   (setq mu4e-alert-enable-mode-line-display t)
   (setq mu4e-alert-enable-notifications t))
 
