@@ -927,10 +927,15 @@ We need to the set up the following in the local buffer. This can be done by inv
      It might complain about few packages like ~gmime~ and ~xapian~ if it's not already
  installed. These are available in the software repositories and could be installed easily.
  For example, on ubuntu, you can use
- #+BEGIN_SRC bash
-   sudo apt install libxapian-dev
-   sudo apt install libgmime-3.0-dev
- #+END_SRC
+   - ~sudo apt install libxapian-dev~
+   - ~sudo apt install libgmime-3.0-dev~
+
+ for ~fedora~ you need to do the following
+   - c++ compiler: ~sudo dnf install gcc-c++~
+   - glib: ~sudo dnf install glib2-devel~
+   - gmime: ~sudo dnf install gmime30-devel~
+   - xapian: ~sudo dnf install xapian-core-devel~
+   - texinfo: ~sudo dnf install texinfo~
 ** set mu and mu4e path
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'load-path "~/Downloads/mu-1.6.6/mu4e")
