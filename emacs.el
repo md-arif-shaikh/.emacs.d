@@ -18,6 +18,7 @@
       (load-file file-name)
     (message (format "%s file not found" file-name))))
 
+(setq tramp-histfile-override nil)
 (arif/load-file "~/.config/emacs/remote-machines.el")
 (defun arif/connect-remote-dir ()
   "Connect to REMOTE-MACHINE-NAME."
@@ -288,6 +289,36 @@
 	     (file-remote-p default-directory))
     (company-mode -1)))
 (add-hook 'shell-mode-hook #'arif/shell-mode-setup)
+
+(use-package exec-path-from-shell
+  :straight t
+  :custom
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "HISTFILE"))
+
+(defun turn-on-comint-history (history-file)
+  (setq comint-input-ring-file-name history-file)
+  (comint-read-input-ring 'silent))
+
+(add-hook 'shell-mode-hook
+	  (lambda ()
+	    (turn-on-comint-history (getenv "HISTFILE"))))
+
+(add-hook 'kill-buffer-hook #'comint-write-input-ring)
+(add-hook 'kill-emacs-hook
+	  (lambda ()
+	    (--each (buffer-list)
+	      (with-current-buffer it (comint-write-input-ring)))))
+
+(use-package savehist
+  :custom
+  (savehist-file "~/.emacs.d/savehist")
+  (savehist-save-minibuffer-history t)
+  (history-length 10000)
+  (savehist-additional-variables
+   '(shell-command-history))
+  :config
+  (savehist-mode +1))
 
 (use-package counsel
   :straight t

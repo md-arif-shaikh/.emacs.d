@@ -42,6 +42,7 @@
   - [[#disable-company][Disable company]]
   - [[#sourcing-shell-profile][Sourcing shell profile]]
   - [[#default-shell][Default shell]]
+  - [[#shell-history][Shell history]]
 - [[#selectrum][Selectrum]]
 - [[#ivy-counsel][Ivy Counsel]]
 - [[#which-key][Which key]]
@@ -130,6 +131,7 @@ loaded at the start and then I use a custom function to invoke tramp
 which asks for the machine name.
 ** Connect Remote Machines
 #+BEGIN_SRC emacs-lisp
+  (setq tramp-histfile-override nil)
   (arif/load-file "~/.config/emacs/remote-machines.el")
   (defun arif/connect-remote-dir ()
     "Connect to REMOTE-MACHINE-NAME."
@@ -287,7 +289,8 @@ which asks for the machine name.
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
      ;;(set-face-font 'default "fontset-default")
-     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
+     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" (cond ((string-equal system-type "darwin") 12)
+										       ((string-equal system-type "gnu/linux" 18)))))
      (setq default-input-method "bengali-itrans")
    #+END_SRC
 ** cusor
@@ -547,6 +550,38 @@ machine. After login on the remote shell I execute ~/bin/zsh~ or
 #+BEGIN_SRC emacs-lisp :tangle no
   (setq-default explicit-shell-file-name "/usr/bin/fish")
 #+END_SRC
+** Shell history
+   #+BEGIN_SRC emacs-lisp
+     (use-package exec-path-from-shell
+       :straight t
+       :custom
+       (exec-path-from-shell-initialize)
+       (exec-path-from-shell-copy-env "HISTFILE"))
+
+     (defun turn-on-comint-history (history-file)
+       (setq comint-input-ring-file-name history-file)
+       (comint-read-input-ring 'silent))
+
+     (add-hook 'shell-mode-hook
+	       (lambda ()
+		 (turn-on-comint-history (getenv "HISTFILE"))))
+
+     (add-hook 'kill-buffer-hook #'comint-write-input-ring)
+     (add-hook 'kill-emacs-hook
+	       (lambda ()
+		 (--each (buffer-list)
+		   (with-current-buffer it (comint-write-input-ring)))))
+
+     (use-package savehist
+       :custom
+       (savehist-file "~/.emacs.d/savehist")
+       (savehist-save-minibuffer-history t)
+       (history-length 10000)
+       (savehist-additional-variables
+	'(shell-command-history))
+       :config
+       (savehist-mode +1))
+   #+END_SRC
 * Selectrum
 #+BEGIN_SRC emacs-lisp :tangle no
   (straight-use-package 'selectrum)
