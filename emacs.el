@@ -145,7 +145,8 @@
 		    :height 120)
 
 ;;(set-face-font 'default "fontset-default")
-(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size 18))
+(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 12)
+										  ((string-equal system-type "gnu/linux" 18)))))
 (setq default-input-method "bengali-itrans")
 
 (setq-default cursor-type 'bar)
