@@ -20,7 +20,9 @@
 			("MUMBAI" . "+0530")
 			("CHENNAI" . "+0530")
 			("JST" . "+0900")
-			("TOKYO" . "+0900")))
+			("TOKYO" . "+0900")
+			("BST" . "+0100")
+			("CEST" . "+0200")))
 
 (setq arif/times '("Right Now"
 		   "9:00 AM"
@@ -53,18 +55,19 @@
 		   "11:00 PM"
 		   "11:30 PM"))
 
-(defun arif/convert-time ()
-  "Convert from one time-zone to another time-zone."
-  (interactive)
+(defun arif/convert-time (time-to-convert from-zone-u to-zone-u)
+  "Convert TIME-TO-CONVERT from FROM-ZONE-U to another TO-ZONE-U."
+  (interactive
+   (let* ((time-to-convert (completing-read "Enter time to convert: " arif/times))
+	  (from-zone-u (if (string-equal time-to-convert "Right Now")
+			  (nth 1 (current-time-zone))
+			 (upcase (completing-read "Enter from zone: " arif/time-zones))))
+	  (to-zone-u (upcase (completing-read (format "Convert %s from %s to: " time-to-convert from-zone-u) arif/time-zones))))
+     (list time-to-convert from-zone-u to-zone-u)))
   (let* ((days '("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"))
-	 (time-to-convert (completing-read "Enter time to convert: " arif/times))
 	 (time (parse-time-string (if (string-equal time-to-convert "Right Now")
 				      (current-time-string)
 				    time-to-convert)))
-	 (from-zone-u (if (string-equal time-to-convert "Right Now")
-			  (nth 1 (current-time-zone))
-			(upcase (completing-read "Enter from zone: " arif/time-zones))))
-	 (to-zone-u (upcase (completing-read (format "Convert %s from %s to: " time-to-convert from-zone-u) arif/time-zones)))
 	 (from-sec (nth 0 time))
 	 (from-min (nth 1 time))
 	 (from-hour (nth 2 time))

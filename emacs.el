@@ -146,12 +146,13 @@
 
 ;;(set-face-font 'default "fontset-default")
 (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 12)
-										  ((string-equal system-type "gnu/linux" 18)))))
+										  ((string-equal system-type "gnu/linux") 18))))
 (setq default-input-method "bengali-itrans")
 
 (setq-default cursor-type 'bar)
 
-(arif/load-file "~/.emacs.d/lisp/time-zone.el")
+(use-package convert-time
+  :straight (convert-time :type git :host github :repo "md-arif-shaikh/emacs-convert-time"))
 
 (use-package pyvenv
   :straight t
@@ -597,7 +598,7 @@
       mu4e-trash-folder  "/Trash")
 
 (setq mu4e-get-mail-command  "mbsync -a")
-(setq mu4e-update-interval 60)
+(setq mu4e-update-interval (* 5 60))
 ;; run in the background
 (setq mu4e-index-update-in-background t)
 ;; update when new mail arrives the headers
@@ -634,4 +635,8 @@
      smtpmail-stream-type 'starttls
      smtpmail-default-smtp-server "smtp.gmail.com"
      smtpmail-smtp-server "smtp.gmail.com"
-     smtpmail-smtp-service 587)
+     smtpmail-smtp-service 587
+     mu4e-sent-messages-behavior 'delete)
+
+(use-package soccer
+  :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer"))

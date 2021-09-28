@@ -85,6 +85,7 @@
   - [[#additional-settings][Additional settings]]
   - [[#mu4e-alert][mu4e alert]]
   - [[#sending-emails][Sending emails]]
+- [[#soccer][soccer]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -290,7 +291,7 @@ which asks for the machine name.
    #+BEGIN_SRC emacs-lisp
      ;;(set-face-font 'default "fontset-default")
      (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 12)
-										       ((string-equal system-type "gnu/linux" 18)))))
+										       ((string-equal system-type "gnu/linux") 18))))
      (setq default-input-method "bengali-itrans")
    #+END_SRC
 ** cusor
@@ -299,10 +300,11 @@ which asks for the machine name.
    #+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
-to meetings schedules at different parts of the world. I call my customized
-simple time converter function to convert the time to my local one.
+to meetings schedules at different parts of the world. I call my package
+[[https://github.com/md-arif-shaikh/emacs-convert-time][convert-time]] to convert the time to my local one.
 #+BEGIN_SRC emacs-lisp
-  (arif/load-file "~/.emacs.d/lisp/time-zone.el")
+  (use-package convert-time
+    :straight (convert-time :type git :host github :repo "md-arif-shaikh/emacs-convert-time"))
 #+END_SRC
 * Pyenv
 I use different conda environments for different projects. This makes
@@ -1002,7 +1004,7 @@ We need to the set up the following in the local buffer. This can be done by inv
    - You can then convert it to ~.crt~ using ~openssl x509 -in cacert.pem -out curl-ca-bundle.crt.~
    #+BEGIN_SRC emacs-lisp
      (setq mu4e-get-mail-command  "mbsync -a")
-     (setq mu4e-update-interval 60)
+     (setq mu4e-update-interval (* 5 60))
      ;; run in the background
      (setq mu4e-index-update-in-background t)
      ;; update when new mail arrives the headers
@@ -1046,5 +1048,13 @@ We need to the set up the following in the local buffer. This can be done by inv
 	  smtpmail-stream-type 'starttls
 	  smtpmail-default-smtp-server "smtp.gmail.com"
 	  smtpmail-smtp-server "smtp.gmail.com"
-	  smtpmail-smtp-service 587)
+	  smtpmail-smtp-service 587
+	  mu4e-sent-messages-behavior 'delete)
    #+END_SRC
+
+* soccer
+  getting my soccer fix using my package called [[https://github.com/md-arif-shaikh/soccer][soccer]]
+  #+BEGIN_SRC emacs-lisp
+    (use-package soccer
+      :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer"))
+  #+END_SRC
