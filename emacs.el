@@ -639,4 +639,9 @@
      mu4e-sent-messages-behavior 'delete)
 
 (use-package soccer
-  :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer"))
+  :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer")
+  :config
+  (setq soccer-time--local-time-utc-offset "+0530"))
+
+(use-package package-lint
+  :straight t)

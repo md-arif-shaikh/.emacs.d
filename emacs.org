@@ -86,6 +86,7 @@
   - [[#mu4e-alert][mu4e alert]]
   - [[#sending-emails][Sending emails]]
 - [[#soccer][soccer]]
+- [[#package-lint][package-lint]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -1056,5 +1057,13 @@ We need to the set up the following in the local buffer. This can be done by inv
   getting my soccer fix using my package called [[https://github.com/md-arif-shaikh/soccer][soccer]]
   #+BEGIN_SRC emacs-lisp
     (use-package soccer
-      :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer"))
+      :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer")
+      :config
+      (setq soccer-time--local-time-utc-offset "+0530"))
+  #+END_SRC
+
+* package-lint
+  #+BEGIN_SRC emacs-lisp
+    (use-package package-lint
+      :straight t)
   #+END_SRC
