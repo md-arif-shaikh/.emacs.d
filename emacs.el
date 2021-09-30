@@ -186,6 +186,10 @@
 	    (lambda ()
 	      (reftex-mode t)
 	      (flyspell-mode t)))
+  (when (string-equal system-type "darwin")
+    (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin/"))
+    (setq exec-path (append exec-path '("/Library/TeX/texbin/")))
+    (setq pdf-info-epdfinfo-program "~/.emacs.d/straight/build/pdf-tools/build/server/epdfinfo"))
   :hook
   (LaTeX-mode . linum-mode)
   (LaTeX-mode . rainbow-delimiters-mode))
@@ -436,7 +440,7 @@
 (use-package org
   :config
   (global-set-key (kbd "C-c a") 'org-agenda)
-  (setq org-agenda-files '("~/Dropbox/org"))
+  (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
   ;; Basic setup
   (setq org-agenda-span 7)
   (setq org-agenda-start-day "+0d")
