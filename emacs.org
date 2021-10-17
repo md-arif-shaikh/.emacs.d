@@ -34,9 +34,11 @@
   - [[#python-with-lsp][Python with LSP]]
   - [[#lsp-python-with-tramp][LSP python with tramp]]
   - [[#python-with-elpy][Python with elpy]]
+- [[#racket][Racket]]
 - [[#jupyter][jupyter]]
 - [[#latex-with-lsp][LaTeX with LSP]]
 - [[#julia][Julia]]
+- [[#rust][Rust]]
 - [[#company-autocompletion][Company autocompletion]]
 - [[#shell-mode][Shell mode]]
   - [[#disable-company][Disable company]]
@@ -87,6 +89,8 @@
   - [[#sending-emails][Sending emails]]
 - [[#soccer][soccer]]
 - [[#package-lint][package-lint]]
+- [[#gpg2-on-mac][gpg2 on mac]]
+- [[#dash-for-list-manipulation][dash for list manipulation]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -286,12 +290,13 @@ which asks for the machine name.
   (set-face-attribute 'default nil
 		      :font "JetBrains Mono"
 		      :weight 'light
-		      :height 120)
+		      :height (cond ((string-equal system-type "gnu/linux") 120)
+				    ((string-equal system-type "darwin") 130)))
 #+END_SRC
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
      ;;(set-face-font 'default "fontset-default")
-     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 12)
+     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
 										       ((string-equal system-type "gnu/linux") 18))))
      (setq default-input-method "bengali-itrans")
    #+END_SRC
@@ -482,6 +487,11 @@ https://emacs-lsp.github.io/lsp-python-ms/
     :straight t
     :defer)
 #+END_SRC
+* Racket
+  #+BEGIN_SRC emacs-lisp
+    (use-package racket-mode
+      :straight t)
+  #+END_SRC
 * jupyter
   #+BEGIN_SRC emacs-lisp
     (use-package jupyter
@@ -523,6 +533,16 @@ https://emacs-lsp.github.io/lsp-python-ms/
     :defer
     :hook (julia-mode . linum-mode))
 #+END_SRC
+* Rust
+  #+BEGIN_SRC emacs-lisp
+    (use-package rust-mode
+      :straight t
+      :config
+      (add-hook 'rust-mode-hook
+		(lambda () (setq indent-tabs-mode nil)))
+      (setq rust-format-on-save t)
+      (define-key rust-mode-map (kbd "C-c C-c") 'rust-run))
+  #+END_SRC
 * Company autocompletion
 #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -1063,7 +1083,20 @@ We need to the set up the following in the local buffer. This can be done by inv
     (use-package soccer
       :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer")
       :config
-      (setq soccer-time--local-time-utc-offset "+0530"))
+      (setq soccer-time-local-time-utc-offset "+0530")
+      (setq soccer-leagues-alist
+	      '(("England" . "Premier League")
+		("Spain" . "Laliga")
+		("France" . "Ligue 1")
+		("Italy" . "Serie A")
+		("Germany" . "Bundesliga")
+		("uefa" . "Champions League")
+		;;("England" . "Championship")
+		))
+      :bind (("C-c s f" . soccer-fixtures-next)
+	     ("C-c s r" . soccer-results-last)
+	     ("C-c s s" . soccer-scorecard)
+	     ("C-c s t" . soccer-table)))
   #+END_SRC
 
 * package-lint
@@ -1071,3 +1104,18 @@ We need to the set up the following in the local buffer. This can be done by inv
     (use-package package-lint
       :straight t)
   #+END_SRC
+
+* gpg2 on mac
+  #+BEGIN_SRC emacs-lisp
+    (when (string-equal system-type "darwin")
+      (require 'epa-file)
+      (custom-set-variables '(epg-gpg-program  "/opt/local/bin/gpg2"))
+      (epa-file-enable))
+  #+END_SRC
+
+* dash for list manipulation
+  #+BEGIN_SRC emacs-lisp
+    (use-package dash
+      :straight t)
+  #+END_SRC
+
