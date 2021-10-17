@@ -142,10 +142,11 @@
 (set-face-attribute 'default nil
 		    :font "JetBrains Mono"
 		    :weight 'light
-		    :height 120)
+		    :height (cond ((string-equal system-type "gnu/linux") 120)
+				  ((string-equal system-type "darwin") 130)))
 
 ;;(set-face-font 'default "fontset-default")
-(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 12)
+(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
 										  ((string-equal system-type "gnu/linux") 18))))
 (setq default-input-method "bengali-itrans")
 
@@ -270,6 +271,9 @@
   :straight t
   :defer)
 
+(use-package racket-mode
+  :straight t)
+
 (use-package jupyter
   :straight t)
 
@@ -277,6 +281,14 @@
   :straight t
   :defer
   :hook (julia-mode . linum-mode))
+
+(use-package rust-mode
+  :straight t
+  :config
+  (add-hook 'rust-mode-hook
+	    (lambda () (setq indent-tabs-mode nil)))
+  (setq rust-format-on-save t)
+  (define-key rust-mode-map (kbd "C-c C-c") 'rust-run))
 
 (use-package company
   :straight t
@@ -644,8 +656,30 @@
 
 (use-package soccer
   :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer")
+  :init
+  (setq soccer-leagues-alist
+	  '(("England" . "Premier League")
+	    ("Spain" . "Laliga")
+	    ("France" . "Ligue 1")
+	    ("Italy" . "Serie A")
+	    ("Germany" . "Bundesliga")
+	    ("uefa" . "Champions League")
+	    ;;("England" . "Championship")
+	    ))
   :config
-  (setq soccer-time--local-time-utc-offset "+0530"))
+  (setq soccer-time-local-time-utc-offset "+0530")
+  :bind (("C-c s f" . soccer-fixtures-next)
+	 ("C-c s r" . soccer-results-last)
+	 ("C-c s s" . soccer-scorecard)
+	 ("C-c s t" . soccer-table)))
 
 (use-package package-lint
+  :straight t)
+
+(when (string-equal system-type "darwin")
+  (require 'epa-file)
+  (custom-set-variables '(epg-gpg-program  "/opt/local/bin/gpg2"))
+  (epa-file-enable))
+
+(use-package dash
   :straight t)

@@ -1082,8 +1082,7 @@ We need to the set up the following in the local buffer. This can be done by inv
   #+BEGIN_SRC emacs-lisp
     (use-package soccer
       :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer")
-      :config
-      (setq soccer-time-local-time-utc-offset "+0530")
+      :init
       (setq soccer-leagues-alist
 	      '(("England" . "Premier League")
 		("Spain" . "Laliga")
@@ -1093,6 +1092,8 @@ We need to the set up the following in the local buffer. This can be done by inv
 		("uefa" . "Champions League")
 		;;("England" . "Championship")
 		))
+      :config
+      (setq soccer-time-local-time-utc-offset "+0530")
       :bind (("C-c s f" . soccer-fixtures-next)
 	     ("C-c s r" . soccer-results-last)
 	     ("C-c s s" . soccer-scorecard)
