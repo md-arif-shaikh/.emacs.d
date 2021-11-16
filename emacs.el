@@ -133,6 +133,7 @@
 (global-hl-line-mode 1)
 
 (setq linum-format "%4d \u2502 ")
+(add-hook 'python-mode-hook 'linum-mode)
 ;;(setq display-line-numbers 'relative)
 
 (use-package autopair
@@ -212,21 +213,13 @@
   ;;				  (bms/pdf-midnite-amber))) ; automatically turns on midnight-mode for pdfs
   )
 
-(defun efs/lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
-
 (use-package lsp-mode
   :straight t
-  :commands lsp
-  :hook
-  (lsp-mode . efs/lsp-mode-setup)
   :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (setq lsp-enable-completion-at-point t
-	lsp-prefer-capf t) 
-  )
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((python-mode . lsp)
+	 (lsp-mode . lsp-enable-which-key-integration))
+  :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
   :straight t)
@@ -251,25 +244,6 @@
 		  :server-id 'pyls-remote))
 (require 'tramp)
 (add-to-list 'tramp-remote-path '"~/miniconda3/bin/")
-
-(use-package highlight-indent-guides
-  :straight t
-  :defer t
-  :config
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (setq highlight-indent-guides-method 'character))
-
-(use-package flycheck
-  :straight t
-  :config
-  (global-flycheck-mode)
-  (setq flycheck-indication-mode 'left-fringe)
-  (setq-default flycheck-disabled-checkers '(python-pylint))
-  )
-
-(use-package company-jedi
-  :straight t
-  :defer)
 
 (use-package racket-mode
   :straight t)
@@ -454,7 +428,7 @@
   (global-set-key (kbd "C-c a") 'org-agenda)
   (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
   ;; Basic setup
-  (setq org-agenda-span 7)
+  (setq org-agenda-span 21)
   (setq org-agenda-start-day "+0d")
   (setq org-agenda-start-on-weekday nil)
   ;; Items with deadline and scheduled timestamps
