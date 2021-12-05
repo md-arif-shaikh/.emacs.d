@@ -58,6 +58,7 @@
   - [[#change-yes-or-no-p-to-y-or-no-p][Change 'yes-or-no-p' to 'y-or-no-p']]
 - [[#custom-commands][Custom commands]]
 - [[#org-mode][org-mode]]
+  - [[#org-babel][org-babel]]
   - [[#org-agenda][org agenda]]
   - [[#org-appointment][org appointment]]
   - [[#hide-emphasis-markup][Hide emphasis markup]]
@@ -92,6 +93,8 @@
 - [[#gpg2-on-mac][gpg2 on mac]]
 - [[#dash-for-list-manipulation][dash for list manipulation]]
 - [[#generate-custom-email][generate custom email]]
+- [[#expenses-for-expense-tracking][Expenses for expense tracking]]
+- [[#elfeed][Elfeed]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -409,7 +412,7 @@ easy to change the conda environments.
 #+END_SRC
 *** with lsp-python-ms
 https://emacs-lsp.github.io/lsp-python-ms/
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (use-package lsp-python-ms 
     :straight t
     :init
@@ -423,7 +426,7 @@ https://emacs-lsp.github.io/lsp-python-ms/
     (python-mode . linum-mode))
 #+END_SRC
 *** with py-right
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package lsp-pyright
     :straight t
     :hook (python-mode . (lambda ()
@@ -467,7 +470,7 @@ https://emacs-lsp.github.io/lsp-python-ms/
     (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
     (setq highlight-indent-guides-method 'character))
 #+END_SRC
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :straight t
     :config
@@ -769,6 +772,12 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (arif/load-file "~/.config/emacs/custom-commands.el")
 #+END_SRC
 * org-mode
+** org-babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)))
+#+END_SRC
 ** org agenda
   #+BEGIN_SRC emacs-lisp
     (use-package org
@@ -826,7 +835,8 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 
      ;; set up the call to terminal-notifier
      (defvar my-notifier-path 
-       "/usr/bin/notify-send")  ;; path to libnotify binary notify-send
+       (cond ((string-equal system-type "gnu/linux") "/usr/bin/notify-send")
+	     ((string-equal system-type "darwin") "/usr/local/bin/terminal-notifier")))  ;; path to libnotify binary notify-send
      (defun my-appt-send-notification (msg)
        (shell-command (concat my-notifier-path " -t" " 0 " " -i" " ~/.emacs.d/icons/emacs.png "  msg))) ;; see notify-send help to understand the options
 
@@ -1117,4 +1127,25 @@ We need to the set up the following in the local buffer. This can be done by inv
 * generate custom email
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.emacs.d/lisp/lunch-paper.el")
+#+END_SRC
+
+* Expenses for expense tracking
+  #+BEGIN_SRC emacs-lisp
+    (use-package expenses
+      :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
+      :bind (("C-c e a" . expenses-add-expense)
+	     ("C-c e v" . expenses-view-expense)
+	     ("C-c e y" . expenses-calc-expense-for-year)
+	     ("C-c e m" . expenses-calc-expense-for-month)
+	     ("C-c e d" . expenses-calc-expense-for-day)
+	     ("C-c e c" . expenses-calc-expense-by-category))
+      )
+  #+END_SRC
+* Elfeed
+#+BEGIN_SRC emacs-lisp
+  (use-package elfeed
+    :straight t
+    :config
+    (setq elfeed-feeds
+	  '(("https://www.theguardian.com/football/rss"))))
 #+END_SRC

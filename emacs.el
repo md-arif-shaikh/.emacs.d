@@ -231,11 +231,17 @@
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
 
-(use-package lsp-pyright
+(use-package lsp-python-ms 
   :straight t
-  :hook (python-mode . (lambda ()
-			  (require 'lsp-pyright)
-			  (lsp-deferred))))  ; or lsp-deferred
+  :init
+  (setq
+   lsp-python-ms-auto-install-server t
+   lsp-python-ms-executable (executable-find "python-language-server"))
+  :hook
+  (python-mode . (lambda ()
+			 (require 'lsp-python-ms)
+			 (lsp-deferred)))
+  (python-mode . linum-mode))
 
 (lsp-register-client
  (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
@@ -244,6 +250,14 @@
 		  :server-id 'pyls-remote))
 (require 'tramp)
 (add-to-list 'tramp-remote-path '"~/miniconda3/bin/")
+
+(use-package flycheck
+  :straight t
+  :config
+  (global-flycheck-mode)
+  (setq flycheck-indication-mode 'left-fringe)
+  (setq-default flycheck-disabled-checkers '(python-pylint))
+  )
 
 (use-package racket-mode
   :straight t)
@@ -423,6 +437,10 @@
 
 (arif/load-file "~/.config/emacs/custom-commands.el")
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)))
+
 (use-package org
   :config
   (global-set-key (kbd "C-c a") 'org-agenda)
@@ -476,7 +494,8 @@
 
 ;; set up the call to terminal-notifier
 (defvar my-notifier-path 
-  "/usr/bin/notify-send")  ;; path to libnotify binary notify-send
+  (cond ((string-equal system-type "gnu/linux") "/usr/bin/notify-send")
+	((string-equal system-type "darwin") "/usr/local/bin/terminal-notifier")))  ;; path to libnotify binary notify-send
 (defun my-appt-send-notification (msg)
   (shell-command (concat my-notifier-path " -t" " 0 " " -i" " ~/.emacs.d/icons/emacs.png "  msg))) ;; see notify-send help to understand the options
 
@@ -657,3 +676,21 @@
 
 (use-package dash
   :straight t)
+
+(arif/load-file "~/.emacs.d/lisp/lunch-paper.el")
+
+(use-package expenses
+  :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
+  :bind (("C-c e a" . expenses-add-expense)
+	 ("C-c e v" . expenses-view-expense)
+	 ("C-c e y" . expenses-calc-expense-for-year)
+	 ("C-c e m" . expenses-calc-expense-for-month)
+	 ("C-c e d" . expenses-calc-expense-for-day)
+	 ("C-c e c" . expenses-calc-expense-by-category))
+  )
+
+(use-package elfeed
+  :straight t
+  :config
+  (setq elfeed-feeds
+	'(("https://www.theguardian.com/football/rss"))))
