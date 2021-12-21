@@ -82,31 +82,17 @@
       (set-language-environment "UTF-8")
       (set-default-coding-systems 'utf-8)))
 
-(use-package doom-modeline
-  :straight t
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :config
-  ;; Configure doom-modeline variables
-  (setq find-file-visit-truename t)
-  (setq doom-modeline-bar-width 3)
-  (setq doom-modeline-height 10)
-  (setq doom-modeline-buffer-file-name-style 'file-name)
-  (setq doom-modeline-lsp t)
-  (setq doom-modeline-minor-modes nil)
-  ;;(setq doom-modeline-github t)
-  ;;(setq doom-modeline-github-interval (* 30 60))
-  (setq doom-modeline-major-mode-icon t)
-  (setq doom-modeline-icon (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin))))
-  (setq doom-modeline-env-version t)
-  ;;(if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
-  ;;    (setq doom-modeline-minor-modes nil)
-  ;;  (setq doom-modeline-minor-modes t))
-  ;; (setq doom-modeline-minor-modes t)
-  ;;(setq doom-modeline-mu4e t)
-  (setq doom-modeline-buffer-encoding nil)
-  (setq lsp-modeline-diagnostics-enable nil)
-  )
+(setq-default mode-line-format 
+	      '("-"
+		mode-line-modified
+		mode-line-frame-identification
+		mode-line-buffer-identification
+		"   "
+		mode-line-position
+		(vc-mode vc-mode)
+		"   "
+		mode-name
+		(which-function-mode ("" which-func-format "--"))))
 
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
@@ -450,8 +436,8 @@
   (setq org-agenda-start-day "+0d")
   (setq org-agenda-start-on-weekday nil)
   ;; Items with deadline and scheduled timestamps
-  ;;(setq org-agenda-include-deadlines t)
-  ;;(setq org-deadline-warning-days 5)
+  (setq org-agenda-include-deadlines t)
+  (setq org-deadline-warning-days 28)
   (setq org-agenda-skip-scheduled-if-done t)
   ;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
   ;;(setq org-agenda-skip-timestamp-if-deadline-is-shown t)
@@ -460,22 +446,37 @@
   ;;(setq org-agenda-skip-scheduled-delay-if-deadline nil)
   ;;(setq org-agenda-skip-additional-timestamps-same-entry nil)
   ;;(setq org-agenda-search-headline-for-time t)
-  (setq org-scheduled-past-days 30)
-  (setq org-deadline-past-days 30)
+  (setq org-scheduled-past-days 14)
+  (setq org-deadline-past-days 14)
   ;;(setq org-agenda-move-date-from-past-immediately-to-today t)
   ;;(setq org-agenda-show-future-repeats t)
   ;;(setq org-agenda-prefer-last-repeat nil)
-  ;;(setq org-agenda-time-leading-zero t)
-  ;;(setq org-agenda-timegrid-use-ampm nil)
+  (setq org-agenda-time-leading-zero t)
+  (setq org-agenda-timegrid-use-ampm t)
   (setq org-agenda-use-time-grid t)
   (setq org-agenda-show-current-time-in-grid t)
-  (setq org-agenda-time-grid
-	'((daily today remove-match)
-	  ()
-	  "......" "----------------"))
-  (setq display-time-format "%H:%M")
+  (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
+			    (sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
+			    (sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
+			    (sequence "READ(r)" "|" "FINISHED READING(F)")
+			    (sequence "DISCUSS(d)" "|" "DONE(D)")))
+  (setq org-todo-keyword-faces '(("TODO" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("ATTEND" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("MEET" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("READ" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("DISCUSS" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
+				 ("DONE" . ( :foreground "gray50" :underline t :box nil))
+				 ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
+				 ("MET" . ( :foreground "gray50" :underline t :box nil))
+				 ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
+				 ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
+				 ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
+  (setq org-agenda-prefix-format "%t%2s")
+  (setq org-agenda-time-grid '((daily today remove-match)
+			       (0900 1100 1300 1500 1700)
+			       "      " "................"))
   ;;(setq org-agenda-todo-keyword-format "%-1s")
-  ;;(arif/load-file "~/.emacs.d/lisp/bn-org.el")
 )
 
 (require 'appt)
@@ -566,12 +567,6 @@
 
 (use-package markdown-toc
   :straight t)
-
-(use-package bn
-  :straight (bn :type git :host github :repo "md-arif-shaikh/emacs-bn")
-  :config
-  (bn-display--doom-modeline)
-  (bn-display--org-agenda))
 
 (use-package bgt
   :straight (bgt :type git :host github :repo "md-arif-shaikh/emacs-bgt")
@@ -681,6 +676,8 @@
 
 (use-package expenses
   :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
+  :config
+  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Others"))
   :bind (("C-c e a" . expenses-add-expense)
 	 ("C-c e v" . expenses-view-expense)
 	 ("C-c e y" . expenses-calc-expense-for-year)
@@ -694,3 +691,21 @@
   :config
   (setq elfeed-feeds
 	'(("https://www.theguardian.com/football/rss"))))
+
+(use-package crdt
+  :straight t)
+
+(tab-bar-mode)
+(setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+(set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
+(add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
+
+(use-package bn
+  :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+  :config
+  (setq bn-time-separator ":")
+  (setq bn-date-separator "-")
+  (display-time-mode 1)
+  (display-battery-mode 1)
+  (setq display-time-string-forms bn-display-time-string-forms)
+  (advice-add 'battery-update :override #'bn-battery-update))
