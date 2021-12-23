@@ -82,18 +82,6 @@
       (set-language-environment "UTF-8")
       (set-default-coding-systems 'utf-8)))
 
-(setq-default mode-line-format 
-	      '("-"
-		mode-line-modified
-		mode-line-frame-identification
-		mode-line-buffer-identification
-		"   "
-		mode-line-position
-		(vc-mode vc-mode)
-		"   "
-		mode-name
-		(which-function-mode ("" which-func-format "--"))))
-
 (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
 (setq inhibit-startup-message t)
@@ -699,6 +687,7 @@
 (setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
 (set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
 (add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
+(set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background nil :bold t :box t)
 
 (use-package bn
   :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
@@ -708,4 +697,22 @@
   (display-time-mode 1)
   (display-battery-mode 1)
   (setq display-time-string-forms bn-display-time-string-forms)
-  (advice-add 'battery-update :override #'bn-battery-update))
+  (advice-add 'battery-update :override #'bn-battery-update)
+  (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
+  (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
+  (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string))
+
+(setq-default mode-line-format
+	      '("-"
+		(:eval (let ((str (if buffer-read-only
+				      (if (buffer-modified-p) "%%*" "%%%%")
+				    (if (buffer-modified-p) "পরিবর্তিত" "--"))))
+			 str))
+		mode-line-frame-identification
+		;mode-line-buffer-identification
+		"   "
+		mode-line-position
+		(vc-mode vc-mode)
+		"   "
+		mode-name
+		(which-function-mode ("" which-func-format "--"))))

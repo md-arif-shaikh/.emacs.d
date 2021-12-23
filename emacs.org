@@ -13,7 +13,6 @@
   - [[#themes][Themes]]
   - [[#all-the-icons][All the icons]]
   - [[#doom-modeline][doom-modeline]]
-  - [[#mode-line][Mode line]]
   - [[#start-full-screen][Start full screen]]
   - [[#hide-start-up-message][hide start-up message]]
   - [[#remove-scroll-bar-and-toolbar-fringe][remove scroll bar and toolbar, fringe]]
@@ -98,6 +97,7 @@
 - [[#crdt][CRDT]]
 - [[#tab-bar-mode][Tab-bar-mode]]
 - [[#bn][bn]]
+- [[#mode-line][Mode line]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -244,20 +244,6 @@ which asks for the machine name.
     (setq doom-modeline-buffer-encoding nil)
     (setq lsp-modeline-diagnostics-enable nil)
     )
-#+END_SRC
-** Mode line
-#+BEGIN_SRC emacs-lisp
-  (setq-default mode-line-format 
-		'("-"
-		  mode-line-modified
-		  mode-line-frame-identification
-		  mode-line-buffer-identification
-		  "   "
-		  mode-line-position
-		  (vc-mode vc-mode)
-		  "   "
-		  mode-name
-		  (which-function-mode ("" which-func-format "--"))))
 #+END_SRC
 ** Start full screen
 #+BEGIN_SRC emacs-lisp
@@ -1187,16 +1173,38 @@ We need to the set up the following in the local buffer. This can be done by inv
   (setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
   (set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
   (add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
+  (set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background nil :bold t :box t)
 #+END_SRC
 * bn
 #+BEGIN_SRC emacs-lisp
-  (use-package bn
-    :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
-    :config
-    (setq bn-time-separator ":")
-    (setq bn-date-separator "-")
-    (display-time-mode 1)
-    (display-battery-mode 1)
-    (setq display-time-string-forms bn-display-time-string-forms)
-    (advice-add 'battery-update :override #'bn-battery-update))
+    (use-package bn
+      :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+      :config
+      (setq bn-time-separator ":")
+      (setq bn-date-separator "-")
+      (display-time-mode 1)
+      (display-battery-mode 1)
+      (setq display-time-string-forms bn-display-time-string-forms)
+      (advice-add 'battery-update :override #'bn-battery-update)
+      (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
+      (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
+      (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string))
+#+END_SRC
+
+* Mode line
+#+BEGIN_SRC emacs-lisp
+  (setq-default mode-line-format
+		'("-"
+		  (:eval (let ((str (if buffer-read-only
+					(if (buffer-modified-p) "%%*" "%%%%")
+				      (if (buffer-modified-p) "পরিবর্তিত" "--"))))
+			   str))
+		  mode-line-frame-identification
+		  ;mode-line-buffer-identification
+		  "   "
+		  mode-line-position
+		  (vc-mode vc-mode)
+		  "   "
+		  mode-name
+		  (which-function-mode ("" which-func-format "--"))))
 #+END_SRC
