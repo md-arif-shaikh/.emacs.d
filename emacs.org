@@ -76,7 +76,7 @@
 - [[#search-arxiv][Search arxiv]]
 - [[#fix-terminal-display][fix terminal display]]
 - [[#markdown-toc][Markdown toc]]
-- [[#emacs-bgt][emacs-bgt]]
+- [[#bgt][bgt]]
 - [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
 - [[#mu-for-email-management][mu for email management]]
   - [[#installing-mu][Installing mu]]
@@ -91,6 +91,7 @@
 - [[#package-lint][package-lint]]
 - [[#gpg2-on-mac][gpg2 on mac]]
 - [[#dash-for-list-manipulation][dash for list manipulation]]
+- [[#ht-for-hash-tables][ht for hash tables]]
 - [[#generate-custom-email][generate custom email]]
 - [[#expenses-for-expense-tracking][Expenses for expense tracking]]
 - [[#elfeed][Elfeed]]
@@ -315,10 +316,10 @@ which asks for the machine name.
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
 to meetings schedules at different parts of the world. I call my package
-[[https://github.com/md-arif-shaikh/emacs-convert-time][convert-time]] to convert the time to my local one.
+[[https://github.com/md-arif-shaikh/tzc][tzc]] to convert the time to my local one.
 #+BEGIN_SRC emacs-lisp
-  (use-package convert-time
-    :straight (convert-time :type git :host github :repo "md-arif-shaikh/emacs-convert-time"))
+  (use-package tzc
+    :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc"))
 #+END_SRC
 * Pyenv
 I use different conda environments for different projects. This makes
@@ -963,15 +964,16 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       :straight t)
   #+END_SRC
 
-* emacs-bgt
+* bgt
   keep records of your BG level
   #+BEGIN_SRC emacs-lisp
     (use-package bgt
-      :straight (bgt :type git :host github :repo "md-arif-shaikh/emacs-bgt")
+      :straight (bgt :type git :host github :repo "md-arif-shaikh/bgt")
       :config
-      (setq bgt-file-name "~/Dropbox/org/bgt.org"
-	    bgt-csv-file-name "~/Dropbox/org/bgt.csv"
-	    bgt-python-file "~/Dropbox/org/bgt.py"))
+      (setq bgt-file-name "~/Dropbox/org/bgt.org")
+      (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
+      (setq bgt-python-file "~/bgt/bgt.py")
+      (setq bgt-python-path "~/miniconda3/envs/teobresums/bin/python"))
   #+END_SRC
 * Writing in Bangla using company-wordfreq
 First we install the follow package for auto suggestions of Bangla word.
@@ -1131,6 +1133,12 @@ We need to the set up the following in the local buffer. This can be done by inv
 * dash for list manipulation
   #+BEGIN_SRC emacs-lisp
     (use-package dash
+      :straight t)
+  #+END_SRC
+
+* ht for hash tables
+  #+BEGIN_SRC emacs-lisp
+    (use-package ht
       :straight t)
   #+END_SRC
 
