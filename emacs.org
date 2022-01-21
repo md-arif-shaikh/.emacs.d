@@ -99,6 +99,7 @@
 - [[#tab-bar-mode][Tab-bar-mode]]
 - [[#bn][bn]]
 - [[#mode-line][Mode line]]
+- [[#popup-menu][popup-menu]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -1215,4 +1216,10 @@ We need to the set up the following in the local buffer. This can be done by inv
 		  "   "
 		  mode-name
 		  (which-function-mode ("" which-func-format "--"))))
+#+END_SRC
+
+* popup-menu
+#+BEGIN_SRC emacs-lisp
+  (use-package popup
+    :straight t)
 #+END_SRC

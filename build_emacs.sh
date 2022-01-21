@@ -30,7 +30,7 @@ fi
 
 ./autogen.sh
 ./configure --with-json --with-modules --with-harfbuzz --with-compress-install \
-            --with-threads --with-included-regex --with-zlib --with-cairo --without-rsvg\
+            --with-threads --with-included-regex --with-zlib --with-cairo --with-rsvg\
             --without-sound --without-imagemagick  --without-toolkit-scroll-bars \
             --without-gpm --without-dbus --without-makeinfo --without-pop \
             --without-mailutils --without-gsettings --with-libxml2

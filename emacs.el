@@ -127,8 +127,8 @@
 
 (setq-default cursor-type 'bar)
 
-(use-package convert-time
-  :straight (convert-time :type git :host github :repo "md-arif-shaikh/emacs-convert-time"))
+(use-package tzc
+  :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc"))
 
 (use-package pyvenv
   :straight t
@@ -557,11 +557,12 @@
   :straight t)
 
 (use-package bgt
-  :straight (bgt :type git :host github :repo "md-arif-shaikh/emacs-bgt")
+  :straight (bgt :type git :host github :repo "md-arif-shaikh/bgt")
   :config
-  (setq bgt-file-name "~/Dropbox/org/bgt.org"
-	bgt-csv-file-name "~/Dropbox/org/bgt.csv"
-	bgt-python-file "~/Dropbox/org/bgt.py"))
+  (setq bgt-file-name "~/Dropbox/org/bgt.org")
+  (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
+  (setq bgt-python-file "~/bgt/bgt.py")
+  (setq bgt-python-path "~/miniconda3/envs/teobresums/bin/python"))
 
 (use-package company-wordfreq
   :straight t)
@@ -660,6 +661,9 @@
 (use-package dash
   :straight t)
 
+(use-package ht
+  :straight t)
+
 (arif/load-file "~/.emacs.d/lisp/lunch-paper.el")
 
 (use-package expenses
@@ -716,3 +720,6 @@
 		"   "
 		mode-name
 		(which-function-mode ("" which-func-format "--"))))
+
+(use-package popup
+  :straight t)
