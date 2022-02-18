@@ -128,7 +128,14 @@
 (setq-default cursor-type 'bar)
 
 (use-package tzc
-  :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc"))
+  :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc")
+  :config
+  (setq tzc-favourite-time-zones-alist '(("Asia/Kolkata" "Kolkata")
+					 ("Europe/London" "London")
+					 ("Europe/Madrid" "Berlin")
+					 ("Asia/Shanghai" "Shanghai")
+					 ("Asia/Tokyo" "Tokyo")
+					 ("America/New_York" "New_York"))))
 
 (use-package pyvenv
   :straight t
@@ -559,8 +566,10 @@
 (use-package bgt
   :straight (bgt :type git :host github :repo "md-arif-shaikh/bgt")
   :config
-  (setq bgt-file-name "~/Dropbox/org/bgt.org")
-  (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
+  ;(setq bgt-file-name "~/Dropbox/org/bgt.org")
+					;(setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
+  (setq bgt-file-name "~/test/bgt.org")
+  (setq bgt-csv-file-name "~/test/bgt.csv")
   (setq bgt-python-file "~/bgt/bgt.py")
   (setq bgt-python-path "~/miniconda3/envs/teobresums/bin/python"))
 
@@ -713,7 +722,7 @@
 				    (if (buffer-modified-p) "পরিবর্তিত" "--"))))
 			 str))
 		mode-line-frame-identification
-		;mode-line-buffer-identification
+		mode-line-buffer-identification
 		"   "
 		mode-line-position
 		(vc-mode vc-mode)
@@ -722,4 +731,10 @@
 		(which-function-mode ("" which-func-format "--"))))
 
 (use-package popup
+  :straight t)
+
+(use-package keycast
+  :straight t)
+
+(use-package yaml-mode
   :straight t)
