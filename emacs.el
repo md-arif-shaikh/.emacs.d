@@ -131,10 +131,8 @@
   :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc")
   :config
   (setq tzc-favourite-time-zones-alist '(("Asia/Kolkata" "Kolkata")
+					 ("Asia/Seoul" "Seoul")
 					 ("Europe/London" "London")
-					 ("Europe/Madrid" "Berlin")
-					 ("Asia/Shanghai" "Shanghai")
-					 ("Asia/Tokyo" "Tokyo")
 					 ("America/New_York" "New_York"))))
 
 (use-package pyvenv
@@ -245,6 +243,8 @@
 
 (use-package jupyter
   :straight t)
+
+(arif/load-file "~/.emacs.d/lisp/clean-latex.el")
 
 (use-package julia-mode
   :straight t
@@ -566,10 +566,8 @@
 (use-package bgt
   :straight (bgt :type git :host github :repo "md-arif-shaikh/bgt")
   :config
-  ;(setq bgt-file-name "~/Dropbox/org/bgt.org")
-					;(setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
-  (setq bgt-file-name "~/test/bgt.org")
-  (setq bgt-csv-file-name "~/test/bgt.csv")
+  (setq bgt-file-name "~/Dropbox/org/bgt.org")
+  (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
   (setq bgt-python-file "~/bgt/bgt.py")
   (setq bgt-python-path "~/miniconda3/envs/teobresums/bin/python"))
 
@@ -678,14 +676,15 @@
 (use-package expenses
   :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
   :config
-  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Others"))
+  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Others")
+	expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
+	expenses-python-path "~/miniconda3/envs/teobresums/bin/python")
   :bind (("C-c e a" . expenses-add-expense)
 	 ("C-c e v" . expenses-view-expense)
 	 ("C-c e y" . expenses-calc-expense-for-year)
 	 ("C-c e m" . expenses-calc-expense-for-month)
 	 ("C-c e d" . expenses-calc-expense-for-day)
-	 ("C-c e c" . expenses-calc-expense-by-category))
-  )
+	 ("C-c e c" . expenses-calc-expense-by-category)))
 
 (use-package elfeed
   :straight t

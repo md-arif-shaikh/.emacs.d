@@ -31,7 +31,7 @@
   (let* ((date (if (string-equal (format-time-string "%A") day-name) (org-read-date nil nil "+0d") (org-read-date nil nil (concat "++" day-name))))
 	 (body (format "We will have our weekly paper discussion at 12:00 noon online. A tentative list of papers from the last week could be found at http://gitlab.icts.res.in/astrorel/group-activities/wikis/this-weeks-papers#%s. Please feel free to add papers you find interesting.
 
-Google meet link will be shared before the start of the meeting. Alternatively, one can use the nickname astrorel_lp and icts email address to join the meeting.
+Zoom link for the meeting: https://icts-res-in.zoom.us/j/3720582532?pwd=ZExCQkYvaDc4MXlOWUVtYUZmSnVpQT09
 
 cheers
 Arif" date)))

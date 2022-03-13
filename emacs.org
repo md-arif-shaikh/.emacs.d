@@ -37,6 +37,7 @@
 - [[#racket][Racket]]
 - [[#jupyter][jupyter]]
 - [[#latex-with-lsp][LaTeX with LSP]]
+- [[#clean-latex][Clean Latex]]
 - [[#julia][Julia]]
 - [[#rust][Rust]]
 - [[#company-autocompletion][Company autocompletion]]
@@ -326,10 +327,8 @@ to meetings schedules at different parts of the world. I call my package
     :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc")
     :config
     (setq tzc-favourite-time-zones-alist '(("Asia/Kolkata" "Kolkata")
+					   ("Asia/Seoul" "Seoul")
 					   ("Europe/London" "London")
-					   ("Europe/Madrid" "Berlin")
-					   ("Asia/Shanghai" "Shanghai")
-					   ("Asia/Tokyo" "Tokyo")
 					   ("America/New_York" "New_York"))))
 #+END_SRC
 * Pyenv
@@ -537,6 +536,10 @@ https://emacs-lsp.github.io/lsp-python-ms/
   ;; For bibtex
   (with-eval-after-load "bibtex"
     (add-hook 'bibtex-mode-hook 'lsp))
+#+END_SRC
+* Clean Latex
+#+BEGIN_SRC emacs-lisp
+  (arif/load-file "~/.emacs.d/lisp/clean-latex.el")
 #+END_SRC
 * Julia
 #+BEGIN_SRC emacs-lisp
@@ -1228,14 +1231,15 @@ We need to the set up the following in the local buffer. This can be done by inv
     (use-package expenses
       :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
       :config
-      (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Others"))
+      (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Others")
+	    expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
+	    expenses-python-path "~/miniconda3/envs/teobresums/bin/python")
       :bind (("C-c e a" . expenses-add-expense)
 	     ("C-c e v" . expenses-view-expense)
 	     ("C-c e y" . expenses-calc-expense-for-year)
 	     ("C-c e m" . expenses-calc-expense-for-month)
 	     ("C-c e d" . expenses-calc-expense-for-day)
-	     ("C-c e c" . expenses-calc-expense-by-category))
-      )
+	     ("C-c e c" . expenses-calc-expense-by-category)))
   #+END_SRC
 * Elfeed
 #+BEGIN_SRC emacs-lisp
