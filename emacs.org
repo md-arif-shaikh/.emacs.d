@@ -104,6 +104,7 @@
 - [[#popup-menu][popup-menu]]
 - [[#keycast][keycast]]
 - [[#yaml-mode][yaml mode]]
+- [[#f][f]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -1094,7 +1095,7 @@ We need to the set up the following in the local buffer. This can be done by inv
    - xapian: ~sudo dnf install xapian-core-devel~
    - texinfo: ~sudo dnf install texinfo~
 ** set mu and mu4e path
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (add-to-list 'load-path "~/Downloads/mu-1.6.6/mu4e")
      (setq mu4e-mu-binary "~/Downloads/mu-1.6.6/mu/mu")
      (require 'mu4e)
@@ -1151,7 +1152,7 @@ We need to the set up the following in the local buffer. This can be done by inv
 	    "https://md-arif-shaikh.github.io\n"))
    #+END_SRC
 ** mu4e alert
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package mu4e-alert
        :straight t
        :config
@@ -1258,7 +1259,7 @@ We need to the set up the following in the local buffer. This can be done by inv
 * Tab-bar-mode
 #+BEGIN_SRC emacs-lisp
   (tab-bar-mode)
-  (setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+  (setq tab-bar-format '(tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
   (set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
   (add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
   (set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background nil :bold t :box t)
@@ -1312,5 +1313,10 @@ We need to the set up the following in the local buffer. This can be done by inv
 * yaml mode
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
+    :straight t)
+#+END_SRC
+* f
+#+BEGIN_SRC emacs-lisp
+  (use-package f
     :straight t)
 #+END_SRC
