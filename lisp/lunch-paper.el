@@ -54,5 +54,6 @@ Arif" date)))
     (with-temp-buffer
       (insert body)
       (copy-region-as-kill (point-min) (point-max)))))
+
 (provide 'lunch-paper)
 ;;; lunch-paper.el ends here

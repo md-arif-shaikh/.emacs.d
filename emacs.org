@@ -1,5 +1,5 @@
-#+TITLE: Emacs config file
 #+AUTHOR: Md Arif Shaikh
+#+TITLE: Emacs config file
 #+Email: arifshaikh.astro@gmail.com
 #+Date: Thu Feb 25 08:11:11 PM IST 2021
 
@@ -71,7 +71,6 @@
   - [[#org-toc][org-toc]]
   - [[#org-tree-slide][org-tree-slide]]
   - [[#perfect-margin][perfect margin]]
-- [[#org-roam][org-roam]]
 - [[#auth-source][Auth Source]]
 - [[#set-unicode][set unicode]]
 - [[#download-from-url][download from url]]
@@ -105,6 +104,10 @@
 - [[#keycast][keycast]]
 - [[#yaml-mode][yaml mode]]
 - [[#f][f]]
+- [[#forex][forex]]
+- [[#bibretrive][bibretrive]]
+- [[#inspirehep][inspirehep]]
+- [[#vterm][vterm]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -184,7 +187,7 @@ which asks for the machine name.
 	;; Global settings (defaults)
 	(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	      doom-themes-enable-italic t) ; if nil, italics is universally disabled
-	(load-theme 'doom-one t)
+	(load-theme 'doom-gruvbox t)
 
 	;; Enable flashing mode-line on errors
 	(doom-themes-visual-bell-config)
@@ -351,6 +354,7 @@ easy to change the conda environments.
     :mode ("\\.tex\\'" . latex-mode)
     :after (tex)
     :config
+    (setq-default latex-run-command "pdflatex")
     (setq TeX-source-correlate-mode t
 	  TeX-source-correlate-method 'synctex
 	  TeX-source-correlate-start-server t
@@ -370,10 +374,13 @@ easy to change the conda environments.
 	      (lambda ()
 		(reftex-mode t)
 		(flyspell-mode t)))
+    (add-hook 'latex-mode-hook 'turn-on-reftex)
     (when (string-equal system-type "darwin")
       (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin/"))
       (setq exec-path (append exec-path '("/Library/TeX/texbin/")))
       (setq pdf-info-epdfinfo-program "~/.emacs.d/straight/build/pdf-tools/build/server/epdfinfo"))
+    (eval-after-load 'tex-mode
+      '(define-key latex-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search))
     :hook
     (LaTeX-mode . linum-mode)
     (LaTeX-mode . rainbow-delimiters-mode))
@@ -392,7 +399,7 @@ easy to change the conda environments.
     (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
     (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
     (setq pdf-sync-minor-mode t)
-    ;;(define-key pdf-view-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search)
+    (define-key pdf-view-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search)
     ;;(add-hook 'pdf-view-mode-hook (lambda ()
     ;;				  (bms/pdf-midnite-amber))) ; automatically turns on midnight-mode for pdfs
     )
@@ -989,19 +996,6 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (use-package perfect-margin
     :straight t)
 #+END_SRC
-* org-roam
-  #+BEGIN_SRC emacs-lisp
-    (use-package org-roam
-      :straight t
-      :init (setq org-roam-v2-ack t)
-      :custom
-      (org-roam-directory "~/Dropbox/org/roam/")
-      :bind (("C-c n l" . org-roam-buffer-toggle)
-	     ("C-c n f" . org-roam-node-find)
-	     ("C-c n i" . org-roam-node-insert))
-      :config
-      (org-roam-setup))
-  #+END_SRC
 * Auth Source
 #+BEGIN_SRC emacs-lisp
   (setq auth-sources
@@ -1189,7 +1183,7 @@ We need to the set up the following in the local buffer. This can be done by inv
 		;;("England" . "Championship")
 		))
       :config
-      (setq soccer-time-local-time-utc-offset "+0530")
+      (setq soccer-time-local-time-utc-offset "+0900")
       :bind (("C-c s f" . soccer-fixtures-next)
 	     ("C-c s r" . soccer-results-last)
 	     ("C-c s s" . soccer-scorecard)
@@ -1266,18 +1260,18 @@ We need to the set up the following in the local buffer. This can be done by inv
 #+END_SRC
 * bn
 #+BEGIN_SRC emacs-lisp
-    (use-package bn
-      :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
-      :config
-      (setq bn-time-separator ":")
-      (setq bn-date-separator "-")
-      (display-time-mode 1)
-      (display-battery-mode 1)
-      (setq display-time-string-forms bn-display-time-string-forms)
-      (advice-add 'battery-update :override #'bn-battery-update)
-      (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
-      (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
-      (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string))
+  (use-package bn
+    :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+    :config
+    (setq bn-time-separator ":")
+    (setq bn-date-separator "-")
+    (display-time-mode 1)
+    (display-battery-mode 1)
+    (setq display-time-string-forms bn-display-time-string-forms)
+    (advice-add 'battery-update :override #'bn-battery-update)
+    (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
+    (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
+    (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string))
 #+END_SRC
 
 * Mode line
@@ -1318,5 +1312,28 @@ We need to the set up the following in the local buffer. This can be done by inv
 * f
 #+BEGIN_SRC emacs-lisp
   (use-package f
+    :straight t)
+#+END_SRC
+* forex
+#+BEGIN_SRC emacs-lisp
+  (use-package forex
+    :straight (forex :type git :host github :repo "md-arif-shaikh/forex"))
+#+END_SRC
+
+* bibretrive
+#+BEGIN_SRC emacs-lisp
+  (use-package bibretrieve
+    :straight (bibretrieve :type git :host github :repo "duetosymmetry/bibretrieve"))
+#+END_SRC
+
+* inspirehep
+#+BEGIN_SRC emacs-lisp
+  (use-package inspirehep
+    :straight (inspirehep :type git :host github :repo "aikrahguzar/inspirehep.el"))
+#+END_SRC
+
+* vterm
+#+BEGIN_SRC emacs-lisp
+  (use-package vterm
     :straight t)
 #+END_SRC

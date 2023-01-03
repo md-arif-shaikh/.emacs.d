@@ -47,7 +47,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  (load-theme 'doom-gruvbox t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -148,6 +148,7 @@
   :mode ("\\.tex\\'" . latex-mode)
   :after (tex)
   :config
+  (setq-default latex-run-command "pdflatex")
   (setq TeX-source-correlate-mode t
 	TeX-source-correlate-method 'synctex
 	TeX-source-correlate-start-server t
@@ -167,10 +168,13 @@
 	    (lambda ()
 	      (reftex-mode t)
 	      (flyspell-mode t)))
+  (add-hook 'latex-mode-hook 'turn-on-reftex)
   (when (string-equal system-type "darwin")
     (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin/"))
     (setq exec-path (append exec-path '("/Library/TeX/texbin/")))
     (setq pdf-info-epdfinfo-program "~/.emacs.d/straight/build/pdf-tools/build/server/epdfinfo"))
+  (eval-after-load 'tex-mode
+    '(define-key latex-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search))
   :hook
   (LaTeX-mode . linum-mode)
   (LaTeX-mode . rainbow-delimiters-mode))
@@ -187,7 +191,7 @@
   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
   (define-key pdf-view-mode-map (kbd "C-r") 'isearch-backward)
   (setq pdf-sync-minor-mode t)
-  ;;(define-key pdf-view-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search)
+  (define-key pdf-view-mode-map (kbd "C-c C-g") 'pdf-sync-forward-search)
   ;;(add-hook 'pdf-view-mode-hook (lambda ()
   ;;				  (bms/pdf-midnite-amber))) ; automatically turns on midnight-mode for pdfs
   )
@@ -529,17 +533,6 @@
 (use-package perfect-margin
   :straight t)
 
-(use-package org-roam
-  :straight t
-  :init (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/Dropbox/org/roam/")
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-	 ("C-c n f" . org-roam-node-find)
-	 ("C-c n i" . org-roam-node-insert))
-  :config
-  (org-roam-setup))
-
 (setq auth-sources
       '((:source "~/.config/emacs/.authinfo.gpg")))
 
@@ -586,10 +579,6 @@
   (setq-local company-backends '(company-wordfreq))
   (setq-local company-transformers nil))
 
-(add-to-list 'load-path "~/Downloads/mu-1.6.6/mu4e")
-(setq mu4e-mu-binary "~/Downloads/mu-1.6.6/mu/mu")
-(require 'mu4e)
-
 (setq mu4e-maildir       "~/Maildir"   ;; top-level Maildir
       ;; note that these folders below must start with /
       ;; the paths are relative to maildir root
@@ -622,15 +611,6 @@
        "Postdoctoral Fellow, ICTS-TIFR\n"
        "https://md-arif-shaikh.github.io\n"))
 
-(use-package mu4e-alert
-  :straight t
-  :config
-  (mu4e-alert-set-default-style 'libnotify)
-  (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-  (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-  (setq mu4e-alert-enable-mode-line-display t)
-  (setq mu4e-alert-enable-notifications t))
-
 (setq message-send-mail-function 'smtpmail-send-it
      smtpmail-stream-type 'starttls
      smtpmail-default-smtp-server "smtp.gmail.com"
@@ -651,7 +631,7 @@
 	    ;;("England" . "Championship")
 	    ))
   :config
-  (setq soccer-time-local-time-utc-offset "+0530")
+  (setq soccer-time-local-time-utc-offset "+0900")
   :bind (("C-c s f" . soccer-fixtures-next)
 	 ("C-c s r" . soccer-results-last)
 	 ("C-c s s" . soccer-scorecard)
@@ -696,7 +676,7 @@
   :straight t)
 
 (tab-bar-mode)
-(setq tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+(setq tab-bar-format '(tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
 (set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
 (add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
 (set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background nil :bold t :box t)
@@ -736,4 +716,19 @@
   :straight t)
 
 (use-package yaml-mode
+  :straight t)
+
+(use-package f
+  :straight t)
+
+(use-package forex
+  :straight (forex :type git :host github :repo "md-arif-shaikh/forex"))
+
+(use-package bibretrieve
+  :straight (bibretrieve :type git :host github :repo "duetosymmetry/bibretrieve"))
+
+(use-package inspirehep
+  :straight (inspirehep :type git :host github :repo "aikrahguzar/inspirehep.el"))
+
+(use-package vterm
   :straight t)
