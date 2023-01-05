@@ -1,5 +1,5 @@
-#+AUTHOR: Md Arif Shaikh
 #+TITLE: Emacs config file
+#+AUTHOR: Md Arif Shaikh
 #+Email: arifshaikh.astro@gmail.com
 #+Date: Thu Feb 25 08:11:11 PM IST 2021
 
@@ -12,18 +12,15 @@
 - [[#ui-customization][UI customization]]
   - [[#themes][Themes]]
   - [[#all-the-icons][All the icons]]
+  - [[#font-size][Font size]]
+  - [[#bengali-font][Bengali font]]
+  - [[#cusor][cusor]]
   - [[#doom-modeline][doom-modeline]]
-  - [[#start-full-screen][Start full screen]]
-  - [[#hide-start-up-message][hide start-up message]]
-  - [[#remove-scroll-bar-and-toolbar-fringe][remove scroll bar and toolbar, fringe]]
   - [[#rainbow-delimeters][Rainbow delimeters]]
   - [[#show-parens][Show parens]]
   - [[#highlight-current-line][Highlight current line]]
   - [[#linum-mode][Linum mode]]
   - [[#autopair][Autopair]]
-  - [[#font-size][Font size]]
-  - [[#bengali-font][Bengali font]]
-  - [[#cusor][cusor]]
 - [[#convert-timezone][convert-timezone]]
 - [[#pyenv][Pyenv]]
 - [[#auctex][Auctex]]
@@ -227,6 +224,27 @@ which asks for the machine name.
 	(set-language-environment "UTF-8")
 	(set-default-coding-systems 'utf-8)))
 #+END_SRC
+
+** Font size
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil
+		      :font "JetBrains Mono"
+		      :weight 'light
+		      :height (cond ((string-equal system-type "gnu/linux") 120)
+				    ((string-equal system-type "darwin") 130)))
+#+END_SRC
+** Bengali font
+   #+BEGIN_SRC emacs-lisp
+     ;;(set-face-font 'default "fontset-default")
+     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
+										       ((string-equal system-type "gnu/linux") 18))))
+     (setq default-input-method "bengali-itrans")
+   #+END_SRC
+** cusor
+   #+BEGIN_SRC emacs-lisp
+     (setq-default cursor-type 'bar)
+   #+END_SRC
+
 ** doom-modeline
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package doom-modeline
@@ -254,25 +272,6 @@ which asks for the machine name.
     (setq doom-modeline-buffer-encoding nil)
     (setq lsp-modeline-diagnostics-enable nil)
     )
-#+END_SRC
-** Start full screen
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
-#+END_SRC
-** hide start-up message 
-#+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-message t)
-#+END_SRC
-** remove scroll bar and toolbar, fringe
-#+BEGIN_SRC emacs-lisp
-  (if (display-graphic-p)
-      (progn
-	(tool-bar-mode -1)
-	(scroll-bar-mode -1)
-	(menu-bar-mode -1)
-	(set-fringe-mode 0)))
-  (if (daemonp)
-      (setq default-frame-alist (menu-bar-mode -1)))
 #+END_SRC
 ** Rainbow delimeters
 #+BEGIN_SRC emacs-lisp
@@ -303,25 +302,6 @@ which asks for the machine name.
     :straight t)
   (autopair-global-mode)
 #+END_SRC
-** Font size
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil
-		      :font "JetBrains Mono"
-		      :weight 'light
-		      :height (cond ((string-equal system-type "gnu/linux") 120)
-				    ((string-equal system-type "darwin") 130)))
-#+END_SRC
-** Bengali font
-   #+BEGIN_SRC emacs-lisp
-     ;;(set-face-font 'default "fontset-default")
-     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
-										       ((string-equal system-type "gnu/linux") 18))))
-     (setq default-input-method "bengali-itrans")
-   #+END_SRC
-** cusor
-   #+BEGIN_SRC emacs-lisp
-     (setq-default cursor-type 'bar)
-   #+END_SRC
 * convert-timezone
 Often I need to quickly convert times between different time-zones due
 to meetings schedules at different parts of the world. I call my package
@@ -332,6 +312,7 @@ to meetings schedules at different parts of the world. I call my package
     :config
     (setq tzc-favourite-time-zones-alist '(("Asia/Kolkata" "Kolkata")
 					   ("Asia/Seoul" "Seoul")
+					   ("Europe/Berlin" "Berlin")
 					   ("Europe/London" "London")
 					   ("America/New_York" "New_York"))))
 #+END_SRC

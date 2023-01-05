@@ -82,18 +82,18 @@
       (set-language-environment "UTF-8")
       (set-default-coding-systems 'utf-8)))
 
-(add-to-list 'default-frame-alist '(fullscreen . fullscreen))
+(set-face-attribute 'default nil
+		    :font "JetBrains Mono"
+		    :weight 'light
+		    :height (cond ((string-equal system-type "gnu/linux") 120)
+				  ((string-equal system-type "darwin") 130)))
 
-(setq inhibit-startup-message t)
+;;(set-face-font 'default "fontset-default")
+(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
+										  ((string-equal system-type "gnu/linux") 18))))
+(setq default-input-method "bengali-itrans")
 
-(if (display-graphic-p)
-    (progn
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1)
-      (menu-bar-mode -1)
-      (set-fringe-mode 0)))
-(if (daemonp)
-    (setq default-frame-alist (menu-bar-mode -1)))
+(setq-default cursor-type 'bar)
 
 (use-package rainbow-delimiters
   :straight t
@@ -114,24 +114,12 @@
   :straight t)
 (autopair-global-mode)
 
-(set-face-attribute 'default nil
-		    :font "JetBrains Mono"
-		    :weight 'light
-		    :height (cond ((string-equal system-type "gnu/linux") 120)
-				  ((string-equal system-type "darwin") 130)))
-
-;;(set-face-font 'default "fontset-default")
-(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
-										  ((string-equal system-type "gnu/linux") 18))))
-(setq default-input-method "bengali-itrans")
-
-(setq-default cursor-type 'bar)
-
 (use-package tzc
   :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc")
   :config
   (setq tzc-favourite-time-zones-alist '(("Asia/Kolkata" "Kolkata")
 					 ("Asia/Seoul" "Seoul")
+					 ("Europe/Berlin" "Berlin")
 					 ("Europe/London" "London")
 					 ("America/New_York" "New_York"))))
 
