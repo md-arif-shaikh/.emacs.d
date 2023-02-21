@@ -105,6 +105,7 @@
 - [[#bibretrive][bibretrive]]
 - [[#inspirehep][inspirehep]]
 - [[#vterm][vterm]]
+- [[#set-column-width][Set column width]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -184,7 +185,7 @@ which asks for the machine name.
 	;; Global settings (defaults)
 	(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	      doom-themes-enable-italic t) ; if nil, italics is universally disabled
-	(load-theme 'doom-gruvbox t)
+	(load-theme 'doom-one t)
 
 	;; Enable flashing mode-line on errors
 	(doom-themes-visual-bell-config)
@@ -230,7 +231,7 @@ which asks for the machine name.
   (set-face-attribute 'default nil
 		      :font "JetBrains Mono"
 		      :weight 'light
-		      :height (cond ((string-equal system-type "gnu/linux") 120)
+		      :height (cond ((string-equal system-type "gnu/linux") 110)
 				    ((string-equal system-type "darwin") 130)))
 #+END_SRC
 ** Bengali font
@@ -1317,4 +1318,9 @@ We need to the set up the following in the local buffer. This can be done by inv
 #+BEGIN_SRC emacs-lisp
   (use-package vterm
     :straight t)
+#+END_SRC
+
+* Set column width
+#+BEGIN_SRC emacs-lisp
+  (setq-default fill-column 79)
 #+END_SRC
