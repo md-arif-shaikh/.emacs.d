@@ -1029,7 +1029,7 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       (setq bgt-file-name "~/Dropbox/org/bgt.org")
       (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
       (setq bgt-python-file "~/bgt/bgt.py")
-      (setq bgt-python-path "~/miniconda3/envs/teobresums/bin/python"))
+      (setq bgt-python-path "~/miniconda3/envs/emacs/bin/python"))
   #+END_SRC
 * Writing in Bangla using company-wordfreq
 First we install the follow package for auto suggestions of Bangla word.

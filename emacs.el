@@ -550,7 +550,7 @@
   (setq bgt-file-name "~/Dropbox/org/bgt.org")
   (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
   (setq bgt-python-file "~/bgt/bgt.py")
-  (setq bgt-python-path "~/miniconda3/envs/teobresums/bin/python"))
+  (setq bgt-python-path "~/miniconda3/envs/emacs/bin/python"))
 
 (use-package company-wordfreq
   :straight t)
