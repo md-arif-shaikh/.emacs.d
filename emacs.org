@@ -59,6 +59,7 @@
 - [[#org-mode][org-mode]]
   - [[#org-babel][org-babel]]
   - [[#org-agenda][org agenda]]
+  - [[#org-modern][org-modern]]
   - [[#org-appointment][org appointment]]
   - [[#hide-emphasis-markup][Hide emphasis markup]]
   - [[#change-bullets-in-list][Change bullets in list]]
@@ -853,62 +854,81 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+END_SRC
 ** org agenda
   #+BEGIN_SRC emacs-lisp
-    (use-package org
-      :config
-      (global-set-key (kbd "C-c a") 'org-agenda)
-      (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
-      ;; Basic setup
-      (setq org-agenda-span 21)
-      (setq org-agenda-start-day "+0d")
-      (setq org-agenda-start-on-weekday nil)
-      ;; Items with deadline and scheduled timestamps
-      (setq org-agenda-include-deadlines t)
-      (setq org-deadline-warning-days 28)
-      (setq org-agenda-skip-scheduled-if-done t)
-      ;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-      ;;(setq org-agenda-skip-timestamp-if-deadline-is-shown t)
-      (setq org-agenda-skip-deadline-if-done t)
-      ;;(setq org-agenda-skip-deadline-prewarning-if-scheduled 1)
-      ;;(setq org-agenda-skip-scheduled-delay-if-deadline nil)
-      ;;(setq org-agenda-skip-additional-timestamps-same-entry nil)
-      ;;(setq org-agenda-search-headline-for-time t)
-      (setq org-scheduled-past-days 14)
-      (setq org-deadline-past-days 14)
-      ;;(setq org-agenda-move-date-from-past-immediately-to-today t)
-      ;;(setq org-agenda-show-future-repeats t)
-      ;;(setq org-agenda-prefer-last-repeat nil)
-      (setq org-agenda-time-leading-zero t)
-      (setq org-agenda-timegrid-use-ampm t)
-      (setq org-agenda-use-time-grid t)
-      (setq org-agenda-show-current-time-in-grid t)
-      (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
-				(sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
-				(sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
-				(sequence "READ(r)" "|" "FINISHED READING(F)")
-				(sequence "DISCUSS(d)" "|" "DONE(D)")
-				(sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
-				(sequence "WORKSHOP(w)" "|" "DONE(D)")
-				(sequence "CONFERENCE(c)" "|" "DONE(D)")
-				(sequence "SEMINAR(s)" "|" "DONE(D)")))
-      (setq org-todo-keyword-faces '(("TODO" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				     ("ATTEND" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
-				     ("MEET" . ( :foreground "#207FA1" :underline t :box nil  :weight extrabold))
-				     ("READ" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
-				     ("DISCUSS" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
-				     ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
-				     ("DONE" . ( :foreground "gray50" :underline t :box nil))
-				     ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
-				     ("MET" . ( :foreground "gray50" :underline t :box nil))
-				     ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
-				     ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
-				     ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
-      (setq org-agenda-prefix-format "%t%2s")
-      (setq org-agenda-time-grid '((daily today remove-match)
-				   (0900 1100 1300 1500 1700)
-				   "      " "................"))
-      ;;(setq org-agenda-todo-keyword-format "%-1s")
-    )
+  (use-package org
+    :config
+    (global-set-key (kbd "C-c a") 'org-agenda)
+    (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
+    ;; Basic setup
+    (setq org-agenda-span 7)
+    (setq org-agenda-start-day "+0d")
+    (setq org-agenda-start-on-weekday nil)
+    ;; Items with deadline and scheduled timestamps
+    (setq org-agenda-include-deadlines t)
+    (setq org-deadline-warning-days 28)
+    (setq org-agenda-skip-scheduled-if-done t)
+    ;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+    ;;(setq org-agenda-skip-timestamp-if-deadline-is-shown t)
+    (setq org-agenda-skip-deadline-if-done t)
+    ;;(setq org-agenda-skip-deadline-prewarning-if-scheduled 1)
+    ;;(setq org-agenda-skip-scheduled-delay-if-deadline nil)
+    ;;(setq org-agenda-skip-additional-timestamps-same-entry nil)
+    ;;(setq org-agenda-search-headline-for-time t)
+    (setq org-scheduled-past-days 14)
+    (setq org-deadline-past-days 14)
+    ;;(setq org-agenda-move-date-from-past-immediately-to-today t)
+    ;;(setq org-agenda-show-future-repeats t)
+    ;;(setq org-agenda-prefer-last-repeat nil)
+    (setq org-agenda-time-leading-zero t)
+    (setq org-agenda-timegrid-use-ampm t)
+    (setq org-agenda-use-time-grid t)
+    (setq org-agenda-show-current-time-in-grid t)
+    (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
+			      (sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
+			      (sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
+			      (sequence "READ(r)" "|" "FINISHED READING(F)")
+			      (sequence "DISCUSS(d)" "|" "DONE(D)")
+			      (sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
+			      (sequence "WORKSHOP(w)" "|" "DONE(D)")
+			      (sequence "CONFERENCE(c)" "|" "DONE(D)")
+			      (sequence "SEMINAR(s)" "|" "DONE(D)")))
+    (setq org-todo-keyword-faces '(("TODO" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("ATTEND" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("MEET" . ( :foreground "#207FA1" :underline t :box nil  :weight extrabold))
+				   ("READ" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("DISCUSS" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
+				   ("DONE" . ( :foreground "gray50" :underline t :box nil))
+				   ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
+				   ("MET" . ( :foreground "gray50" :underline t :box nil))
+				   ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
+				   ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
+				   ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
+    (setq org-agenda-prefix-format 
+	  '((agenda . "  %-15t%2s")
+	    (todo . "  %-12t%2s"))
+    ;;(setq org-agenda-time-grid '((daily today remove-match)
+    ;;(0900 1100 1300 1500 1700)
+    ;;"      " "................"))
+    ;;(setq org-agenda-todo-keyword-format "%-1s")
+  )
   #+END_SRC
+** org-modern
+#+BEGIN_SRC emacs-lisp
+  (use-package org-modern
+    :straight t
+    :config
+    (setq
+     ;; Agenda styling
+     org-agenda-tags-column 0
+     org-agenda-block-separator ?─
+     org-agenda-time-grid
+     '((daily today remove-match)
+       (800 1000 1200 1400 1600 1800 2000)
+       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+     org-agenda-current-time-string
+     "⭠ NOW ─────────")
+    (global-org-modern-mode))
+#+END_SRC
 ** org appointment
    #+BEGIN_SRC emacs-lisp
      (require 'appt)

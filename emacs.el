@@ -464,11 +464,26 @@
 				 ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
 				 ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
   (setq org-agenda-prefix-format "%t%2s")
-  (setq org-agenda-time-grid '((daily today remove-match)
-			       (0900 1100 1300 1500 1700)
-			       "      " "................"))
+  ;;(setq org-agenda-time-grid '((daily today remove-match)
+  ;;(0900 1100 1300 1500 1700)
+  ;;"      " "................"))
   ;;(setq org-agenda-todo-keyword-format "%-1s")
 )
+
+(use-package org-modern
+  :straight t
+  :config
+  (setq
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ now ─────────────────────────────────────────────────")
+  (global-org-modern-mode))
 
 (require 'appt)
 (setq appt-time-msg-list nil)    ;; clear existing appt list
