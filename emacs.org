@@ -910,7 +910,7 @@ For example ~@ + TAB + a~ will give ~\alpha~.
     ;;(0900 1100 1300 1500 1700)
     ;;"      " "................"))
     ;;(setq org-agenda-todo-keyword-format "%-1s")
-  )
+  ))
   #+END_SRC
 ** org-modern
 #+BEGIN_SRC emacs-lisp

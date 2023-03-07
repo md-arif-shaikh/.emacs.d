@@ -419,7 +419,7 @@
   (global-set-key (kbd "C-c a") 'org-agenda)
   (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
   ;; Basic setup
-  (setq org-agenda-span 21)
+  (setq org-agenda-span 7)
   (setq org-agenda-start-day "+0d")
   (setq org-agenda-start-on-weekday nil)
   ;; Items with deadline and scheduled timestamps
@@ -463,12 +463,14 @@
 				 ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
 				 ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
 				 ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
-  (setq org-agenda-prefix-format "%t%2s")
+  (setq org-agenda-prefix-format 
+	'((agenda . "  %-15t%2s")
+	  (todo . "  %-12t%2s"))
   ;;(setq org-agenda-time-grid '((daily today remove-match)
   ;;(0900 1100 1300 1500 1700)
   ;;"      " "................"))
   ;;(setq org-agenda-todo-keyword-format "%-1s")
-)
+))
 
 (use-package org-modern
   :straight t
@@ -478,11 +480,11 @@
    org-agenda-tags-column 0
    org-agenda-block-separator ?─
    org-agenda-time-grid
-   '((daily today require-timed)
+   '((daily today remove-match)
      (800 1000 1200 1400 1600 1800 2000)
      " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
    org-agenda-current-time-string
-   "⭠ now ─────────────────────────────────────────────────")
+   "⭠ NOW ─────────")
   (global-org-modern-mode))
 
 (require 'appt)
