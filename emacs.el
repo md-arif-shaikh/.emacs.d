@@ -452,7 +452,7 @@
 			    (sequence "CONFERENCE(c)" "|" "DONE(D)")
 			    (sequence "SEMINAR(s)" "|" "DONE(D)")))
   (setq org-todo-keyword-faces '(("TODO" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				 ("ATTEND" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("ATTEND" . (:background "#be5046" :foreground "orange" :underline t :box nil  :weight extrabold))
 				 ("MEET" . ( :foreground "#207FA1" :underline t :box nil  :weight extrabold))
 				 ("READ" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
 				 ("DISCUSS" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
@@ -471,21 +471,6 @@
   ;;"      " "................"))
   ;;(setq org-agenda-todo-keyword-format "%-1s")
 ))
-
-(use-package org-modern
-  :straight t
-  :config
-  (setq
-   ;; Agenda styling
-   org-agenda-tags-column 0
-   org-agenda-block-separator ?─
-   org-agenda-time-grid
-   '((daily today remove-match)
-     (800 1000 1200 1400 1600 1800 2000)
-     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-   org-agenda-current-time-string
-   "⭠ NOW ─────────")
-  (global-org-modern-mode))
 
 (require 'appt)
 (setq appt-time-msg-list nil)    ;; clear existing appt list
