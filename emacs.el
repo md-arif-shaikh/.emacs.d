@@ -414,6 +414,15 @@
  'org-babel-load-languages
  '((emacs-lisp . t)))
 
+(defvar arif/org-capture-file-name)
+(defvar arif/org-capture-task-headline)
+
+(defun arif/org-catpure ()
+  (interactive)
+  (setq arif/org-capture-file-name (expand-file-name (read-file-name "Capture entry in file: " "~/Dropbox/org/")))
+  (setq arif/org-capture-task-headline (read-string "Give a headline for your task: "))
+  (call-interactively #'org-capture))
+
 (use-package org
   :config
   (global-set-key (kbd "C-c a") 'org-agenda)
@@ -425,10 +434,10 @@
   ;; Items with deadline and scheduled timestamps
   (setq org-agenda-include-deadlines t)
   (setq org-deadline-warning-days 28)
-  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-scheduled-if-done nil)
   ;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
   ;;(setq org-agenda-skip-timestamp-if-deadline-is-shown t)
-  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-deadline-if-done nil)
   ;;(setq org-agenda-skip-deadline-prewarning-if-scheduled 1)
   ;;(setq org-agenda-skip-scheduled-delay-if-deadline nil)
   ;;(setq org-agenda-skip-additional-timestamps-same-entry nil)
@@ -464,6 +473,12 @@
 				 ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
 				 ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
 				 ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
+  (setq org-capture-templates
+      '(("t" "Todo" entry (file+headline arif/org-capture-file-name arif/org-capture-task-headline)
+	 "* TODO %?\n  %i\n  %a"
+	 :prepend t)
+	("j" "Journal" entry (file+datetree "~/org/journal.org")
+	 "* %?\nEntered on %U\n  %i\n  %a")))
   (setq org-agenda-prefix-format 
 	'((agenda . "  %-15t%2s")
 	  (todo . "  %-12t%2s"))
@@ -478,7 +493,7 @@
   :config
   (setq
    ;; Agenda styling
-   ;; to-do face
+   ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
    org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold :inherit nil)
 			   ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
 			   ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold))

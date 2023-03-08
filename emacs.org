@@ -2,8 +2,11 @@
 #+AUTHOR: Md Arif Shaikh
 #+Email: arifshaikh.astro@gmail.com
 #+Date: Thu Feb 25 08:11:11 PM IST 2021
-
+* TODO testing
+  
+  [[file:~/.emacs.d/emacs.org::*org agenda][org agenda]]
 * Table of Contents :TOC:
+- [[#testing][testing]]
 - [[#straight][straight]]
 - [[#use-package][use-package]]
 - [[#load-file-if-found][load-file if found]]
@@ -854,6 +857,13 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+END_SRC
 ** org agenda
   #+BEGIN_SRC emacs-lisp
+  (defvar arif/org-capture-file-name)
+
+  (defun arif/org-catpure ()
+    (interactive)
+    (setq arif/org-capture-file-name (expand-file-name (read-file-name "Capture entry in file: " "~/Dropbox/org/")))
+    (call-interactively #'org-capture))
+
   (use-package org
     :config
     (global-set-key (kbd "C-c a") 'org-agenda)
@@ -904,6 +914,45 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 				   ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
 				   ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
 				   ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
+    (setq org-capture-templates
+	  (append
+	   '(("s" "schedule task")
+	     ("st" ;; keys
+	      "Schedule TODOs" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* TODO %?\n  SCHEDULED: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sm" ;; keys
+	      "Schedule MEETING" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* MEET %?\n  SCHEDULE: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sa" ;; keys
+	      "Schedule ATTENDANCE" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* ATTEND %?\n  SCHEDULE: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sw" ;; keys
+	      "Schedule WORKSHOP" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* WORKSHOP %?\n  SCHEDULED: %T\n" ;; template
+	      ;;properties
+	      :prepend t))
+	   '(("d" "Set deadline for task")
+	     ("dt" ;; keys
+	      "Set Deadline for TODOs" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* TODO %?\n  DEADLINE: %T\n" ;; template
+	      ;;properties
+	      :prepend t))))
     (setq org-agenda-prefix-format 
 	  '((agenda . "  %-15t%2s")
 	    (todo . "  %-12t%2s"))
