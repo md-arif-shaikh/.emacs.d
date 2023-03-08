@@ -451,11 +451,12 @@
 			    (sequence "WORKSHOP(w)" "|" "DONE(D)")
 			    (sequence "CONFERENCE(c)" "|" "DONE(D)")
 			    (sequence "SEMINAR(s)" "|" "DONE(D)")))
-  (setq org-todo-keyword-faces '(("TODO" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				 ("ATTEND" . (:background "#be5046" :foreground "orange" :underline t :box nil  :weight extrabold))
-				 ("MEET" . ( :foreground "#207FA1" :underline t :box nil  :weight extrabold))
-				 ("READ" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
-				 ("DISCUSS" . ( :foreground "orange" :underline t :box nil  :weight extrabold))
+  (setq org-todo-keyword-faces '(("TODO" . (:background "#61afef" :foreground "#282c34" :weight ultra-bold, :height 0.9))
+				 ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
+				 ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
+				 ("READ" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("DISCUSS" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				 ("WORKSHOP" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
 				 ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
 				 ("DONE" . ( :foreground "gray50" :underline t :box nil))
 				 ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
@@ -466,11 +467,30 @@
   (setq org-agenda-prefix-format 
 	'((agenda . "  %-15t%2s")
 	  (todo . "  %-12t%2s"))
-  ;;(setq org-agenda-time-grid '((daily today remove-match)
-  ;;(0900 1100 1300 1500 1700)
-  ;;"      " "................"))
-  ;;(setq org-agenda-todo-keyword-format "%-1s")
-))
+	org-agenda-time-grid '((daily today remove-match)
+			       (0900 1100 1300 1500 1700)
+			       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+	org-agenda-current-time-string
+	"⭠ NOW ─────────"))
+
+(use-package org-modern
+  :straight t
+  :config
+  (setq
+   ;; Agenda styling
+   ;; to-do face
+   org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold :inherit nil)
+			   ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
+			   ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold))
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today remove-match)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ NOW ─────────")
+  (global-org-modern-mode))
 
 (require 'appt)
 (setq appt-time-msg-list nil)    ;; clear existing appt list
