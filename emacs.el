@@ -415,12 +415,10 @@
  '((emacs-lisp . t)))
 
 (defvar arif/org-capture-file-name)
-(defvar arif/org-capture-task-headline)
 
 (defun arif/org-catpure ()
   (interactive)
   (setq arif/org-capture-file-name (expand-file-name (read-file-name "Capture entry in file: " "~/Dropbox/org/")))
-  (setq arif/org-capture-task-headline (read-string "Give a headline for your task: "))
   (call-interactively #'org-capture))
 
 (use-package org
@@ -459,13 +457,15 @@
 			    (sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
 			    (sequence "WORKSHOP(w)" "|" "DONE(D)")
 			    (sequence "CONFERENCE(c)" "|" "DONE(D)")
-			    (sequence "SEMINAR(s)" "|" "DONE(D)")))
+			    (sequence "SEMINAR(s)" "|" "DONE(D)")
+			    (sequence "VISIT(v)" "|" "DONE(D)")))
   (setq org-todo-keyword-faces '(("TODO" . (:background "#61afef" :foreground "#282c34" :weight ultra-bold, :height 0.9))
 				 ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
 				 ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
 				 ("READ" . (:foreground "orange" :underline t :box nil  :weight extrabold))
 				 ("DISCUSS" . (:foreground "orange" :underline t :box nil  :weight extrabold))
 				 ("WORKSHOP" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
+				 ("VISIT" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
 				 ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
 				 ("DONE" . ( :foreground "gray50" :underline t :box nil))
 				 ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
@@ -474,14 +474,47 @@
 				 ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
 				 ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
   (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline arif/org-capture-file-name arif/org-capture-task-headline)
-	 "* TODO %?\n  %i\n  %a"
-	 :prepend t)
-	("j" "Journal" entry (file+datetree "~/org/journal.org")
-	 "* %?\nEntered on %U\n  %i\n  %a")))
+	(append
+	 '(("s" "schedule task")
+	   ("st" ;; keys
+	    "Schedule TODOs" ;; description
+	    entry ;; type
+	    (file arif/org-capture-file-name) ;;target
+	    "* TODO %?\n  SCHEDULED: %T\n" ;; template
+	    ;;properties
+	    :prepend t)
+	   ("sm" ;; keys
+	    "Schedule MEETING" ;; description
+	    entry ;; type
+	    (file arif/org-capture-file-name) ;;target
+	    "* MEET %?\n  SCHEDULE: %T\n" ;; template
+	    ;;properties
+	    :prepend t)
+	   ("sa" ;; keys
+	    "Schedule ATTENDANCE" ;; description
+	    entry ;; type
+	    (file arif/org-capture-file-name) ;;target
+	    "* ATTEND %?\n  SCHEDULE: %T\n" ;; template
+	    ;;properties
+	    :prepend t)
+	   ("sw" ;; keys
+	    "Schedule WORKSHOP" ;; description
+	    entry ;; type
+	    (file arif/org-capture-file-name) ;;target
+	    "* WORKSHOP %?\n  SCHEDULED: %T\n" ;; template
+	    ;;properties
+	    :prepend t))
+	 '(("d" "Set deadline for task")
+	   ("dt" ;; keys
+	    "Set Deadline for TODOs" ;; description
+	    entry ;; type
+	    (file arif/org-capture-file-name) ;;target
+	    "* TODO %?\n  DEADLINE: %T\n" ;; template
+	    ;;properties
+	    :prepend t))))
   (setq org-agenda-prefix-format 
-	'((agenda . "  %-15t%2s")
-	  (todo . "  %-12t%2s"))
+	'((agenda . "  %-15t%12s")
+	  (todo . "  %-12t%12s"))
 	org-agenda-time-grid '((daily today remove-match)
 			       (0900 1100 1300 1500 1700)
 			       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
