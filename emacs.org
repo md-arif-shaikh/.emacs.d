@@ -852,6 +852,7 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 * Custom commands
 #+BEGIN_SRC emacs-lisp
   (arif/load-file "~/.config/emacs/custom-commands.el")
+  (arif/load-file "~/.config/emacs/teamspeak.el")
 #+END_SRC
 * org-mode
 ** org-babel

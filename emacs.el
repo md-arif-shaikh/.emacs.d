@@ -415,6 +415,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (arif/load-file "~/.config/emacs/custom-commands.el")
+(arif/load-file "~/.config/emacs/teamspeak.el")
 
 (org-babel-do-load-languages
  'org-babel-load-languages

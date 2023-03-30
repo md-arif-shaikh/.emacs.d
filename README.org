@@ -1,16 +1,21 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Md Arif Shaikh
 * Table of contents :toc:
-- [[#build-emacs-from-source-for-solus-os--ubuntu-os][Build emacs from source for solus os / ubuntu os]]
+- [[#build-emacs-from-source][Build emacs from source]]
 - [[#configuration-file][Configuration File]]
 
-* Build emacs from source for solus os / ubuntu os
+* Build emacs from source
   For many reasons one may prefer to build emacs from source. It might
   be that the most recent version is not available on your distro or
   you may want to compile emacs with support for specific
   libraries. For example ~lsp-mode~ users would like to have support for
   the ~libjansson~ library. In such case you can clone the emacs repo
   and then build it with support for the desired libraries. This script
-  can be used for [[https://ubuntu.com/][Ubuntu]]  and [[https://getsol.us/home/][Solus]]. Get the shell script [[./build_emacs.sh][here]].
+  can be used for
+  - [[https://ubuntu.com/][Ubuntu]]
+  - [[https://getfedora.org/][fedora]]
+  - [[https://getsol.us/home/][Solus]]
+  out of the box and can be used for other distros by using the
+  equivalent package names. Get the shell script [[./build_emacs.sh][here]].
 * Configuration File
 Read [[./emacs.org][emacs.org]] for configuration using available packages.
