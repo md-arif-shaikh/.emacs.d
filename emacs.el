@@ -83,14 +83,17 @@
       (set-default-coding-systems 'utf-8)))
 
 (set-face-attribute 'default nil
-		    :font "JetBrains Mono"
-		    :weight 'light
-		    :height (cond ((string-equal system-type "gnu/linux") 110)
+		    :font "Fira Code";;"JetBrains Mono"
+		    :weight 'normal
+		    :height (cond ((string-equal system-type "gnu/linux") 115)
 				  ((string-equal system-type "darwin") 130)))
 
+;; font download from https://ekushey.org/font/ekushey-kolom/
 ;;(set-face-font 'default "fontset-default")
-(set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
-										  ((string-equal system-type "gnu/linux") 18))))
+(set-fontset-font "fontset-default" 'bengali
+		  (font-spec :family "Ekushey Bangla Kolom";;"SolaimanLipi"
+			     :size (cond ((string-equal system-type "darwin") 14)
+					 ((string-equal system-type "gnu/linux") 18))))
 (setq default-input-method "bengali-itrans")
 
 (setq-default cursor-type 'bar)
@@ -104,7 +107,10 @@
 (show-paren-mode 1)
 (setq show-paren-style 'parenthesis)
 
-(global-hl-line-mode 1)
+(use-package hl-line
+  :config
+  (set-face-attribute 'hl-line nil :inherit nil :foreground 'unspecified)
+  (global-hl-line-mode 1))
 
 (setq linum-format "%4d \u2502 ")
 (add-hook 'python-mode-hook 'linum-mode)
@@ -519,7 +525,7 @@
 			       (0900 1100 1300 1500 1700)
 			       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
 	org-agenda-current-time-string
-	"⭠ NOW ─────────"))
+	"⭠ এখন ─────────"))
 
 (use-package org-modern
   :straight t
@@ -527,7 +533,7 @@
   (setq
    ;; Agenda styling
    ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
-   org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold :inherit nil)
+   org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold)
 			   ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
 			   ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold))
    org-agenda-tags-column 0
@@ -537,7 +543,8 @@
      (800 1000 1200 1400 1600 1800 2000)
      " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
    org-agenda-current-time-string
-   "⭠ NOW ─────────")
+   (format "⭠ %s ─────────" "এখন"))
+  (custom-set-faces '(org-agenda-current-time-string face--org-time-now))
   (global-org-modern-mode))
 
 (require 'appt)
@@ -611,10 +618,6 @@
 
 (arif/load-file "~/.emacs.d/lisp/arxiv-search.el")
 
-(defadvice term (after advise-term-coding-system)
-  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
-(ad-activate 'term)
-
 (use-package markdown-toc
   :straight t)
 
@@ -625,21 +628,6 @@
   (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
   (setq bgt-python-file "~/bgt/bgt.py")
   (setq bgt-python-path "~/miniconda3/envs/emacs/bin/python"))
-
-(use-package company-wordfreq
-  :straight t)
-
-(defun remove-quail-show-guidance ()
-  nil)
-(defun remove-quail-completion ()
-  (quail-select-current))
-(defun bn-company-wordfreq ()
-  (interactive)
-  (advice-add 'quail-show-guidance :override #'remove-quail-show-guidance)
-  (advice-add 'quail-completion :override #'remove-quail-completion)
-  (setq ispell-local-dictionary "bengali_439")
-  (setq-local company-backends '(company-wordfreq))
-  (setq-local company-transformers nil))
 
 (setq mu4e-maildir       "~/Maildir"   ;; top-level Maildir
       ;; note that these folders below must start with /
@@ -792,7 +780,7 @@
 (use-package inspirehep
   :straight (inspirehep :type git :host github :repo "aikrahguzar/inspirehep.el"))
 
-(use-package vterm
-  :straight t)
-
 (setq-default fill-column 79)
+
+(use-package aps-status
+  :straight (aps-status :type git :host github :repo "md-arif-shaikh/aps-status"))

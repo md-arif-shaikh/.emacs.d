@@ -25,7 +25,8 @@
 ;;; Code:
 
 ;; Start full screen
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; alternatively use maximized
+(add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 ;; hide start-up message
 (setq inhibit-startup-message t)
 ;; remove scroll bar and toolbar, fringe

@@ -79,7 +79,6 @@
 - [[#fix-terminal-display][fix terminal display]]
 - [[#markdown-toc][Markdown toc]]
 - [[#bgt][bgt]]
-- [[#writing-in-bangla-using-company-wordfreq][Writing in Bangla using company-wordfreq]]
 - [[#mu-for-email-management][mu for email management]]
   - [[#installing-mu][Installing mu]]
   - [[#set-mu-and-mu4e-path][set mu and mu4e path]]
@@ -108,8 +107,8 @@
 - [[#forex][forex]]
 - [[#bibretrive][bibretrive]]
 - [[#inspirehep][inspirehep]]
-- [[#vterm][vterm]]
 - [[#set-column-width][Set column width]]
+- [[#aps-status][aps status]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -233,16 +232,19 @@ which asks for the machine name.
 ** Font size
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil
-		      :font "JetBrains Mono"
-		      :weight 'light
-		      :height (cond ((string-equal system-type "gnu/linux") 110)
+		      :font "Fira Code";;"JetBrains Mono"
+		      :weight 'normal
+		      :height (cond ((string-equal system-type "gnu/linux") 115)
 				    ((string-equal system-type "darwin") 130)))
 #+END_SRC
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
+     ;; font download from https://ekushey.org/font/ekushey-kolom/
      ;;(set-face-font 'default "fontset-default")
-     (set-fontset-font "fontset-default" 'bengali (font-spec :family "Kalpurush" :size (cond ((string-equal system-type "darwin") 13)
-										       ((string-equal system-type "gnu/linux") 18))))
+     (set-fontset-font "fontset-default" 'bengali
+		       (font-spec :family "Ekushey Bangla Kolom";;"SolaimanLipi"
+				  :size (cond ((string-equal system-type "darwin") 14)
+					      ((string-equal system-type "gnu/linux") 18))))
      (setq default-input-method "bengali-itrans")
    #+END_SRC
 ** cusor
@@ -293,7 +295,10 @@ which asks for the machine name.
 #+END_SRC
 ** Highlight current line
 #+BEGIN_SRC emacs-lisp
-  (global-hl-line-mode 1)
+  (use-package hl-line
+    :config
+    (set-face-attribute 'hl-line nil :inherit nil :foreground 'unspecified)
+    (global-hl-line-mode 1))
 #+END_SRC
 ** Linum mode
 #+BEGIN_SRC emacs-lisp
@@ -962,28 +967,29 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 				 (0900 1100 1300 1500 1700)
 				 " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
 	  org-agenda-current-time-string
-	  "⭠ NOW ─────────"))
+	  "⭠ এখন ─────────"))
   #+END_SRC
 ** org-modern
 #+BEGIN_SRC emacs-lisp
-    (use-package org-modern
-      :straight t
-      :config
-      (setq
-       ;; Agenda styling
-       ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
-       org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold :inherit nil)
-			       ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
-			       ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold))
-       org-agenda-tags-column 0
-       org-agenda-block-separator ?─
-       org-agenda-time-grid
-       '((daily today remove-match)
-	 (800 1000 1200 1400 1600 1800 2000)
-	 " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-       org-agenda-current-time-string
-       "⭠ NOW ─────────")
-      (global-org-modern-mode))
+  (use-package org-modern
+    :straight t
+    :config
+    (setq
+     ;; Agenda styling
+     ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
+     org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold)
+			     ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
+			     ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold))
+     org-agenda-tags-column 0
+     org-agenda-block-separator ?─
+     org-agenda-time-grid
+     '((daily today remove-match)
+       (800 1000 1200 1400 1600 1800 2000)
+       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+     org-agenda-current-time-string
+     (format "⭠ %s ─────────" "এখন"))
+    (custom-set-faces '(org-agenda-current-time-string face--org-time-now))
+    (global-org-modern-mode))
 #+END_SRC
 ** org appointment
    #+BEGIN_SRC emacs-lisp
@@ -1088,7 +1094,7 @@ I have been struggling with displaying the symbols used in the
 ~M-X term~ even after setting the unicode system. The following adivice
 to the ~term~ function solved the issue. See more in the discussion
 https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mode 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (defadvice term (after advise-term-coding-system)
     (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
   (ad-activate 'term)
@@ -1111,26 +1117,6 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       (setq bgt-python-file "~/bgt/bgt.py")
       (setq bgt-python-path "~/miniconda3/envs/emacs/bin/python"))
   #+END_SRC
-* Writing in Bangla using company-wordfreq
-First we install the follow package for auto suggestions of Bangla word.
-#+BEGIN_SRC emacs-lisp
-  (use-package company-wordfreq
-    :straight t)
-#+END_SRC
-We need to the set up the following in the local buffer. This can be done by invoking an interactive function as below.
-#+BEGIN_SRC emacs-lisp
-  (defun remove-quail-show-guidance ()
-    nil)
-  (defun remove-quail-completion ()
-    (quail-select-current))
-  (defun bn-company-wordfreq ()
-    (interactive)
-    (advice-add 'quail-show-guidance :override #'remove-quail-show-guidance)
-    (advice-add 'quail-completion :override #'remove-quail-completion)
-    (setq ispell-local-dictionary "bengali_439")
-    (setq-local company-backends '(company-wordfreq))
-    (setq-local company-transformers nil))
-#+END_SRC
 
 * mu for email management
 ** Installing mu
@@ -1394,13 +1380,13 @@ We need to the set up the following in the local buffer. This can be done by inv
     :straight (inspirehep :type git :host github :repo "aikrahguzar/inspirehep.el"))
 #+END_SRC
 
-* vterm
-#+BEGIN_SRC emacs-lisp
-  (use-package vterm
-    :straight t)
-#+END_SRC
-
 * Set column width
 #+BEGIN_SRC emacs-lisp
   (setq-default fill-column 79)
+  #+END_SRC
+
+* aps status
+#+BEGIN_SRC emacs-lisp
+  (use-package aps-status
+    :straight (aps-status :type git :host github :repo "md-arif-shaikh/aps-status"))
 #+END_SRC
