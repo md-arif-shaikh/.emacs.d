@@ -459,13 +459,14 @@
   (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
 			    (sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
 			    (sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
-			    (sequence "READ(r)" "|" "FINISHED READING(F)")
+			    (sequence "READ(r)" "|" "FINISHED(F)")
 			    (sequence "DISCUSS(d)" "|" "DONE(D)")
 			    (sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
 			    (sequence "WORKSHOP(w)" "|" "DONE(D)")
 			    (sequence "CONFERENCE(c)" "|" "DONE(D)")
 			    (sequence "SEMINAR(s)" "|" "DONE(D)")
-			    (sequence "VISIT(v)" "|" "DONE(D)")))
+			    (sequence "VISIT(v)" "|" "DONE(D)")
+			    (sequence "FOOTBALL(f)" "|" "FINISHED(F)")))
   (setq org-todo-keyword-faces '(("TODO" . (:background "#61afef" :foreground "#282c34" :weight ultra-bold, :height 0.9))
 				 ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
 				 ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
@@ -536,7 +537,8 @@
    ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
    org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold)
 			   ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
-			   ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold))
+			   ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold)
+			   ("FOOTBALL" :background "#c678dd" :foreground "#282c34" :weight ultra-bold))
    org-agenda-tags-column 0
    org-agenda-block-separator ?─
    org-agenda-time-grid
@@ -730,7 +732,7 @@
 (setq tab-bar-format '(tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
 (set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
 (add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
-(set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background nil :bold t :box t)
+(set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background 'unspecified :bold t :box t)
 
 (use-package bn
   :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
@@ -743,13 +745,14 @@
   (advice-add 'battery-update :override #'bn-battery-update)
   (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
   (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
-  (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string))
+  (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string)
+  (force-mode-line-update))
 
 (setq-default mode-line-format
 	      '("-"
 		(:eval (let ((str (if buffer-read-only
 				      (if (buffer-modified-p) "%%*" "%%%%")
-				    (if (buffer-modified-p) "পরিবর্তিত" "--"))))
+				    (if (buffer-modified-p) (propertize "পরিবর্তিত" 'face 'ivy-modified-buffer) "--"))))
 			 str))
 		mode-line-frame-identification
 		mode-line-buffer-identification
