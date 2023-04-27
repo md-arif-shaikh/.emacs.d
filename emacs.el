@@ -709,9 +709,9 @@
 (use-package expenses
   :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
   :config
-  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Others")
+  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Others")
 	expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
-	expenses-python-path "~/miniconda3/envs/teobresums/bin/python")
+	expenses-python-path "~/miniconda3/bin/python3")
   :bind (("C-c e a" . expenses-add-expense)
 	 ("C-c e v" . expenses-view-expense)
 	 ("C-c e y" . expenses-calc-expense-for-year)
@@ -788,3 +788,6 @@
 
 (use-package aps-status
   :straight (aps-status :type git :host github :repo "md-arif-shaikh/aps-status"))
+
+(use-package gnuplot
+  :straight t)

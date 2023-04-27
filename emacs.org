@@ -109,6 +109,7 @@
 - [[#inspirehep][inspirehep]]
 - [[#set-column-width][Set column width]]
 - [[#aps-status][aps status]]
+- [[#gnuplot][gnuplot]]
 
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
@@ -1277,9 +1278,9 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
     (use-package expenses
       :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
       :config
-      (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Others")
+      (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Cofee" "Others")
 	    expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
-	    expenses-python-path "~/miniconda3/envs/teobresums/bin/python")
+	    expenses-python-path "~/miniconda3/bin/python3")
       :bind (("C-c e a" . expenses-add-expense)
 	     ("C-c e v" . expenses-view-expense)
 	     ("C-c e y" . expenses-calc-expense-for-year)
@@ -1393,4 +1394,9 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 #+BEGIN_SRC emacs-lisp
   (use-package aps-status
     :straight (aps-status :type git :host github :repo "md-arif-shaikh/aps-status"))
+#+END_SRC
+* gnuplot
+#+BEGIN_SRC emacs-lisp
+  (use-package gnuplot
+    :straight t)
 #+END_SRC
