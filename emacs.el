@@ -1,3 +1,7 @@
+(when (eq system-type 'windows-nt)
+  (unless (getenv "Home")
+    (shell-command (format "setx \"%s\" \"%s\"" 'Home (getenv "UserProfile")))))
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -19,7 +23,9 @@
     (message (format "%s file not found" file-name))))
 
 (setq tramp-histfile-override nil)
-(arif/load-file "~/.config/emacs/remote-machines.el")
+(arif/load-file (if (eq system-type 'windows-nt)
+		    "c:/Users/mdari/.config/emacs/remote-machines.el"
+		    "~/.config/emacs/remote-machines.el"))
 (defun arif/connect-remote-dir ()
   "Connect to REMOTE-MACHINE-NAME."
   (interactive)
@@ -86,14 +92,16 @@
 		    :font "Fira Code";;"JetBrains Mono"
 		    :weight 'normal
 		    :height (cond ((string-equal system-type "gnu/linux") 115)
-				  ((string-equal system-type "darwin") 130)))
+				  ((string-equal system-type "darwin") 130)
+				  (t 100)))
 
 ;; font download from https://ekushey.org/font/ekushey-kolom/
 ;;(set-face-font 'default "fontset-default")
 (set-fontset-font "fontset-default" 'bengali
 		  (font-spec :family "Ekushey Bangla Kolom";;"SolaimanLipi"
 			     :size (cond ((string-equal system-type "darwin") 14)
-					 ((string-equal system-type "gnu/linux") 18))))
+					 ((string-equal system-type "gnu/linux") 18)
+					 (t 14))))
 (setq default-input-method "bengali-itrans")
 
 (setq-default cursor-type 'bar)
@@ -414,7 +422,9 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(arif/load-file "~/.config/emacs/custom-commands.el")
+(arif/load-file (if (eq system-type 'windows-nt)
+		    "c:/Users/mdari/.config/emacs/custom-commands.el"
+		    "~/.config/emacs/custom-commands.el"))
 (arif/load-file "~/.config/emacs/teamspeak.el")
 
 (org-babel-do-load-languages
@@ -431,7 +441,9 @@
 (use-package org
   :config
   (global-set-key (kbd "C-c a") 'org-agenda)
-  (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
+  (setq org-agenda-files (if (eq system-type 'windows-nt)
+			     '("c:/Users/mdari/Dropbox/org")
+			     '("~/Dropbox/org" "~/Dropbox/org/roam")))
   ;; Basic setup
   (setq org-agenda-span 7)
   (setq org-agenda-start-day "+0d")
@@ -709,7 +721,7 @@
 (use-package expenses
   :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
   :config
-  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Others")
+  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Cofee" "Others")
 	expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
 	expenses-python-path "~/miniconda3/bin/python3")
   :bind (("C-c e a" . expenses-add-expense)

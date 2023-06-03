@@ -7,6 +7,7 @@
   [[file:~/.emacs.d/emacs.org::*org agenda][org agenda]]
 * Table of Contents :TOC:
 - [[#testing][testing]]
+- [[#set-home-directory-in-windows][Set home directory in windows]]
 - [[#straight][straight]]
 - [[#use-package][use-package]]
 - [[#load-file-if-found][load-file if found]]
@@ -111,6 +112,12 @@
 - [[#aps-status][aps status]]
 - [[#gnuplot][gnuplot]]
 
+* Set home directory in windows
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'windows-nt)
+  (unless (getenv "Home")
+    (shell-command (format "setx \"%s\" \"%s\"" 'Home (getenv "UserProfile")))))
+#+END_SRC
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
 list the package archives. It is taken care of automatically. You can
@@ -157,7 +164,9 @@ which asks for the machine name.
 ** Connect Remote Machines
 #+BEGIN_SRC emacs-lisp
   (setq tramp-histfile-override nil)
-  (arif/load-file "~/.config/emacs/remote-machines.el")
+  (arif/load-file (if (eq system-type 'windows-nt)
+		      "c:/Users/mdari/.config/emacs/remote-machines.el"
+		      "~/.config/emacs/remote-machines.el"))
   (defun arif/connect-remote-dir ()
     "Connect to REMOTE-MACHINE-NAME."
     (interactive)
@@ -236,7 +245,8 @@ which asks for the machine name.
 		      :font "Fira Code";;"JetBrains Mono"
 		      :weight 'normal
 		      :height (cond ((string-equal system-type "gnu/linux") 115)
-				    ((string-equal system-type "darwin") 130)))
+				    ((string-equal system-type "darwin") 130)
+				    (t 100)))
 #+END_SRC
 ** Bengali font
    #+BEGIN_SRC emacs-lisp
@@ -245,7 +255,8 @@ which asks for the machine name.
      (set-fontset-font "fontset-default" 'bengali
 		       (font-spec :family "Ekushey Bangla Kolom";;"SolaimanLipi"
 				  :size (cond ((string-equal system-type "darwin") 14)
-					      ((string-equal system-type "gnu/linux") 18))))
+					      ((string-equal system-type "gnu/linux") 18)
+					      (t 14))))
      (setq default-input-method "bengali-itrans")
    #+END_SRC
 ** cusor
@@ -852,7 +863,9 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+END_SRC
 * Custom commands
 #+BEGIN_SRC emacs-lisp
-  (arif/load-file "~/.config/emacs/custom-commands.el")
+  (arif/load-file (if (eq system-type 'windows-nt)
+		      "c:/Users/mdari/.config/emacs/custom-commands.el"
+		      "~/.config/emacs/custom-commands.el"))
   (arif/load-file "~/.config/emacs/teamspeak.el")
 #+END_SRC
 * org-mode
@@ -864,113 +877,115 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 #+END_SRC
 ** org agenda
   #+BEGIN_SRC emacs-lisp
-    (defvar arif/org-capture-file-name)
+  (defvar arif/org-capture-file-name)
 
-    (defun arif/org-catpure ()
-      (interactive)
-      (setq arif/org-capture-file-name (expand-file-name (read-file-name "Capture entry in file: " "~/Dropbox/org/")))
-      (call-interactively #'org-capture))
+  (defun arif/org-catpure ()
+    (interactive)
+    (setq arif/org-capture-file-name (expand-file-name (read-file-name "Capture entry in file: " "~/Dropbox/org/")))
+    (call-interactively #'org-capture))
 
-    (use-package org
-      :config
-      (global-set-key (kbd "C-c a") 'org-agenda)
-      (setq org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/roam"))
-      ;; Basic setup
-      (setq org-agenda-span 7)
-      (setq org-agenda-start-day "+0d")
-      (setq org-agenda-start-on-weekday nil)
-      ;; Items with deadline and scheduled timestamps
-      (setq org-agenda-include-deadlines t)
-      (setq org-deadline-warning-days 28)
-      (setq org-agenda-skip-scheduled-if-done nil)
-      ;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-      ;;(setq org-agenda-skip-timestamp-if-deadline-is-shown t)
-      (setq org-agenda-skip-deadline-if-done nil)
-      ;;(setq org-agenda-skip-deadline-prewarning-if-scheduled 1)
-      ;;(setq org-agenda-skip-scheduled-delay-if-deadline nil)
-      ;;(setq org-agenda-skip-additional-timestamps-same-entry nil)
-      ;;(setq org-agenda-search-headline-for-time t)
-      (setq org-scheduled-past-days 14)
-      (setq org-deadline-past-days 14)
-      ;;(setq org-agenda-move-date-from-past-immediately-to-today t)
-      ;;(setq org-agenda-show-future-repeats t)
-      ;;(setq org-agenda-prefer-last-repeat nil)
-      (setq org-agenda-time-leading-zero t)
-      (setq org-agenda-timegrid-use-ampm t)
-      (setq org-agenda-use-time-grid t)
-      (setq org-agenda-show-current-time-in-grid t)
-      (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
-				(sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
-				(sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
-				(sequence "READ(r)" "|" "FINISHED(F)")
-				(sequence "DISCUSS(d)" "|" "DONE(D)")
-				(sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
-				(sequence "WORKSHOP(w)" "|" "DONE(D)")
-				(sequence "CONFERENCE(c)" "|" "DONE(D)")
-				(sequence "SEMINAR(s)" "|" "DONE(D)")
-				(sequence "VISIT(v)" "|" "DONE(D)")
-				(sequence "FOOTBALL(f)" "|" "FINISHED(F)")))
-      (setq org-todo-keyword-faces '(("TODO" . (:background "#61afef" :foreground "#282c34" :weight ultra-bold, :height 0.9))
-				     ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
-				     ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
-				     ("READ" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				     ("DISCUSS" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				     ("WORKSHOP" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
-				     ("VISIT" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
-				     ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
-				     ("DONE" . ( :foreground "gray50" :underline t :box nil))
-				     ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
-				     ("MET" . ( :foreground "gray50" :underline t :box nil))
-				     ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
-				     ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
-				     ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
-      (setq org-capture-templates
-	    (append
-	     '(("s" "schedule task")
-	       ("st" ;; keys
-		"Schedule TODOs" ;; description
-		entry ;; type
-		(file arif/org-capture-file-name) ;;target
-		"* TODO %?\n  SCHEDULED: %T\n" ;; template
-		;;properties
-		:prepend t)
-	       ("sm" ;; keys
-		"Schedule MEETING" ;; description
-		entry ;; type
-		(file arif/org-capture-file-name) ;;target
-		"* MEET %?\n  SCHEDULE: %T\n" ;; template
-		;;properties
-		:prepend t)
-	       ("sa" ;; keys
-		"Schedule ATTENDANCE" ;; description
-		entry ;; type
-		(file arif/org-capture-file-name) ;;target
-		"* ATTEND %?\n  SCHEDULE: %T\n" ;; template
-		;;properties
-		:prepend t)
-	       ("sw" ;; keys
-		"Schedule WORKSHOP" ;; description
-		entry ;; type
-		(file arif/org-capture-file-name) ;;target
-		"* WORKSHOP %?\n  SCHEDULED: %T\n" ;; template
-		;;properties
-		:prepend t))
-	     '(("d" "Set deadline for task")
-	       ("dt" ;; keys
-		"Set Deadline for TODOs" ;; description
-		entry ;; type
-		(file arif/org-capture-file-name) ;;target
-		"* TODO %?\n  DEADLINE: %T\n" ;; template
-		;;properties
-		:prepend t))))
-      (setq org-agenda-prefix-format 
-	    '((agenda . "  %-15t%12s")
-	      (todo . "  %-12t%12s"))
-	    org-agenda-time-grid '((daily today remove-match)
-				   (0900 1100 1300 1500 1700)
-				   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-	    org-agenda-current-time-string
-	    "⭠ এখন ─────────"))
+  (use-package org
+    :config
+    (global-set-key (kbd "C-c a") 'org-agenda)
+    (setq org-agenda-files (if (eq system-type 'windows-nt)
+			       '("c:/Users/mdari/Dropbox/org")
+			       '("~/Dropbox/org" "~/Dropbox/org/roam")))
+    ;; Basic setup
+    (setq org-agenda-span 7)
+    (setq org-agenda-start-day "+0d")
+    (setq org-agenda-start-on-weekday nil)
+    ;; Items with deadline and scheduled timestamps
+    (setq org-agenda-include-deadlines t)
+    (setq org-deadline-warning-days 28)
+    (setq org-agenda-skip-scheduled-if-done nil)
+    ;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+    ;;(setq org-agenda-skip-timestamp-if-deadline-is-shown t)
+    (setq org-agenda-skip-deadline-if-done nil)
+    ;;(setq org-agenda-skip-deadline-prewarning-if-scheduled 1)
+    ;;(setq org-agenda-skip-scheduled-delay-if-deadline nil)
+    ;;(setq org-agenda-skip-additional-timestamps-same-entry nil)
+    ;;(setq org-agenda-search-headline-for-time t)
+    (setq org-scheduled-past-days 14)
+    (setq org-deadline-past-days 14)
+    ;;(setq org-agenda-move-date-from-past-immediately-to-today t)
+    ;;(setq org-agenda-show-future-repeats t)
+    ;;(setq org-agenda-prefer-last-repeat nil)
+    (setq org-agenda-time-leading-zero t)
+    (setq org-agenda-timegrid-use-ampm t)
+    (setq org-agenda-use-time-grid t)
+    (setq org-agenda-show-current-time-in-grid t)
+    (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
+			      (sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
+			      (sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
+			      (sequence "READ(r)" "|" "FINISHED(F)")
+			      (sequence "DISCUSS(d)" "|" "DONE(D)")
+			      (sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
+			      (sequence "WORKSHOP(w)" "|" "DONE(D)")
+			      (sequence "CONFERENCE(c)" "|" "DONE(D)")
+			      (sequence "SEMINAR(s)" "|" "DONE(D)")
+			      (sequence "VISIT(v)" "|" "DONE(D)")
+			      (sequence "FOOTBALL(f)" "|" "FINISHED(F)")))
+    (setq org-todo-keyword-faces '(("TODO" . (:background "#61afef" :foreground "#282c34" :weight ultra-bold, :height 0.9))
+				   ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
+				   ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
+				   ("READ" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("DISCUSS" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("WORKSHOP" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
+				   ("VISIT" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
+				   ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
+				   ("DONE" . ( :foreground "gray50" :underline t :box nil))
+				   ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
+				   ("MET" . ( :foreground "gray50" :underline t :box nil))
+				   ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
+				   ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
+				   ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
+    (setq org-capture-templates
+	  (append
+	   '(("s" "schedule task")
+	     ("st" ;; keys
+	      "Schedule TODOs" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* TODO %?\n  SCHEDULED: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sm" ;; keys
+	      "Schedule MEETING" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* MEET %?\n  SCHEDULE: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sa" ;; keys
+	      "Schedule ATTENDANCE" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* ATTEND %?\n  SCHEDULE: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sw" ;; keys
+	      "Schedule WORKSHOP" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* WORKSHOP %?\n  SCHEDULED: %T\n" ;; template
+	      ;;properties
+	      :prepend t))
+	   '(("d" "Set deadline for task")
+	     ("dt" ;; keys
+	      "Set Deadline for TODOs" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* TODO %?\n  DEADLINE: %T\n" ;; template
+	      ;;properties
+	      :prepend t))))
+    (setq org-agenda-prefix-format 
+	  '((agenda . "  %-15t%12s")
+	    (todo . "  %-12t%12s"))
+	  org-agenda-time-grid '((daily today remove-match)
+				 (0900 1100 1300 1500 1700)
+				 " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+	  org-agenda-current-time-string
+	  "⭠ এখন ─────────"))
   #+END_SRC
 ** org-modern
 #+BEGIN_SRC emacs-lisp
