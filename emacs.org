@@ -1,13 +1,8 @@
 #+TITLE: Emacs config file
 #+AUTHOR: Md Arif Shaikh
 #+Email: arifshaikh.astro@gmail.com
-#+Date: Thu Feb 25 08:11:11 PM IST 2021
-* TODO testing
-  
-  [[file:~/.emacs.d/emacs.org::*org agenda][org agenda]]
-* Table of Contents :TOC:
-- [[#testing][testing]]
-- [[#set-home-directory-in-windows][Set home directory in windows]]
+#+Date: Thu Feb 25 08:11:11 PM IST 2021  
+* Table of Contents                                                     :TOC:
 - [[#straight][straight]]
 - [[#use-package][use-package]]
 - [[#load-file-if-found][load-file if found]]
@@ -98,8 +93,8 @@
 - [[#expenses-for-expense-tracking][Expenses for expense tracking]]
 - [[#elfeed][Elfeed]]
 - [[#crdt][CRDT]]
-- [[#tab-bar-mode][Tab-bar-mode]]
 - [[#bn][bn]]
+- [[#tab-bar-mode][Tab-bar-mode]]
 - [[#mode-line][Mode line]]
 - [[#popup-menu][popup-menu]]
 - [[#keycast][keycast]]
@@ -112,12 +107,6 @@
 - [[#aps-status][aps status]]
 - [[#gnuplot][gnuplot]]
 
-* Set home directory in windows
-#+BEGIN_SRC emacs-lisp
-(when (eq system-type 'windows-nt)
-  (unless (getenv "Home")
-    (shell-command (format "setx \"%s\" \"%s\"" 'Home (getenv "UserProfile")))))
-#+END_SRC
 * straight
 [[https://github.com/raxod502/straight.el#features][straight]] is one-stop package manager for emacs packages. No need to
 list the package archives. It is taken care of automatically. You can
@@ -1317,6 +1306,24 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
     :straight t)
 #+END_SRC
 
+* bn
+#+BEGIN_SRC emacs-lisp
+    (use-package bn
+      :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
+      :config
+      (setq bn-time-separator ":")
+      (setq bn-date-separator "-")
+      (setq bn-second-clock-time-zone '("Asia/Kolkata" . "কোলকাতা"))
+      (display-time-mode 1)
+      (display-battery-mode 1)
+      (setq display-time-string-forms bn-display-time-string-forms)
+      (advice-add 'battery-update :override #'bn-battery-update)
+      (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
+      (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
+      (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string)
+      (force-mode-line-update))
+#+END_SRC
+
 * Tab-bar-mode
 #+BEGIN_SRC emacs-lisp
   (tab-bar-mode)
@@ -1325,23 +1332,6 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
   (add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
   (set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background 'unspecified :bold t :box t)
 #+END_SRC
-* bn
-#+BEGIN_SRC emacs-lisp
-  (use-package bn
-    :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
-    :config
-    (setq bn-time-separator ":")
-    (setq bn-date-separator "-")
-    (display-time-mode 1)
-    (display-battery-mode 1)
-    (setq display-time-string-forms bn-display-time-string-forms)
-    (advice-add 'battery-update :override #'bn-battery-update)
-    (add-hook 'after-change-major-mode-hook 'bn-set-major-mode-name)
-    (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
-    (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string)
-    (force-mode-line-update))
-#+END_SRC
-
 * Mode line
 #+BEGIN_SRC emacs-lisp
   (setq-default mode-line-format

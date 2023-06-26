@@ -1,7 +1,3 @@
-(when (eq system-type 'windows-nt)
-  (unless (getenv "Home")
-    (shell-command (format "setx \"%s\" \"%s\"" 'Home (getenv "UserProfile")))))
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -740,17 +736,12 @@
 (use-package crdt
   :straight t)
 
-(tab-bar-mode)
-(setq tab-bar-format '(tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
-(set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
-(add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
-(set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background 'unspecified :bold t :box t)
-
 (use-package bn
   :straight (bn :type git :host github :repo "md-arif-shaikh/bn")
   :config
   (setq bn-time-separator ":")
   (setq bn-date-separator "-")
+  (setq bn-second-clock-time-zone '("Asia/Seoul" . "Seoul"))
   (display-time-mode 1)
   (display-battery-mode 1)
   (setq display-time-string-forms bn-display-time-string-forms)
@@ -759,6 +750,12 @@
   (advice-add 'appt-mode-line :override #'bn-appt-mode-line)
   (advice-add #'vc-git-mode-line-string :filter-return #'bn-vc-git-mode-line-string)
   (force-mode-line-update))
+
+(tab-bar-mode)
+(setq tab-bar-format '(tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+(set-face-attribute 'tab-bar nil :foreground "#FFFFFF")
+(add-to-list 'global-mode-string "মহঃ আরিফ শেখ ")
+(set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background 'unspecified :bold t :box t)
 
 (setq-default mode-line-format
 	      '("-"
