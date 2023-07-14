@@ -457,7 +457,7 @@ https://emacs-lsp.github.io/lsp-python-ms/
 		       :remote? t
 		       :server-id 'pyls-remote))
      (require 'tramp)
-     (add-to-list 'tramp-remote-path '"~/miniconda3/bin/")
+     (add-to-list 'tramp-remote-path '"~/andconda3/bin/")
    #+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1284,7 +1284,8 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       :config
       (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Cofee" "Others")
 	    expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
-	    expenses-python-path "~/miniconda3/bin/python3")
+	    expenses-python-path "~/miniconda3/bin/python3"
+	    expenses-default-user-name "arif")
       :bind (("C-c e a" . expenses-add-expense)
 	     ("C-c e v" . expenses-view-expense)
 	     ("C-c e y" . expenses-calc-expense-for-year)

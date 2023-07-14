@@ -230,7 +230,7 @@
 		  :remote? t
 		  :server-id 'pyls-remote))
 (require 'tramp)
-(add-to-list 'tramp-remote-path '"~/miniconda3/bin/")
+(add-to-list 'tramp-remote-path '"~/andconda3/bin/")
 
 (use-package flycheck
   :straight t
@@ -741,7 +741,7 @@
   :config
   (setq bn-time-separator ":")
   (setq bn-date-separator "-")
-  (setq bn-second-clock-time-zone '("Asia/Seoul" . "Seoul"))
+  (setq bn-second-clock-time-zone '("Asia/Kolkata" . "কোলকাতা"))
   (display-time-mode 1)
   (display-battery-mode 1)
   (setq display-time-string-forms bn-display-time-string-forms)
