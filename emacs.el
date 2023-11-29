@@ -87,7 +87,8 @@
 (set-face-attribute 'default nil
 		    :font "Fira Code";;"JetBrains Mono"
 		    :weight 'normal
-		    :height (cond ((string-equal system-type "gnu/linux") 115)
+		    :height (cond ((string-equal system-type "gnu/linux") 120)
+				  ((and (string-equal system-type "gnu/linux") (> (display-pixel-width) 2000)) 150)
 				  ((string-equal system-type "darwin") 130)
 				  (t 100)))
 
@@ -692,7 +693,7 @@
 	    ;;("England" . "Championship")
 	    ))
   :config
-  (setq soccer-time-local-time-utc-offset "+0900")
+  (setq soccer-time-local-time-utc-offset "+0530")
   :bind (("C-c s f" . soccer-fixtures-next)
 	 ("C-c s r" . soccer-results-last)
 	 ("C-c s s" . soccer-scorecard)
@@ -719,7 +720,8 @@
   :config
   (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Cofee" "Others")
 	expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
-	expenses-python-path "~/miniconda3/bin/python3")
+	expenses-python-path "~/miniconda3/bin/python3"
+	expenses-default-user-name "arif")
   :bind (("C-c e a" . expenses-add-expense)
 	 ("C-c e v" . expenses-view-expense)
 	 ("C-c e y" . expenses-calc-expense-for-year)
@@ -741,7 +743,7 @@
   :config
   (setq bn-time-separator ":")
   (setq bn-date-separator "-")
-  (setq bn-second-clock-time-zone '("Asia/Kolkata" . "কোলকাতা"))
+  (setq bn-second-clock-time-zone '("America/New_York" . "New York"))
   (display-time-mode 1)
   (display-battery-mode 1)
   (setq display-time-string-forms bn-display-time-string-forms)

@@ -233,7 +233,8 @@ which asks for the machine name.
   (set-face-attribute 'default nil
 		      :font "Fira Code";;"JetBrains Mono"
 		      :weight 'normal
-		      :height (cond ((string-equal system-type "gnu/linux") 115)
+		      :height (cond ((string-equal system-type "gnu/linux") 120)
+				    ((and (string-equal system-type "gnu/linux") (> (display-pixel-width) 2000)) 150)
 				    ((string-equal system-type "darwin") 130)
 				    (t 100)))
 #+END_SRC
@@ -1239,7 +1240,7 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 		;;("England" . "Championship")
 		))
       :config
-      (setq soccer-time-local-time-utc-offset "+0900")
+      (setq soccer-time-local-time-utc-offset "+0530")
       :bind (("C-c s f" . soccer-fixtures-next)
 	     ("C-c s r" . soccer-results-last)
 	     ("C-c s s" . soccer-scorecard)
@@ -1314,7 +1315,7 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       :config
       (setq bn-time-separator ":")
       (setq bn-date-separator "-")
-      (setq bn-second-clock-time-zone '("Asia/Kolkata" . "কোলকাতা"))
+      (setq bn-second-clock-time-zone '("America/New_York" . "New York"))
       (display-time-mode 1)
       (display-battery-mode 1)
       (setq display-time-string-forms bn-display-time-string-forms)
