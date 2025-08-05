@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;; clean up LaTeX auxiliary files in a given directory
 (defun clean-latex (directory &optional cleanp)
   "Clean all the auxiliary files generated due to LaTeX compilation

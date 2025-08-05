@@ -28,10 +28,8 @@
   - [[#setup-gc-cons-threshld][setup gc-cons-threshld]]
 - [[#python][Python]]
   - [[#python-with-lsp][Python with LSP]]
-  - [[#lsp-python-with-tramp][LSP python with tramp]]
   - [[#python-with-elpy][Python with elpy]]
 - [[#racket][Racket]]
-- [[#jupyter][jupyter]]
 - [[#latex-with-lsp][LaTeX with LSP]]
 - [[#clean-latex][Clean Latex]]
 - [[#julia][Julia]]
@@ -56,8 +54,8 @@
   - [[#change-yes-or-no-p-to-y-or-no-p][Change 'yes-or-no-p' to 'y-or-no-p']]
 - [[#custom-commands][Custom commands]]
 - [[#org-mode][org-mode]]
-  - [[#org-babel][org-babel]]
   - [[#org-agenda][org agenda]]
+  - [[#org-babel][org-babel]]
   - [[#org-modern][org-modern]]
   - [[#org-appointment][org appointment]]
   - [[#hide-emphasis-markup][Hide emphasis markup]]
@@ -115,22 +113,25 @@ and install packages using ~straight~. Have look at the project page
 on github fot more info.
 
 #+BEGIN_SRC emacs-lisp
+  ;; -*- lexical-binding: t; -*-
   (defvar bootstrap-version)
   (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5))
+  	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+  	(bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
+  	  (url-retrieve-synchronously
+  	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+  	     'silent 'inhibit-cookies)
+  	(goto-char (point-max))
+  	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 #+END_SRC
 * use-package
 #+BEGIN_SRC emacs-lisp
   (straight-use-package 'use-package)
+  (straight-use-package 'org)
+  (setq straight-verbose t)
 #+END_SRC
 * load-file if found
 Emacs stops loading init file if it does not find a file which is
@@ -152,7 +153,8 @@ loaded at the start and then I use a custom function to invoke tramp
 which asks for the machine name.
 ** Connect Remote Machines
 #+BEGIN_SRC emacs-lisp
-  (setq tramp-histfile-override nil)
+  (customize-set-variable 'tramp-histfile-override nil)
+  (customize-set-variable 'tramp-use-ssh-controlmaster-options nil)
   (arif/load-file (if (eq system-type 'windows-nt)
 		      "c:/Users/mdari/.config/emacs/remote-machines.el"
 		      "~/.config/emacs/remote-machines.el"))
@@ -182,25 +184,25 @@ which asks for the machine name.
 *** doom-themes
     #+BEGIN_SRC emacs-lisp
       (use-package doom-themes
-	:straight t
-	:config
-	;; Global settings (defaults)
-	(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	      doom-themes-enable-italic t) ; if nil, italics is universally disabled
-	(load-theme 'doom-one t)
+        :straight (doom-themes :type git :host github :repo "doomemacs/themes")
+        :ensure t
+        :custom
+        ;; Global settings (defaults)
+        (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+        (doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        ;; for treemacs users
+        (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+        :config
+        (load-theme 'doom-one t)
 
-	;; Enable flashing mode-line on errors
-	(doom-themes-visual-bell-config)
-
-	;; Enable custom neotree theme (all-the-icons must be installed!)
-	(doom-themes-neotree-config)
-	;; or for treemacs users
-	(setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-	(setq doom-themes-treemacs-enable-variable-pitch nil)
-	(doom-themes-treemacs-config)
-
-	;; Corrects (and improves) org-mode's native fontification.
-	(doom-themes-org-config))
+        ;; Enable flashing mode-line on errors
+        (doom-themes-visual-bell-config)
+        ;; Enable custom neotree theme (nerd-icons must be installed!)
+        (doom-themes-neotree-config)
+        ;; or for treemacs users
+        (doom-themes-treemacs-config)
+        ;; Corrects (and improves) org-mode's native fontification.
+        (doom-themes-org-config))
     #+END_SRC
 ** All the icons
 #+BEGIN_SRC emacs-lisp
@@ -399,17 +401,18 @@ easy to change the conda environments.
 #+END_SRC
 * LSP 
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :straight t
-    :init
-    (setq lsp-keymap-prefix "C-c l")
-    :hook ((python-mode . lsp)
-	   (lsp-mode . lsp-enable-which-key-integration))
-    :commands (lsp lsp-deferred))
+;  (use-package lsp-mode
+;    :straight t
+;    :init
+;   (setq lsp-keymap-prefix "C-c l")
+;    :hook ((python-mode . lsp)
+;	   (lsp-mode . lsp-enable-which-key-integration))
+;    :commands (lsp lsp-deferred))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-ui
-    :straight t)
+;    (use-package lsp-ui
+;      :straight t
+;      :defer t)
 #+END_SRC
 ** setup gc-cons-threshld
 #+BEGIN_SRC emacs-lisp
@@ -448,18 +451,6 @@ https://emacs-lsp.github.io/lsp-python-ms/
 			    (require 'lsp-pyright)
 			    (lsp-deferred))))  ; or lsp-deferred
 #+END_SRC
-** LSP python with tramp
-   Along with the following configuration, the path to the ~python-language-server~ executable
-   must be set in the ~.profile~ in the remote machine.
-   #+BEGIN_SRC emacs-lisp
-     (lsp-register-client
-      (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
-		       :major-modes '(python-mode)
-		       :remote? t
-		       :server-id 'pyls-remote))
-     (require 'tramp)
-     (add-to-list 'tramp-remote-path '"~/andconda3/bin/")
-   #+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package elpy
@@ -502,11 +493,6 @@ https://emacs-lsp.github.io/lsp-python-ms/
 * Racket
   #+BEGIN_SRC emacs-lisp
     (use-package racket-mode
-      :straight t)
-  #+END_SRC
-* jupyter
-  #+BEGIN_SRC emacs-lisp
-    (use-package jupyter
       :straight t)
   #+END_SRC
 * LaTeX with LSP
@@ -859,12 +845,6 @@ For example ~@ + TAB + a~ will give ~\alpha~.
   (arif/load-file "~/.config/emacs/teamspeak.el")
 #+END_SRC
 * org-mode
-** org-babel
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)))
-#+END_SRC
 ** org agenda
   #+BEGIN_SRC emacs-lisp
   (defvar arif/org-capture-file-name)
@@ -977,18 +957,25 @@ For example ~@ + TAB + a~ will give ~\alpha~.
 	  org-agenda-current-time-string
 	  "⭠ এখন ─────────"))
   #+END_SRC
+** org-babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)))
+#+END_SRC
 ** org-modern
 #+BEGIN_SRC emacs-lisp
   (use-package org-modern
     :straight t
+    :defer t
     :config
     (setq
      ;; Agenda styling
      ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
      org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold)
-			     ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
-			     ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold)
-			     ("FOOTBALL" :background "#c678dd" :foreground "#282c34" :weight ultra-bold))
+  			     ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
+  			     ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold)
+  			     ("FOOTBALL" :background "#c678dd" :foreground "#282c34" :weight ultra-bold))
      org-agenda-tags-column 0
      org-agenda-block-separator ?─
      org-agenda-time-grid
@@ -1124,7 +1111,7 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
       (setq bgt-file-name "~/Dropbox/org/bgt.org")
       (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
       (setq bgt-python-file "~/bgt/bgt.py")
-      (setq bgt-python-path "~/miniconda3/envs/emacs/bin/python"))
+      (setq bgt-python-path "~/miniconda3/bin/python"))
   #+END_SRC
 
 * mu for email management
@@ -1371,8 +1358,9 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 #+END_SRC
 * f
 #+BEGIN_SRC emacs-lisp
-  (use-package f
-    :straight t)
+    (use-package f
+      :straight t
+      :defer t)
 #+END_SRC
 * forex
 #+BEGIN_SRC emacs-lisp
@@ -1394,7 +1382,7 @@ https://stackoverflow.com/questions/6820051/unicode-characters-in-emacs-term-mod
 
 * Set column width
 #+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 79)
+  (setopt display-fill-column-indicator-column 80)
   #+END_SRC
 
 * aps status

@@ -1,32 +1,36 @@
+;; -*- lexical-binding: t; -*-
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	     'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
 (straight-use-package 'use-package)
+(straight-use-package 'org)
+(setq straight-verbose t)
 
 (defun arif/load-file (file-name)
   (if (file-exists-p file-name)
-      (load-file file-name)
+	(load-file file-name)
     (message (format "%s file not found" file-name))))
 
-(setq tramp-histfile-override nil)
+(customize-set-variable 'tramp-histfile-override nil)
+(customize-set-variable 'tramp-use-ssh-controlmaster-options nil)
 (arif/load-file (if (eq system-type 'windows-nt)
-		    "c:/Users/mdari/.config/emacs/remote-machines.el"
-		    "~/.config/emacs/remote-machines.el"))
+		      "c:/Users/mdari/.config/emacs/remote-machines.el"
+		      "~/.config/emacs/remote-machines.el"))
 (defun arif/connect-remote-dir ()
   "Connect to REMOTE-MACHINE-NAME."
   (interactive)
   (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
-	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
+	   (remote-user-name (cdr (assoc remote-machine-name remote-user-names))))
     (set-buffer (dired (format "/sshx:%s/" remote-user-name)))
     (add-to-list 'tramp-remote-path 'tramp-own-remote-path)))
 
@@ -34,9 +38,9 @@
   "Connect to REMOTE-MACHINE-SHELL."
   (interactive)
   (let* ((remote-machine-name (completing-read "remote machine: " remote-machine-names))
-	 (remote-user-name (cdr (assoc remote-machine-name remote-user-names)))
-	 (remote-shell-type (cdr (assoc remote-machine-name remote-shell-names)))
-	 (default-directory (format "/sshx:%s/" remote-user-name)))
+	   (remote-user-name (cdr (assoc remote-machine-name remote-user-names)))
+	   (remote-shell-type (cdr (assoc remote-machine-name remote-shell-names)))
+	   (default-directory (format "/sshx:%s/" remote-user-name)))
     (setq explicit-shell-file-name remote-shell-type)
     (shell)))
 
@@ -44,23 +48,23 @@
 (global-set-key (kbd "C-c r s") #'arif/connect-remote-shell)
 
 (use-package doom-themes
-  :straight t
-  :config
+  :straight (doom-themes :type git :host github :repo "doomemacs/themes")
+  :ensure t
+  :custom
   ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+  (doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; for treemacs users
+  (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  :config
   (load-theme 'doom-one t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;; Enable custom neotree theme (nerd-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (setq doom-themes-treemacs-enable-variable-pitch nil)
   (doom-themes-treemacs-config)
-
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
@@ -75,30 +79,30 @@
   :if (and (display-graphic-p) (eq system-type (or 'gnu/linux 'darwin)))
   :hook
   (dired-mode . (lambda ()
-		  (interactive)
-		  (unless (file-remote-p default-directory)
-		    (all-the-icons-dired-mode)))))
+		    (interactive)
+		    (unless (file-remote-p default-directory)
+		      (all-the-icons-dired-mode)))))
 
 (if (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
     (progn
-      (set-language-environment "UTF-8")
-      (set-default-coding-systems 'utf-8)))
+	(set-language-environment "UTF-8")
+	(set-default-coding-systems 'utf-8)))
 
 (set-face-attribute 'default nil
-		    :font "Fira Code";;"JetBrains Mono"
-		    :weight 'normal
-		    :height (cond ((string-equal system-type "gnu/linux") 120)
-				  ((and (string-equal system-type "gnu/linux") (> (display-pixel-width) 2000)) 150)
-				  ((string-equal system-type "darwin") 130)
-				  (t 100)))
+		      :font "Fira Code";;"JetBrains Mono"
+		      :weight 'normal
+		      :height (cond ((string-equal system-type "gnu/linux") 120)
+				    ((and (string-equal system-type "gnu/linux") (> (display-pixel-width) 2000)) 150)
+				    ((string-equal system-type "darwin") 130)
+				    (t 100)))
 
 ;; font download from https://ekushey.org/font/ekushey-kolom/
 ;;(set-face-font 'default "fontset-default")
 (set-fontset-font "fontset-default" 'bengali
-		  (font-spec :family "Ekushey Bangla Kolom";;"SolaimanLipi"
-			     :size (cond ((string-equal system-type "darwin") 14)
-					 ((string-equal system-type "gnu/linux") 18)
-					 (t 14))))
+		       (font-spec :family "Ekushey Bangla Kolom";;"SolaimanLipi"
+				  :size (cond ((string-equal system-type "darwin") 14)
+					      ((string-equal system-type "gnu/linux") 18)
+					      (t 14))))
 (setq default-input-method "bengali-itrans")
 
 (setq-default cursor-type 'bar)
@@ -129,10 +133,10 @@
   :straight (tzc :type git :host github :repo "md-arif-shaikh/tzc")
   :config
   (setq tzc-favourite-time-zones-alist '(("Asia/Kolkata" "Kolkata")
-					 ("Asia/Seoul" "Seoul")
-					 ("Europe/Berlin" "Berlin")
-					 ("Europe/London" "London")
-					 ("America/New_York" "New_York"))))
+					   ("Asia/Seoul" "Seoul")
+					   ("Europe/Berlin" "Berlin")
+					   ("Europe/London" "London")
+					   ("America/New_York" "New_York"))))
 
 (use-package pyvenv
   :straight t
@@ -149,24 +153,24 @@
   :config
   (setq-default latex-run-command "pdflatex")
   (setq TeX-source-correlate-mode t
-	TeX-source-correlate-method 'synctex
-	TeX-source-correlate-start-server t
-	TeX-auto-save t
-	TeX-parse-self t
-	reftex-plug-into-AUCTeX t
-	TeX-view-program-list
-	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")
-	  ("Evince" "evince --page-index=%(outpage) %o"))
-	)
+	  TeX-source-correlate-method 'synctex
+	  TeX-source-correlate-start-server t
+	  TeX-auto-save t
+	  TeX-parse-self t
+	  reftex-plug-into-AUCTeX t
+	  TeX-view-program-list
+	  '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")
+	    ("Evince" "evince --page-index=%(outpage) %o"))
+	  )
   (if (string-equal system-type "darwin")
-      (setq TeX-view-program-selection '((output-pdf "Skim")))
+	(setq TeX-view-program-selection '((output-pdf "Skim")))
     (setq TeX-view-program-selection '((output-pdf "Evince"))))
   (add-hook 'TeX-after-compilation-finished-functions
-	    #'TeX-revert-document-buffer)
+	      #'TeX-revert-document-buffer)
   (add-hook 'LaTeX-mode-hook
-	    (lambda ()
-	      (reftex-mode t)
-	      (flyspell-mode t)))
+	      (lambda ()
+		(reftex-mode t)
+		(flyspell-mode t)))
   (add-hook 'latex-mode-hook 'turn-on-reftex)
   (when (string-equal system-type "darwin")
     (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin/"))
@@ -195,23 +199,24 @@
   ;;				  (bms/pdf-midnite-amber))) ; automatically turns on midnight-mode for pdfs
   )
 
-(use-package lsp-mode
-  :straight t
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((python-mode . lsp)
-	 (lsp-mode . lsp-enable-which-key-integration))
-  :commands (lsp lsp-deferred))
+;  (use-package lsp-mode
+;    :straight t
+;    :init
+;   (setq lsp-keymap-prefix "C-c l")
+;    :hook ((python-mode . lsp)
+;	   (lsp-mode . lsp-enable-which-key-integration))
+;    :commands (lsp lsp-deferred))
 
-(use-package lsp-ui
-  :straight t)
+;    (use-package lsp-ui
+;      :straight t
+;      :defer t)
 
 (setq gc-cons-threshold 100000000
-      read-process-output-max (* 1024 1024)
-      treemacs-space-between-root-nodes nil
-      company-idle-delay 0.0
-      company-minimum-prefix-length 1
-      lsp-idle-delay 0.1)  ;; clangd is fast
+	read-process-output-max (* 1024 1024)
+	treemacs-space-between-root-nodes nil
+	company-idle-delay 0.0
+	company-minimum-prefix-length 1
+	lsp-idle-delay 0.1)  ;; clangd is fast
 
 (use-package lsp-python-ms 
   :straight t
@@ -221,17 +226,9 @@
    lsp-python-ms-executable (executable-find "python-language-server"))
   :hook
   (python-mode . (lambda ()
-			 (require 'lsp-python-ms)
-			 (lsp-deferred)))
+			   (require 'lsp-python-ms)
+			   (lsp-deferred)))
   (python-mode . linum-mode))
-
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
-		  :major-modes '(python-mode)
-		  :remote? t
-		  :server-id 'pyls-remote))
-(require 'tramp)
-(add-to-list 'tramp-remote-path '"~/andconda3/bin/")
 
 (use-package flycheck
   :straight t
@@ -242,9 +239,6 @@
   )
 
 (use-package racket-mode
-  :straight t)
-
-(use-package jupyter
   :straight t)
 
 (arif/load-file "~/.emacs.d/lisp/clean-latex.el")
@@ -258,7 +252,7 @@
   :straight t
   :config
   (add-hook 'rust-mode-hook
-	    (lambda () (setq indent-tabs-mode nil)))
+		(lambda () (setq indent-tabs-mode nil)))
   (setq rust-format-on-save t)
   (define-key rust-mode-map (kbd "C-c C-c") 'rust-run))
 
@@ -276,7 +270,7 @@
 
 (defun arif/shell-mode-setup () 
   (when (and (fboundp 'company-mode)
-	     (file-remote-p default-directory))
+	       (file-remote-p default-directory))
     (company-mode -1)))
 (add-hook 'shell-mode-hook #'arif/shell-mode-setup)
 
@@ -291,14 +285,14 @@
   (comint-read-input-ring 'silent))
 
 (add-hook 'shell-mode-hook
-	  (lambda ()
-	    (turn-on-comint-history (getenv "HISTFILE"))))
+	       (lambda ()
+		 (turn-on-comint-history (getenv "HISTFILE"))))
 
 (add-hook 'kill-buffer-hook #'comint-write-input-ring)
 (add-hook 'kill-emacs-hook
-	  (lambda ()
-	    (--each (buffer-list)
-	      (with-current-buffer it (comint-write-input-ring)))))
+	       (lambda ()
+		 (--each (buffer-list)
+		   (with-current-buffer it (comint-write-input-ring)))))
 
 (use-package savehist
   :custom
@@ -306,7 +300,7 @@
   (savehist-save-minibuffer-history t)
   (history-length 10000)
   (savehist-additional-variables
-   '(shell-command-history))
+	'(shell-command-history))
   :config
   (savehist-mode +1))
 
@@ -315,7 +309,7 @@
   :config
   (ivy-mode)
   (setq ivy-use-virtual-buffers t
-	ivy-count-format "(%d/%d) ")
+	  ivy-count-format "(%d/%d) ")
   ;;(setq ivy-extra-directories nil)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
@@ -345,13 +339,13 @@
 (defun mydired-sort ()
   "Sort dired listings with directories first."
   (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2) ;; beyond dir. header 
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-    (set-buffer-modified-p nil)))
+	 (let (buffer-read-only)
+	   (forward-line 2) ;; beyond dir. header 
+	   (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	 (set-buffer-modified-p nil)))
 
 (defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
+	 (after dired-after-updating-hook first () activate)
   "Sort dired listings with directories first before adding marks."
   (mydired-sort))
 
@@ -382,32 +376,32 @@
   (interactive)
   (defvar arif/greek-symbols)
   (setq arif/greek-symbols '(("a" . "\\alpha")
-			     ("b" . "\\beta")
-			     ("c" . "\\chi")
-			     ("d" . "\\delta")
-			     ("D" . "\\Delta")
-			     ("e" . "\\epsilon")
-			     ("f" . "\\phi")
-			     ("F" . "\\Phi")
-			     ("g" . "\\gamma")
-			     ("G" . "\\Gamma")
-			     ("i" . "\\iota")
-			     ("k" . "\\kappa")
-			     ("l" . "\\lambda")
-			     ("L" . "\\Lambda")
-			     ("m" . "\\mu")
-			     ("n" . "\\nu")
-			     ("o" . "\\omega")
-			     ("O" . "\\Omega")
-			     ("p" . "\\pi")
-			     ("P" . "\\Pi")
-			     ("r" . "\\rho")
-			     ("s" . "\\sigma")
-			     ("t" . "\\tau")
-			     ("x" . "\\xi")
-			     ("ve" . "\\varepsilon")
-			     ("vp" . "\\varphi"))
-	)
+			       ("b" . "\\beta")
+			       ("c" . "\\chi")
+			       ("d" . "\\delta")
+			       ("D" . "\\Delta")
+			       ("e" . "\\epsilon")
+			       ("f" . "\\phi")
+			       ("F" . "\\Phi")
+			       ("g" . "\\gamma")
+			       ("G" . "\\Gamma")
+			       ("i" . "\\iota")
+			       ("k" . "\\kappa")
+			       ("l" . "\\lambda")
+			       ("L" . "\\Lambda")
+			       ("m" . "\\mu")
+			       ("n" . "\\nu")
+			       ("o" . "\\omega")
+			       ("O" . "\\Omega")
+			       ("p" . "\\pi")
+			       ("P" . "\\Pi")
+			       ("r" . "\\rho")
+			       ("s" . "\\sigma")
+			       ("t" . "\\tau")
+			       ("x" . "\\xi")
+			       ("ve" . "\\varepsilon")
+			       ("vp" . "\\varphi"))
+	  )
   (cdr (assoc english-symbol arif/greek-symbols))
   )
 
@@ -420,13 +414,9 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (arif/load-file (if (eq system-type 'windows-nt)
-		    "c:/Users/mdari/.config/emacs/custom-commands.el"
-		    "~/.config/emacs/custom-commands.el"))
+		      "c:/Users/mdari/.config/emacs/custom-commands.el"
+		      "~/.config/emacs/custom-commands.el"))
 (arif/load-file "~/.config/emacs/teamspeak.el")
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)))
 
 (defvar arif/org-capture-file-name)
 
@@ -439,8 +429,8 @@
   :config
   (global-set-key (kbd "C-c a") 'org-agenda)
   (setq org-agenda-files (if (eq system-type 'windows-nt)
-			     '("c:/Users/mdari/Dropbox/org")
-			     '("~/Dropbox/org" "~/Dropbox/org/roam")))
+			       '("c:/Users/mdari/Dropbox/org")
+			       '("~/Dropbox/org" "~/Dropbox/org/roam")))
   ;; Basic setup
   (setq org-agenda-span 7)
   (setq org-agenda-start-day "+0d")
@@ -466,88 +456,93 @@
   (setq org-agenda-use-time-grid t)
   (setq org-agenda-show-current-time-in-grid t)
   (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(D)" "CANCELLED(C)")
-			    (sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
-			    (sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
-			    (sequence "READ(r)" "|" "FINISHED(F)")
-			    (sequence "DISCUSS(d)" "|" "DONE(D)")
-			    (sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
-			    (sequence "WORKSHOP(w)" "|" "DONE(D)")
-			    (sequence "CONFERENCE(c)" "|" "DONE(D)")
-			    (sequence "SEMINAR(s)" "|" "DONE(D)")
-			    (sequence "VISIT(v)" "|" "DONE(D)")
-			    (sequence "FOOTBALL(f)" "|" "FINISHED(F)")))
+			      (sequence "MEET(m)" "|" "MET(M)" "POSTPONED(P)")
+			      (sequence "ATTEND(a)" "|" "ATTENDED(A)" "UNABLE TO ATTEND(U)")
+			      (sequence "READ(r)" "|" "FINISHED(F)")
+			      (sequence "DISCUSS(d)" "|" "DONE(D)")
+			      (sequence "PRESENT(p)" "|" "DONE(D)" "CANCELLED(C)" "PRESENTED(P)")
+			      (sequence "WORKSHOP(w)" "|" "DONE(D)")
+			      (sequence "CONFERENCE(c)" "|" "DONE(D)")
+			      (sequence "SEMINAR(s)" "|" "DONE(D)")
+			      (sequence "VISIT(v)" "|" "DONE(D)")
+			      (sequence "FOOTBALL(f)" "|" "FINISHED(F)")))
   (setq org-todo-keyword-faces '(("TODO" . (:background "#61afef" :foreground "#282c34" :weight ultra-bold, :height 0.9))
-				 ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
-				 ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
-				 ("READ" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				 ("DISCUSS" . (:foreground "orange" :underline t :box nil  :weight extrabold))
-				 ("WORKSHOP" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
-				 ("VISIT" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
-				 ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
-				 ("DONE" . ( :foreground "gray50" :underline t :box nil))
-				 ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
-				 ("MET" . ( :foreground "gray50" :underline t :box nil))
-				 ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
-				 ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
-				 ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
+				   ("ATTEND" . (:background "#be5046" :foreground "#282c34" :weight ultra-bold))
+				   ("MEET" . (:foreground "#207FA1" :underline t :box nil  :weight extrabold))
+				   ("READ" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("DISCUSS" . (:foreground "orange" :underline t :box nil  :weight extrabold))
+				   ("WORKSHOP" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
+				   ("VISIT" . (:background "#d19a66" :foreground "#282c34" :weight ultra-bold))
+				   ("CANCELLED" . ( :foreground "gray50" :underline t :box nil))
+				   ("DONE" . ( :foreground "gray50" :underline t :box nil))
+				   ("ATTENDED" . ( :foreground "gray50" :underline t :box nil))
+				   ("MET" . ( :foreground "gray50" :underline t :box nil))
+				   ("POSTPONED" . ( :foreground "gray50" :underline t :box nil))
+				   ("FINISHED READING" . ( :foreground "gray50" :underline t :box nil))
+				   ("UNABLE TO ATTEND" . ( :foreground "gray50" :underline t))))
   (setq org-capture-templates
-	(append
-	 '(("s" "schedule task")
-	   ("st" ;; keys
-	    "Schedule TODOs" ;; description
-	    entry ;; type
-	    (file arif/org-capture-file-name) ;;target
-	    "* TODO %?\n  SCHEDULED: %T\n" ;; template
-	    ;;properties
-	    :prepend t)
-	   ("sm" ;; keys
-	    "Schedule MEETING" ;; description
-	    entry ;; type
-	    (file arif/org-capture-file-name) ;;target
-	    "* MEET %?\n  SCHEDULE: %T\n" ;; template
-	    ;;properties
-	    :prepend t)
-	   ("sa" ;; keys
-	    "Schedule ATTENDANCE" ;; description
-	    entry ;; type
-	    (file arif/org-capture-file-name) ;;target
-	    "* ATTEND %?\n  SCHEDULE: %T\n" ;; template
-	    ;;properties
-	    :prepend t)
-	   ("sw" ;; keys
-	    "Schedule WORKSHOP" ;; description
-	    entry ;; type
-	    (file arif/org-capture-file-name) ;;target
-	    "* WORKSHOP %?\n  SCHEDULED: %T\n" ;; template
-	    ;;properties
-	    :prepend t))
-	 '(("d" "Set deadline for task")
-	   ("dt" ;; keys
-	    "Set Deadline for TODOs" ;; description
-	    entry ;; type
-	    (file arif/org-capture-file-name) ;;target
-	    "* TODO %?\n  DEADLINE: %T\n" ;; template
-	    ;;properties
-	    :prepend t))))
+	  (append
+	   '(("s" "schedule task")
+	     ("st" ;; keys
+	      "Schedule TODOs" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* TODO %?\n  SCHEDULED: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sm" ;; keys
+	      "Schedule MEETING" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* MEET %?\n  SCHEDULE: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sa" ;; keys
+	      "Schedule ATTENDANCE" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* ATTEND %?\n  SCHEDULE: %T\n" ;; template
+	      ;;properties
+	      :prepend t)
+	     ("sw" ;; keys
+	      "Schedule WORKSHOP" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* WORKSHOP %?\n  SCHEDULED: %T\n" ;; template
+	      ;;properties
+	      :prepend t))
+	   '(("d" "Set deadline for task")
+	     ("dt" ;; keys
+	      "Set Deadline for TODOs" ;; description
+	      entry ;; type
+	      (file arif/org-capture-file-name) ;;target
+	      "* TODO %?\n  DEADLINE: %T\n" ;; template
+	      ;;properties
+	      :prepend t))))
   (setq org-agenda-prefix-format 
-	'((agenda . "  %-15t%12s")
-	  (todo . "  %-12t%12s"))
-	org-agenda-time-grid '((daily today remove-match)
-			       (0900 1100 1300 1500 1700)
-			       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-	org-agenda-current-time-string
-	"⭠ এখন ─────────"))
+	  '((agenda . "  %-15t%12s")
+	    (todo . "  %-12t%12s"))
+	  org-agenda-time-grid '((daily today remove-match)
+				 (0900 1100 1300 1500 1700)
+				 " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+	  org-agenda-current-time-string
+	  "⭠ এখন ─────────"))
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)))
 
 (use-package org-modern
   :straight t
+  :defer t
   :config
   (setq
    ;; Agenda styling
    ;; to-do face. Colors from https://github.com/joshdick/onedark.vim/blob/main/colors/onedark.vim
    org-modern-todo-faces '(("ATTEND" :background "#be5046" :foreground "#282c34" :weight ultra-bold)
-			   ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
-			   ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold)
-			   ("FOOTBALL" :background "#c678dd" :foreground "#282c34" :weight ultra-bold))
+			     ("WORKSHOP" :background "#d19a66" :foreground "#282c34" :weight ultra-bold)
+			     ("TODO" :background "#61afef" :foreground "#282c34" :weight ultra-bold)
+			     ("FOOTBALL" :background "#c678dd" :foreground "#282c34" :weight ultra-bold))
    org-agenda-tags-column 0
    org-agenda-block-separator ?─
    org-agenda-time-grid
@@ -576,21 +571,21 @@
 ;; set up the call to terminal-notifier
 (defvar my-notifier-path 
   (cond ((string-equal system-type "gnu/linux") "/usr/bin/notify-send")
-	((string-equal system-type "darwin") "/usr/local/bin/terminal-notifier")))  ;; path to libnotify binary notify-send
+	     ((string-equal system-type "darwin") "/usr/local/bin/terminal-notifier")))  ;; path to libnotify binary notify-send
 (defun my-appt-send-notification (msg)
   (shell-command (concat my-notifier-path " -t" " 0 " " -i" " ~/.emacs.d/icons/emacs.png "  msg))) ;; see notify-send help to understand the options
 
 ;; designate the window function for my-appt-send-notification
 (defun my-appt-display (min-to-app new-time msg)
   (my-appt-send-notification 
-   (format "'Appointment in %s minutes\n %s'" min-to-app msg)))
+	(format "'Appointment in %s minutes\n %s'" min-to-app msg)))
 (setq appt-disp-window-function (function my-appt-display))
 
 (setq org-hide-emphasis-markers t)
 
 (font-lock-add-keywords 'org-mode
-			'(("^ *\\([-]\\) "
-			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+			     '(("^ *\\([-]\\) "
+				(0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 (use-package org-bullets
   :straight t
@@ -615,7 +610,7 @@
   :straight t)
 
 (setq auth-sources
-      '((:source "~/.config/emacs/.authinfo.gpg")))
+	'((:source "~/.config/emacs/.authinfo.gpg")))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;; set up unicode
@@ -639,14 +634,14 @@
   (setq bgt-file-name "~/Dropbox/org/bgt.org")
   (setq bgt-csv-file-name "~/Dropbox/org/bgt.csv")
   (setq bgt-python-file "~/bgt/bgt.py")
-  (setq bgt-python-path "~/miniconda3/envs/emacs/bin/python"))
+  (setq bgt-python-path "~/miniconda3/bin/python"))
 
 (setq mu4e-maildir       "~/Maildir"   ;; top-level Maildir
-      ;; note that these folders below must start with /
-      ;; the paths are relative to maildir root
-      mu4e-sent-folder   "/Sent"
-      mu4e-drafts-folder "/Drafts"
-      mu4e-trash-folder  "/Trash")
+	   ;; note that these folders below must start with /
+	   ;; the paths are relative to maildir root
+	   mu4e-sent-folder   "/Sent"
+	   mu4e-drafts-folder "/Drafts"
+	   mu4e-trash-folder  "/Trash")
 
 (setq mu4e-get-mail-command  "mbsync -a")
 (setq mu4e-update-interval (* 5 60))
@@ -656,48 +651,48 @@
 (setq mu4e-headers-auto-update t)
 
 (setq mue4e-headers-skip-duplicates  t
-      mu4e-view-show-images t
-      mu4e-view-show-addresses t
-      mu4e-compose-format-flowed t
-      mu4e-date-format "%y/%m/%d"
-      mu4e-headers-date-format "%Y/%m/%d"
-      mu4e-change-filenames-when-moving t
-      mu4e-index-cleanup t
-      mu4e-index-lazy-check nil
-      mu4e-attachments-dir "~/Downloads"
-      user-mail-address "arifshaikh.astro@gmail.com"
-      user-full-name "Md Arif Shaikh"
-      mu4e-compose-signature
-      (concat
-       "Md Arif Shaikh\n"
-       "Postdoctoral Fellow, ICTS-TIFR\n"
-       "https://md-arif-shaikh.github.io\n"))
+	   mu4e-view-show-images t
+	   mu4e-view-show-addresses t
+	   mu4e-compose-format-flowed t
+	   mu4e-date-format "%y/%m/%d"
+	   mu4e-headers-date-format "%Y/%m/%d"
+	   mu4e-change-filenames-when-moving t
+	   mu4e-index-cleanup t
+	   mu4e-index-lazy-check nil
+	   mu4e-attachments-dir "~/Downloads"
+	   user-mail-address "arifshaikh.astro@gmail.com"
+	   user-full-name "Md Arif Shaikh"
+	   mu4e-compose-signature
+	   (concat
+	    "Md Arif Shaikh\n"
+	    "Postdoctoral Fellow, ICTS-TIFR\n"
+	    "https://md-arif-shaikh.github.io\n"))
 
 (setq message-send-mail-function 'smtpmail-send-it
-     smtpmail-stream-type 'starttls
-     smtpmail-default-smtp-server "smtp.gmail.com"
-     smtpmail-smtp-server "smtp.gmail.com"
-     smtpmail-smtp-service 587
-     mu4e-sent-messages-behavior 'delete)
+	  smtpmail-stream-type 'starttls
+	  smtpmail-default-smtp-server "smtp.gmail.com"
+	  smtpmail-smtp-server "smtp.gmail.com"
+	  smtpmail-smtp-service 587
+	  mu4e-sent-messages-behavior 'delete)
 
 (use-package soccer
   :straight (soccer :type git :host github :repo "md-arif-shaikh/soccer")
   :init
   (setq soccer-leagues-alist
-	  '(("England" . "Premier League")
-	    ("Spain" . "Laliga")
-	    ("France" . "Ligue 1")
-	    ("Italy" . "Serie A")
-	    ("Germany" . "Bundesliga")
-	    ("uefa" . "Champions League")
-	    ;;("England" . "Championship")
-	    ))
+	      '(("England" . "Premier League")
+		("Spain" . "Laliga")
+		("France" . "Ligue 1")
+		("Italy" . "Serie A")
+		("Germany" . "Bundesliga")
+		("uefa" . "Champions League")
+		;;("England" . "Championship")
+		))
   :config
   (setq soccer-time-local-time-utc-offset "+0530")
   :bind (("C-c s f" . soccer-fixtures-next)
-	 ("C-c s r" . soccer-results-last)
-	 ("C-c s s" . soccer-scorecard)
-	 ("C-c s t" . soccer-table)))
+	     ("C-c s r" . soccer-results-last)
+	     ("C-c s s" . soccer-scorecard)
+	     ("C-c s t" . soccer-table)))
 
 (use-package package-lint
   :straight t)
@@ -719,21 +714,21 @@
   :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
   :config
   (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Cofee" "Others")
-	expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
-	expenses-python-path "~/miniconda3/bin/python3"
-	expenses-default-user-name "arif")
+	    expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
+	    expenses-python-path "~/miniconda3/bin/python3"
+	    expenses-default-user-name "arif")
   :bind (("C-c e a" . expenses-add-expense)
-	 ("C-c e v" . expenses-view-expense)
-	 ("C-c e y" . expenses-calc-expense-for-year)
-	 ("C-c e m" . expenses-calc-expense-for-month)
-	 ("C-c e d" . expenses-calc-expense-for-day)
-	 ("C-c e c" . expenses-calc-expense-by-category)))
+	     ("C-c e v" . expenses-view-expense)
+	     ("C-c e y" . expenses-calc-expense-for-year)
+	     ("C-c e m" . expenses-calc-expense-for-month)
+	     ("C-c e d" . expenses-calc-expense-for-day)
+	     ("C-c e c" . expenses-calc-expense-by-category)))
 
 (use-package elfeed
   :straight t
   :config
   (setq elfeed-feeds
-	'(("https://www.theguardian.com/football/rss"))))
+	  '(("https://www.theguardian.com/football/rss"))))
 
 (use-package crdt
   :straight t)
@@ -760,19 +755,19 @@
 (set-face-attribute 'tab-bar-tab nil :foreground "cyan" :background 'unspecified :bold t :box t)
 
 (setq-default mode-line-format
-	      '("-"
-		(:eval (let ((str (if buffer-read-only
-				      (if (buffer-modified-p) "%%*" "%%%%")
-				    (if (buffer-modified-p) (propertize "পরিবর্তিত" 'face 'ivy-modified-buffer) "--"))))
-			 str))
-		mode-line-frame-identification
-		mode-line-buffer-identification
-		"   "
-		mode-line-position
-		(vc-mode vc-mode)
-		"   "
-		mode-name
-		(which-function-mode ("" which-func-format "--"))))
+		'("-"
+		  (:eval (let ((str (if buffer-read-only
+					(if (buffer-modified-p) "%%*" "%%%%")
+				      (if (buffer-modified-p) (propertize "পরিবর্তিত" 'face 'ivy-modified-buffer) "--"))))
+			   str))
+		  mode-line-frame-identification
+		  mode-line-buffer-identification
+		  "   "
+		  mode-line-position
+		  (vc-mode vc-mode)
+		  "   "
+		  mode-name
+		  (which-function-mode ("" which-func-format "--"))))
 
 (use-package popup
   :straight t)
@@ -784,7 +779,8 @@
   :straight t)
 
 (use-package f
-  :straight t)
+  :straight t
+  :defer t)
 
 (use-package forex
   :straight (forex :type git :host github :repo "md-arif-shaikh/forex"))
@@ -795,7 +791,7 @@
 (use-package inspirehep
   :straight (inspirehep :type git :host github :repo "aikrahguzar/inspirehep.el"))
 
-(setq-default fill-column 79)
+(setopt display-fill-column-indicator-column 80)
 
 (use-package aps-status
   :straight (aps-status :type git :host github :repo "md-arif-shaikh/aps-status"))

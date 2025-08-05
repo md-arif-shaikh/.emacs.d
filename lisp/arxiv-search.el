@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;;; arxiv-search.el --- lisp functions to search arxiv papers
 ;;; Commentary:
 ;;; Code:

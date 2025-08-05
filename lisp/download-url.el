@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (require 'url)
 (defun arif/download-url (url download-dir download-name)
   "Download URL and save in DOWNLOAD-DIR with DOWNLOAD-NAME."

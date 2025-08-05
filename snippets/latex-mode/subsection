@@ -2,6 +2,5 @@
 # name: subsection
 # key: ss1
 # --
-\subsection{${1:subsection-name}}
-\label{${1:$(replace-in-string " " "_" yas-text)}}
+\subsection{${1:subsection-name}}\label{sec:${1:$(downcase (replace-in-string " " "_" yas-text))}}
 $0
