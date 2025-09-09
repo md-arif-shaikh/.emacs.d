@@ -1,6 +1,6 @@
 ;;; early-init.el --- Early initialization           -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023  Md Arif Shaikh
+;; Copyright (C) 2025  Md Arif Shaikh
 
 ;; Author: Md Arif Shaikh <arifshaikh.astro@gmail.com>
 ;; Keywords: init
@@ -36,6 +36,7 @@
 (set-fringe-mode 0)
 ;; cusor
 (setq-default cursor-type 'bar)
+(setq package-enable-at-startup nil)
 
 (provide 'early-init)
 ;;; early-init.el ends here

@@ -199,17 +199,12 @@
   ;;				  (bms/pdf-midnite-amber))) ; automatically turns on midnight-mode for pdfs
   )
 
-;  (use-package lsp-mode
-;    :straight t
-;    :init
-;   (setq lsp-keymap-prefix "C-c l")
-;    :hook ((python-mode . lsp)
-;	   (lsp-mode . lsp-enable-which-key-integration))
-;    :commands (lsp lsp-deferred))
+(straight-use-package 'lsp-mode)
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :straight t)
 
-;    (use-package lsp-ui
-;      :straight t
-;      :defer t)
+(add-hook 'python-mode-hook 'lsp-deferred)
 
 (setq gc-cons-threshold 100000000
 	read-process-output-max (* 1024 1024)
