@@ -79,6 +79,13 @@
 
 (add-hook 'dired-mode-hook #'dired-hide-details-mode)
 (add-hook 'dired-mode-hook #'dired-omit-mode)
+(require 'dired-x)
+(setq dired-omit-files
+      (concat dired-omit-files
+              "\\|^\\.DS_Store$"   ; exactly .DS_Store
+              "\\|^\\.\\#.*"       ; autosave/lock files
+              "\\|^\\.git$"        ; .git dir
+              "\\|^__pycache__$")) ; python cache
 
 ;; Magit
 (use-package magit)
