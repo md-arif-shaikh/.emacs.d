@@ -82,6 +82,7 @@
 (require 'dired-x)
 (setq dired-omit-files
       (concat dired-omit-files
+	      "\\|^\\..+$"
               "\\|^\\.DS_Store$"   ; exactly .DS_Store
               "\\|^\\.\\#.*"       ; autosave/lock files
               "\\|^\\.git$"        ; .git dir
@@ -175,7 +176,7 @@
   :commands (pdf-tools-install)
   :init
   ;; don’t run install at startup, only when you first open a PDF
-  (setq pdf-view-display-size 'fit-width)
+  (setq pdf-view-display-size 'fit-height)
   :config
   (pdf-tools-install :no-query)
 
@@ -229,6 +230,25 @@
 (use-package yasnippet-snippets
   :straight t
   :after yasnippet)
+
+;; expenses
+(use-package expenses
+  :straight (expenses :type git :host github :repo "md-arif-shaikh/expenses")
+  :config
+  (setq expenses-category-list '("Grocery" "Food" "Shopping" "Travel" "Subscription" "Health" "Electronics" "Entertainment" "Rent" "Salary" "Gas" "Cofee" "Others")
+	expenses-directory "~/Dropbox/Important_Works/Expenses/Monthly_expenses/"
+	expenses-python-path "~/miniconda3/bin/python3"
+	expenses-default-user-name "arif")
+  :bind (("C-c e a" . expenses-add-expense)
+	 ("C-c e v" . expenses-view-expense)
+	 ("C-c e y" . expenses-calc-expense-for-year)
+	 ("C-c e m" . expenses-calc-expense-for-month)
+	 ("C-c e d" . expenses-calc-expense-for-day)
+	 ("C-c e c" . expenses-calc-expense-by-category)))
+
+;; load custom files
+(load-file "~/.emacs.d/lisp/arxiv-search.el")
+(load-file "~/.config/emacs/custom-commands.el")
 
 ;; End of file
 (provide 'init)
