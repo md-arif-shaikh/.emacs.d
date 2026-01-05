@@ -135,7 +135,10 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
-;; LaTeX with AUCTeX + PDF Tools
+;;;; ===============================
+;;;; LaTeX (AUCTeX)
+;;;; ===============================
+
 (use-package auctex
   :straight t
   :defer t
@@ -145,22 +148,23 @@
         TeX-auto-save t
         TeX-save-query nil
         TeX-PDF-mode t
+        TeX-master nil
+
+        ;; SyncTeX
         TeX-source-correlate-mode t
-        TeX-source-correlate-start-server t
-        TeX-master nil)
+        TeX-source-correlate-start-server t)
+
   :config
+  ;; Use PDF Tools as viewer (NO external viewer)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-
-  (add-hook 'TeX-after-compilation-finished-functions
-            #'TeX-revert-document-buffer)
 
   ;; Editing conveniences
   (add-hook 'LaTeX-mode-hook #'visual-line-mode)
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
   (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode)
 
-  ;; RefTeX loaded only when LaTeX-mode starts
+  ;; RefTeX
   (use-package reftex
     :defer t
     :hook (LaTeX-mode . reftex-mode)
@@ -168,55 +172,55 @@
     (setq reftex-plug-into-AUCTeX t
           reftex-cite-prompt-optional-args t)))
 
-;; PDF Tools
+;;;; ===============================
+;;;; PDF Tools
+;;;; ===============================
+
 (use-package pdf-tools
   :straight t
   :defer t
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :commands (pdf-tools-install)
   :init
-  ;; don’t run install at startup, only when you first open a PDF
-  (setq pdf-view-display-size 'fit-height)
+  (setq pdf-view-display-size 'fit-height
+        pdf-view-recenter-relative nil
+        auto-revert-use-notify nil
+        auto-revert-verbose nil
+        revert-without-query '(".*\\.pdf"))
   :config
   (pdf-tools-install :no-query)
 
-  ;; SyncTeX + auto-revert
-  (add-hook 'pdf-view-mode-hook #'pdf-sync-minor-mode)
-  (add-hook 'pdf-view-mode-hook #'auto-revert-mode)
+  (add-hook 'pdf-view-mode-hook
+            (lambda ()
+              (setq-local auto-revert-use-notify nil)
+              (setq-local auto-revert-interval 1)
+              (auto-revert-mode 1)))
 
-  ;; Forward search
   (define-key pdf-view-mode-map (kbd "C-c C-v")
               #'TeX-pdf-tools-sync-view))
 
-;; Company backends for LaTeX
-;; AUCTeX completions
+
+;;;; ===============================
+;;;; Company + LaTeX
+;;;; ===============================
+
 (use-package company-auctex
   :straight t
   :after (company auctex)
-  :hook (LaTeX-mode . (lambda ()
-                        (company-auctex-init))))
+  :hook (LaTeX-mode . company-auctex-init))
 
-;; RefTeX completions (labels + citations)
 (use-package company-reftex
   :straight t
-  :after (company reftex)
-  :hook (LaTeX-mode . (lambda ()
-                        (add-to-list 'company-backends 'company-reftex-labels)
-                        (add-to-list 'company-backends 'company-reftex-citations))))
+  :after (company reftex))
 
-;; Extra completion sources in LaTeX
 (add-hook 'LaTeX-mode-hook
           (lambda ()
-            ;; Add math-mode completions
-            (LaTeX-math-mode 1)
-            ;; Use dabbrev for words in current + other buffers
             (setq-local company-backends
-                        (append '((company-auctex
-                                   company-reftex-labels
-                                   company-reftex-citations
-                                   company-dabbrev
-                                   company-dabbrev-code))
-                                company-backends))))
+                        '((company-auctex
+                           company-reftex-labels
+                           company-reftex-citations
+                           company-dabbrev
+                           company-dabbrev-code)))))
 
 ;; Yasnippet + LaTeX integration
 (use-package yasnippet
@@ -249,6 +253,31 @@
 ;; load custom files
 (load-file "~/.emacs.d/lisp/arxiv-search.el")
 (load-file "~/.config/emacs/custom-commands.el")
+(load-file "~/.emacs.d/lisp/download-url.el")
+
+;; open pdf inside emacs
+(add-to-list 'org-file-apps '("\\.pdf\\'" . emacs))
+
+;; add line numbers in python mode
+(add-hook 'python-mode-hook #'display-line-numbers-mode)
+
+;; add copilot
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :ensure t)
+(add-hook 'prog-mode-hook 'copilot-mode)
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+;; electric pair mode
+(electric-pair-mode 1)
+
+;; vterm
+(use-package vterm
+  :straight t
+  :commands vterm
+  :config
+  (setq vterm-shell "/opt/homebrew/bin/fish"))
 
 ;; End of file
 (provide 'init)
