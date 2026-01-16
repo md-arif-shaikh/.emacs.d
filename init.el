@@ -19,7 +19,7 @@
 ;;; Code:
 
 ;; Set font
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 140)
+(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 130)
 
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
@@ -38,6 +38,9 @@
 ;; Configure use-package to use straight.el
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
+
+;; org mode settings
+(load-file "~/.emacs.d/org.el")
 
 ;; Ivy
 (use-package ivy
@@ -278,6 +281,15 @@
   :commands vterm
   :config
   (setq vterm-shell "/opt/homebrew/bin/fish"))
+
+;; bgt
+(use-package bgt
+  :straight (bgt :type git :host github :repo "md-arif-shaikh/bgt")
+  :config
+  (setq bgt-file-name "~/Dropbox/org_personal/bgt.org")      ;; full name with path of the org file to save the glucose levels data
+  (setq bgt-csv-file-name "~/Dropbox/org_personal/bgt.csv")  ;; name of csv file to export the org table 
+  (setq bgt-python-file "~/.emacs.d/straight/repos/bgt/bgt.py")     ;; full path to the python script that comes with the package to plot the trend of glucose levels
+  (setq bgt-python-path "/opt/miniconda3/envs/gwecc/bin/python"))    ;; path to the python program that runs the python script
 
 ;; End of file
 (provide 'init)
