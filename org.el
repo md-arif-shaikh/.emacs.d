@@ -142,3 +142,28 @@
       org-agenda-skip-function-global 
       '(org-agenda-skip-entry-if 'todo 'done)
       org-log-done 'time)
+
+;; alert
+(use-package org-alert
+  :ensure t
+  :custom
+  (alert-default-style 'notifier)  ; Explicitly tell it to use terminal-notifier
+  (org-alert-interval 300)         ; Check every 5 minutes
+  (org-alert-notify-cutoff 30)     ; Notify 30 minutes before the event
+  (org-alert-notification-title "Org Agenda")
+  :config
+  (org-alert-enable))
+
+;; Reload files changed outside Emacs
+(global-auto-revert-mode 1)
+(setq auto-revert-verbose nil)
+
+;; Refresh org agenda on revert
+(add-hook 'auto-revert-mode-hook #'org-agenda-maybe-redo)
+
+;; Restart org-alert after revert
+(with-eval-after-load 'org-alert
+  (add-hook 'auto-revert-mode-hook
+            (lambda ()
+              (org-alert-enable))))
+

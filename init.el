@@ -61,7 +61,7 @@
   (doom-themes-enable-bold t)
   (doom-themes-enable-italic t)
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-tokyo-night t)
   (doom-themes-visual-bell-config))
 
 ;; Rainbow Delimiters
@@ -263,14 +263,6 @@
 
 ;; add line numbers in python mode
 (add-hook 'python-mode-hook #'display-line-numbers-mode)
-
-;; add copilot
-(use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :ensure t)
-(add-hook 'prog-mode-hook 'copilot-mode)
-(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
 
 ;; electric pair mode
 (electric-pair-mode 1)
